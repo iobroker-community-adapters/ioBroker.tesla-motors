@@ -1,0 +1,115 @@
+{
+    "common": {
+        "name": "tesla-motors",
+        "version": "1.0.2",
+        "news": {
+            "1.0.2": {
+                "en": "ALL DATAPOINTS ARE NEW, vis needs to be adjusted. New release with new states for Tesla and Powerwalls.",
+                "de": "ALLE DATENPUNKTE SIND NEU, Vis muss angepasst werden. Neue Version mit neuen Zuständen für Tesla und Powerwalls.",
+                "ru": "ВСЕ ТОЧКИ ДАННЫХ НОВЫЕ, необходимо настроить vis. Новый выпуск с новыми состояниями для Tesla и Powerwall.",
+                "pt": "TODOS OS PONTOS DE DADOS SÃO NOVOS, precisa ser ajustado. Novo lançamento com novos estados para Tesla e Powerwalls.",
+                "nl": "ALLE DATAPOINTS ZIJN NIEUW, vis moet worden aangepast. Nieuwe release met nieuwe statussen voor Tesla en Powerwalls.",
+                "fr": "TOUS LES POINTS DE DONNÉES SONT NOUVEAUX, vis doit être ajusté. Nouvelle version avec de nouveaux états pour Tesla et Powerwalls.",
+                "it": "TUTTI I DATAPOINT SONO NUOVI, vis deve essere regolato. Nuova versione con nuovi stati per Tesla e Powerwall.",
+                "es": "TODOS LOS DATAPOINTS SON NUEVOS, vis necesita ser ajustado. Nueva versión con nuevos estados para Tesla y Powerwalls.",
+                "pl": "WSZYSTKIE PUNKTY DANYCH SĄ NOWE, należy je dostosować. Nowa wersja z nowymi stanami dla Tesli i Powerwalls.",
+                "zh-cn": "所有数据点都是新的，vis 需要调整。 Tesla 和 Powerwall 具有新状态的新版本。"
+            }
+        },
+        "titleLang": {
+            "en": "Tesla",
+            "de": "Tesla",
+            "ru": "Тесла",
+            "pt": "Tesla",
+            "nl": "Tesla",
+            "fr": "Tesla",
+            "it": "Tesla",
+            "es": "Tesla",
+            "pl": "Tesla",
+            "zh-cn": "特斯拉"
+        },
+        "desc": {
+            "en": "Adapter for Tesla",
+            "de": "Adapter für Tesla",
+            "ru": "Адаптер для Tesla",
+            "pt": "Adaptador para Tesla",
+            "nl": "Adapter voor Tesla",
+            "fr": "Adaptateur pour Tesla",
+            "it": "Adattatore per Tesla",
+            "es": "Adaptador para Tesla",
+            "pl": "Adapter do Tesli",
+            "zh-cn": "特斯拉适配器"
+        },
+        "authors": [
+            "TA2k <tombox2020@gmail.com>"
+        ],
+        "keywords": [
+            "tesla"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "tesla-motors.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/TA2k/ioBroker.tesla-motors/master/admin/tesla-motors.png",
+        "readme": "https://github.com/TA2k/ioBroker.tesla-motors/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "vehicle",
+        "compact": true,
+        "connectionType": "cloud",
+        "dataSource": "poll",
+        "materialize": true,
+        "dependencies": [
+            {
+                "js-controller": ">=3.0.0"
+            }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=4.0.9"
+            }
+        ]
+    },
+    "encryptedNative": [
+        "codeUrl",
+        "session"
+    ],
+    "protectedNative": [
+        "codeUrl",
+        "session"
+    ],
+    "native": {
+        "codeUrl": "",
+        "wakeup": false,
+        "interval": 5,
+        "session": {},
+        "reset": false,
+        "intervalNormal": 60,
+        "intervalDrive": null
+    },
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "Device or service connected",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
+    ]
+}
