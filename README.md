@@ -20,17 +20,18 @@ Es werden alle Tesla Modelle und Powerwalls aus der Tesla App angezeigt und aktu
 tesla-motors.0.id.remote
 
 **Loginablauf:**
-In den Instanzoptionen den Auth Link klicken.
-Die Logindaten eingeben und gegebenenfalls Captcha/reCaptcha und MFA eingeben.
-Auf der Page not Found Seite die komplette URL aus dem Browser kopieren und in die Instanzoptionen einfügen und auf Speichen und Schließen klicken.
+- In den Instanzoptionen den Auth Link klicken.
+- Die Logindaten eingeben und gegebenenfalls Captcha/reCaptcha und MFA eingeben.
+- Auf der Page not Found Seite die komplette URL aus dem Browser kopieren und in die Instanzoptionen einfügen und auf Speichen und Schließen klicken.
 
 **Field Description**
-df driver front
-dr driver rear
-pf passenger front
-pr passenger rear
-ft front trunk
-rt rear trunk
+
+- df driver front
+- dr driver rear
+- pf passenger front
+- pr passenger rear
+- ft front trunk
+- rt rear trunk
 
 [Option Codes Erklärung](https://tesla-api.timdorr.com/vehicle/optioncodes)
 
