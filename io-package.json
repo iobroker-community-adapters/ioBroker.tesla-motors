@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "tesla-motors",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "news": {
-            "1.0.2": {
+            "1.0.3": {
                 "en": "ALL DATAPOINTS ARE NEW, vis needs to be adjusted. New release with new states for Tesla and Powerwalls.",
                 "de": "ALLE DATENPUNKTE SIND NEU, Vis muss angepasst werden. Neue Version mit neuen Zuständen für Tesla und Powerwalls.",
                 "ru": "ВСЕ ТОЧКИ ДАННЫХ НОВЫЕ, необходимо настроить vis. Новый выпуск с новыми состояниями для Tesla и Powerwall.",

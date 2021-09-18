@@ -457,7 +457,7 @@ class Teslamotors extends utils.Adapter {
         })
             .then((res) => {
                 this.log.debug(JSON.stringify(res.data));
-                this.json2iob.parse(id, res.data, { preferedArrayName: "timestamp" });
+                this.json2iob.parse(id, res.data.response, { preferedArrayName: "timestamp" });
                 return res.data.response.state;
             })
             .catch((error) => {
