@@ -35,6 +35,9 @@ tesla-motors.0.id.remote
 
 [Option Codes Erklärung](https://tesla-api.timdorr.com/vehicle/optioncodes)
 
+## Fragen und Diskussionen:
+https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
+
 ## Changelog
 
 ### 1.0.2
