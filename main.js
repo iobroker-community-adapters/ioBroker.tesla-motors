@@ -464,6 +464,12 @@ class Teslamotors extends utils.Adapter {
                 if (error.response && error.response.status === 404) {
                     return;
                 }
+                if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
+                    this.log.debug(url);
+                    this.log.debug(error);
+                    error.response && this.log.debug(JSON.stringify(error.response.data));
+                    return;
+                }
                 this.log.error(error);
                 error.response && this.log.error(JSON.stringify(error.response.data));
                 return;
