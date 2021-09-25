@@ -23,6 +23,7 @@ tesla-motors.0.id.remote
 - In den Instanzoptionen den Auth Link klicken.
 - Die Logindaten eingeben und gegebenenfalls Captcha/reCaptcha und MFA eingeben.
 - Auf der Page not Found Seite die komplette URL aus dem Browser kopieren und in die Instanzoptionen einfügen und auf Speichen und Schließen klicken.
+- Die ersten Daten kommen unter Umständen erst nach der ersten Fahrt
 
 **Field Description**
 
