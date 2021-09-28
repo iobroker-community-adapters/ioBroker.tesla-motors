@@ -589,6 +589,7 @@ class Teslamotors extends utils.Adapter {
         const commandArray = ["window_control"];
         const percentArray = ["set_charge_limit"];
         const default_real_modeArray = ["operation"];
+        const heaterArray = ["remote_seat_heater_request"];
         const shareArray = ["share"];
         let data = {};
         if (passwordArray.includes(command)) {
@@ -611,6 +612,10 @@ class Teslamotors extends utils.Adapter {
                 data["passenger_temp"] = passengerState ? passengerState.val : driverState.val;
             }
             data[action] = value;
+        }
+        if (heaterArray.includes(command)) {
+            data["heater"] = action;
+            data["level"] = value;
         }
         if (stateArray.includes(command)) {
             data["state"] = action;
