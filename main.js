@@ -72,7 +72,7 @@ class Teslamotors extends utils.Adapter {
         if (obj && obj.native.session && obj.native.session.refresh_token) {
             this.session = obj.native.session;
 
-            await this.refreshToken();
+            await this.refreshToken(true);
         }
         this.updateInterval = null;
         this.updateIntervalDrive = {};
@@ -465,7 +465,6 @@ class Teslamotors extends utils.Adapter {
                     return;
                 }
                 if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
-                    this.log.debug(url);
                     this.log.debug(error);
                     error.response && this.log.debug(JSON.stringify(error.response.data));
                     return;
@@ -476,7 +475,7 @@ class Teslamotors extends utils.Adapter {
             });
     }
 
-    async refreshToken() {
+    async refreshToken(firstStart) {
         await this.requestClient({
             method: "post",
             url: "https://auth.tesla.com/oauth2/v3/token",
@@ -500,12 +499,21 @@ class Teslamotors extends utils.Adapter {
                     this.log.error("No connection to Tesla server please check your connection");
                     return;
                 }
-                this.session = {};
-                error.response && this.log.error(JSON.stringify(error.response.data));
-                this.log.error("Start relogin in 1min");
-                this.reLoginTimeout = setTimeout(() => {
-                    this.login();
-                }, 1000 * 60 * 1);
+                //received a real http error
+                if (error.response && error.response.status >= 400 && error.response.status < 500) {
+                    this.session = {};
+                    error.response && this.log.error(JSON.stringify(error.response.data));
+                    this.log.error("Start relogin in 1min");
+                    this.reLoginTimeout = setTimeout(() => {
+                        this.login();
+                    }, 1000 * 60 * 1);
+                } else if (firstStart) {
+                    //connection problems
+                    this.log.error("No connection to tesla server restart adapter in 1min");
+                    this.reLoginTimeout = setTimeout(() => {
+                        this.restart();
+                    }, 1000 * 60 * 1);
+                }
             });
     }
     async getOwnerToken() {
@@ -516,6 +524,11 @@ class Teslamotors extends utils.Adapter {
                 return;
             }
         }
+        this.log.info("Start own Token Refresh");
+        if (this.ownSession) {
+            this.log.info("Expires: " + this.ownSession.expires_in + " Created_at: " + this.ownSession.created_at);
+        }
+
         await this.requestClient({
             method: "post",
             url: "https://owner-api.teslamotors.com/oauth/token",
@@ -539,12 +552,19 @@ class Teslamotors extends utils.Adapter {
                 this.setState("info.connection", false, true);
                 this.log.error("own token failed");
                 this.log.error(error);
-                this.session = {};
-                error.response && this.log.error(JSON.stringify(error.response.data));
-                this.log.error("Start relogin in 1min");
-                this.reLoginTimeout = setTimeout(() => {
-                    this.login();
-                }, 1000 * 60 * 1);
+                if (error.response && error.response.status >= 400 && error.response.status < 500) {
+                    this.session = {};
+                    error.response && this.log.error(JSON.stringify(error.response.data));
+                    this.log.error("Start relogin in 1min");
+                    this.reLoginTimeout = setTimeout(() => {
+                        this.login();
+                    }, 1000 * 60 * 1);
+                } else {
+                    this.log.error("No connection to tesla server restart adapter in 1min");
+                    this.reLoginTimeout = setTimeout(() => {
+                        this.restart();
+                    }, 1000 * 60 * 1);
+                }
             });
     }
     async checkWaitForSleepState(id) {

@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "tesla-motors",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "news": {
+            "1.0.4": {
+                "en": "Fix remoteseat heater",
+                "de": "Sitzheizung remote Problem behoben"
+            },
             "1.0.3": {
                 "en": "ALL DATAPOINTS ARE NEW, vis needs to be adjusted. New release with new states for Tesla and Powerwalls.",
                 "de": "ALLE DATENPUNKTE SIND NEU, Vis muss angepasst werden. Neue Version mit neuen Zuständen für Tesla und Powerwalls.",
