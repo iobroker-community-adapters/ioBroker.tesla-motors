@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "tesla-motors",
-        "version": "1.0.4",
+        "version": "1.0.5",
         "news": {
+            "1.0.5": {
+                "en": "Fixed problem with relogin",
+                "de": "Problem mit erneuten Login behoben"
+            },
             "1.0.4": {
                 "en": "Fix remoteseat heater",
                 "de": "Sitzheizung remote Problem behoben"
@@ -64,6 +68,11 @@
         "connectionType": "cloud",
         "dataSource": "poll",
         "materialize": true,
+        "plugins": {
+            "sentry": {
+                "dsn": "https://b67b9228ae424e36ba2ab0cf38d94699@sentry.iobroker.net/149"
+            }
+        },
         "dependencies": [
             {
                 "js-controller": ">=3.0.0"
