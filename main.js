@@ -611,6 +611,7 @@ class Teslamotors extends utils.Adapter {
         const default_real_modeArray = ["operation"];
         const heaterArray = ["remote_seat_heater_request"];
         const shareArray = ["share"];
+        const trunkArray = ["actuate_trunk-rear", "actuate_trunk-front"];
         let data = {};
         if (passwordArray.includes(command)) {
             data["password"] = this.config.password;
@@ -648,6 +649,9 @@ class Teslamotors extends utils.Adapter {
         }
         if (default_real_modeArray.includes(command)) {
             data["default_real_mode"] = action;
+        }
+        if (trunkArray.includes(command)) {
+            data["which_trunk"] = action;
         }
         if (shareArray.includes(command)) {
             data = {
