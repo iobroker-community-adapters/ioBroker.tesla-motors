@@ -220,9 +220,9 @@ class Teslamotors extends utils.Adapter {
                         { command: "set_temps-driver_temp", type: "number", role: "level" },
                         { command: "set_temps-passenger_temp", type: "number", role: "level" },
                         { command: "set_bioweapon_mode" },
-                        { command: "set_scheduled_charging", type: "number", role: "level" },
-                        { command: "set_scheduled_departure", type: "number", role: "level" },
-                        { command: "set_charging_amps", type: "number", role: "level" },
+                        { command: "set_scheduled_charging-scheduled_charging", type: "number", role: "level" },
+                        { command: "set_scheduled_departure-scheduled_departure", type: "number", role: "level" },
+                        { command: "set_charging_amps-charging_amps", type: "number", role: "level" },
                         { command: "remote_seat_heater_request-0", type: "number", role: "level" },
                         { command: "remote_seat_heater_request-1", type: "number", role: "level" },
                         { command: "remote_seat_heater_request-2", type: "number", role: "level" },
@@ -586,7 +586,7 @@ class Teslamotors extends utils.Adapter {
                 return false;
             }
         }
-        this.log.debug("30 min not change. Start waiting for sleep");
+        this.log.debug("Since 30 min no changes receiving. Start waiting for sleep");
         return true;
     }
     async sendCommand(id, command, action, value, nonVehicle) {
@@ -608,7 +608,7 @@ class Teslamotors extends utils.Adapter {
         const passwordArray = ["remote_start_drive"];
         const latlonArray = ["trigger_homelink", "window_control"];
         const onArray = ["remote_steering_wheel_heater_request", "set_preconditioning_max", "set_sentry_mode"];
-        const valueArray = ["set_temps", "backup", "off_grid_vehicle_charging_reserve", "schedule_software_update"];
+        const valueArray = ["set_temps", "backup", "off_grid_vehicle_charging_reserve", "schedule_software_update", "set_scheduled_charging", "set_scheduled_departure", "set_charging_amps"];
         const stateArray = ["sun_roof_control"];
         const commandArray = ["window_control"];
         const percentArray = ["set_charge_limit"];
