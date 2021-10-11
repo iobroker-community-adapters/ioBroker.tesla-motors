@@ -270,7 +270,12 @@ class Teslamotors extends utils.Adapter {
             });
     }
     async updateDevices() {
-        const vehicleStatusArray = [{ path: "", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data" }];
+        const vehicleStatusArray = [
+            {
+                path: "",
+                url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data?endpoints=climate_state%3Bcharge_state%3Bdrive_state%3Bgui_settings%3Bvehicle_state%3Bvehicle_config",
+            },
+        ];
         const powerwallArray = [
             { path: "", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/status" },
             // { path: ".powerhistory", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/powerhistory" },
