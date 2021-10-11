@@ -529,7 +529,7 @@ class Teslamotors extends utils.Adapter {
             }
         }
         this.log.info("Start own Token Refresh");
-        if (this.ownSession) {
+        if (this.ownSession && this.ownSession.expires_in) {
             this.log.info("Expires: " + this.ownSession.expires_in + " Created_at: " + this.ownSession.created_at);
         }
 
