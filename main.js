@@ -27,6 +27,11 @@ class Teslamotors extends utils.Adapter {
         this.on("ready", this.onReady.bind(this));
         this.on("stateChange", this.onStateChange.bind(this));
         this.on("unload", this.onUnload.bind(this));
+
+        this.session = {};
+        this.ownSession = {};
+        this.sleepTimes = {};
+        this.lastStates = {};
     }
 
     /**
@@ -66,9 +71,6 @@ class Teslamotors extends utils.Adapter {
 
         this.requestClient = axios.create();
 
-        this.session = {};
-        this.ownSession = {};
-        this.sleepTimes = {};
         if (obj && obj.native.session && obj.native.session.refresh_token) {
             this.session = obj.native.session;
 
@@ -270,12 +272,7 @@ class Teslamotors extends utils.Adapter {
             });
     }
     async updateDevices() {
-        const vehicleStatusArray = [
-            {
-                path: "",
-                url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data?endpoints=climate_state%3Bcharge_state%3Bdrive_state%3Bgui_settings%3Bvehicle_state%3Bvehicle_config",
-            },
-        ];
+        const vehicleStatusArray = [{ path: "", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data" }];
         const powerwallArray = [
             { path: "", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/status" },
             // { path: ".powerhistory", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/powerhistory" },
@@ -314,10 +311,15 @@ class Teslamotors extends utils.Adapter {
                 this.log.debug(id + ": " + state);
                 if (state === "asleep" && !this.config.wakeup) {
                     this.log.debug(id + " asleep skip update");
+                    this.lastStates[id] = state;
                     return;
                 }
+                let waitForSleep = false;
+                if (this.lastStates[id] && this.lastStates[id] !== "asleep") {
+                    waitForSleep = await this.checkWaitForSleepState(id);
+                }
+                this.lastStates[id] = state;
 
-                const waitForSleep = await this.checkWaitForSleepState(id);
                 if (waitForSleep && !this.config.wakeup) {
                     if (!this.sleepTimes[id]) {
                         this.sleepTimes[id] = Date.now();
@@ -581,6 +583,9 @@ class Teslamotors extends utils.Adapter {
         const chargeState = await this.getStateAsync("chargeState.charging_state");
 
         if ((shift_state && shift_state.val !== null && shift_state.val !== "P") || (chargeState && !["Disconnected", "Complete", "NoPower", "Stopped"].includes(chargeState.val))) {
+            if (shift_state && chargeState) {
+                this.log.debug("Skip sleep waiting because shift state: " + shift_state.val + " or charge state: " + chargeState.val);
+            }
             return false;
         }
         const checkStates = [".drive_state.shift_state", ".drive_state.speed", ".climate_state.is_climate_on", ".charge_state.battery_level", ".vehicle_state.odometer", ".vehicle_state.locked"];
