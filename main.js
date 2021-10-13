@@ -198,6 +198,7 @@ class Teslamotors extends utils.Adapter {
                     });
 
                     let remoteArray = [
+                        { command: "force_update" },
                         { command: "wake_up" },
                         { command: "honk_horn" },
                         { command: "flash_lights" },
@@ -271,7 +272,7 @@ class Teslamotors extends utils.Adapter {
                 error.response && this.log.error(JSON.stringify(error.response.data));
             });
     }
-    async updateDevices() {
+    async updateDevices(forceUpdate) {
         const vehicleStatusArray = [{ path: "", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data" }];
         const powerwallArray = [
             { path: "", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/status" },
@@ -315,10 +316,14 @@ class Teslamotors extends utils.Adapter {
                     return;
                 }
                 let waitForSleep = false;
-                if (this.lastStates[id] && this.lastStates[id] !== "asleep") {
+                if (this.lastStates[id] && this.lastStates[id] !== "asleep" && forceUpdate !== true) {
                     waitForSleep = await this.checkWaitForSleepState(id);
                 } else {
-                    this.log.debug("Skip wait because last state was asleep");
+                    if (forceUpdate) {
+                        this.log.debug("Skip wait because force update");
+                    } else {
+                        this.log.debug("Skip wait because last state was asleep");
+                    }
                 }
                 this.lastStates[id] = state;
 
@@ -590,7 +595,16 @@ class Teslamotors extends utils.Adapter {
             }
             return false;
         }
-        const checkStates = [".drive_state.shift_state", ".drive_state.speed", ".climate_state.is_climate_on", ".charge_state.battery_level", ".vehicle_state.odometer", ".vehicle_state.locked"];
+        const checkStates = [
+            ".drive_state.shift_state",
+            ".drive_state.speed",
+            ".climate_state.is_climate_on",
+            ".charge_state.battery_level",
+            ".vehicle_state.odometer",
+            ".vehicle_state.locked",
+            ".charge_state.charge_port_door_open",
+            ".vehicle_state.df",
+        ];
         for (const stateId of checkStates) {
             const curState = await this.getStateAsync(id + stateId);
             //laste update not older than 30min and last change not older then 30min
@@ -872,6 +886,10 @@ class Teslamotors extends utils.Adapter {
                 let command = id.split(".")[4];
                 const action = command.split("-")[1];
                 command = command.split("-")[0];
+                if (command === "force_update") {
+                    this.updateDevices(true);
+                    return;
+                }
                 let vehicleState = await this.checkState(productId);
                 let nonVehicle = false;
                 if (vehicleState) {
@@ -899,8 +917,8 @@ class Teslamotors extends utils.Adapter {
                 await this.sendCommand(productId, command, action, state.val, nonVehicle).catch(() => {});
                 clearTimeout(this.refreshTimeout);
                 this.refreshTimeout = setTimeout(async () => {
-                    await this.updateDevices();
-                }, 10 * 1000);
+                    await this.updateDevices(true);
+                }, 5 * 1000);
             } else {
                 const resultDict = {
                     driver_temp_setting: "set_temps-driver_temp",
