@@ -851,7 +851,7 @@ class Teslamotors extends utils.Adapter {
     async onUnload(callback) {
         try {
             this.setState("info.connection", false, true);
-            callback();
+
             if (this.ws) {
                 this.ws.close();
             }
@@ -862,11 +862,13 @@ class Teslamotors extends utils.Adapter {
             clearTimeout(this.refreshTimeout);
             clearTimeout(this.refreshTokenTimeout);
             const obj = await this.getForeignObjectAsync(this.adapterConfig);
+            this.log.info("Save login session");
             if (obj) {
                 obj.native.session = this.session;
                 this.log.debug("Session saved");
-                this.setForeignObject(this.adapterConfig, obj);
+                await this.setForeignObjectAsync(this.adapterConfig, obj);
             }
+            callback();
         } catch (e) {
             callback();
         }
@@ -911,8 +913,10 @@ class Teslamotors extends utils.Adapter {
                     }
                 } else {
                     const productIdState = await this.getStateAsync(productId + ".energy_site_id");
-                    productId = productIdState.val;
-                    nonVehicle = true;
+                    if (productIdState) {
+                        productId = productIdState.val;
+                        nonVehicle = true;
+                    }
                 }
                 await this.sendCommand(productId, command, action, state.val, nonVehicle).catch(() => {});
                 clearTimeout(this.refreshTimeout);
