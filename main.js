@@ -924,8 +924,15 @@ class Teslamotors extends utils.Adapter {
                     await this.updateDevices(true);
                 }, 5 * 1000);
             } else {
+                if (id.indexOf(".remote.") !== -1) {
+                    return;
+                }
                 const resultDict = {
                     driver_temp_setting: "set_temps-driver_temp",
+                    charge_limit_soc: "set_charge_limit",
+                    locked: "door_lock",
+                    is_auto_conditioning_on: "auto_conditioning_start",
+                    charge_port_door_open: "charge_port_door_open",
                     passenger_temp_setting: "set_temps-passenger_temp",
                     backup_reserve_percent: "backup-backup_reserve_percent",
                     off_grid_vehicle_charging_reserve_percent: "off_grid_vehicle_charging_reserve-off_grid_vehicle_charging_reserve_percent",
@@ -942,6 +949,7 @@ class Teslamotors extends utils.Adapter {
                     value = state.val;
                 }
                 if (resultDict[stateName]) {
+                    this.log.debug("refresh remote state" + resultDict[stateName] + " from " + id);
                     await this.setStateAsync(vin + ".remote." + resultDict[stateName], value, true);
                 }
             }
