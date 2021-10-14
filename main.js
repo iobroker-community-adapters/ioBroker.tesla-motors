@@ -926,10 +926,6 @@ class Teslamotors extends utils.Adapter {
             } else {
                 const resultDict = {
                     driver_temp_setting: "set_temps-driver_temp",
-                    charge_limit_soc: "set_charge_limit",
-                    locked: "door_lock",
-                    is_auto_conditioning_on: "auto_conditioning_start",
-                    charge_port_door_open: "charge_port_door_open",
                     passenger_temp_setting: "set_temps-passenger_temp",
                     backup_reserve_percent: "backup-backup_reserve_percent",
                     off_grid_vehicle_charging_reserve_percent: "off_grid_vehicle_charging_reserve-off_grid_vehicle_charging_reserve_percent",
