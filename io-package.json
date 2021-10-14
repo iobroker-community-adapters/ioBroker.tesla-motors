@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "tesla-motors",
-        "version": "1.0.5",
+        "version": "1.0.6",
         "news": {
+            "1.0.6": {
+                "en": "Improve Update process",
+                "de": "Updateprozess verbessert"
+            },
             "1.0.5": {
                 "en": "Fixed problem with relogin",
                 "de": "Problem mit erneuten Login behoben"
