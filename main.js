@@ -890,6 +890,10 @@ class Teslamotors extends utils.Adapter {
     async onStateChange(id, state) {
         if (state) {
             if (!state.ack) {
+                if (id.indexOf(".remote.") === -1) {
+                    this.log.warn("No remote command");
+                    return;
+                }
                 let productId = id.split(".")[2];
 
                 let command = id.split(".")[4];
