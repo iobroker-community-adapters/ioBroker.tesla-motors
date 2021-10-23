@@ -297,6 +297,14 @@ class Teslamotors extends utils.Adapter {
                 path: ".self_consumption_history",
                 url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=self_consumption&period=day&time_zone=Europe%2FBerlin&end_date=" + this.getDate(),
             },
+            {
+                path: ".self_consumption_history_lifetime",
+                url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=self_consumption&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&period=lifetime&time_zone=Europe%2FBerlin&end_date=" + this.getDate(),
+            },
+            {
+                path: ".energy_history_lifetime",
+                url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&time_zone=Europe/Berlin&period=lifetime&end_date=" + this.getDate(),
+            },
             // { path: ".historyEnergy", url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/history?kind=energy&period=day" },
             // { path: ".historyPower", url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/history?kind=power&period=day" },
         ];
