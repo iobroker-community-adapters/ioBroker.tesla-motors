@@ -230,8 +230,8 @@ class Teslamotors extends utils.Adapter {
                         { command: "set_temps-driver_temp", type: "number", role: "level" },
                         { command: "set_temps-passenger_temp", type: "number", role: "level" },
                         { command: "set_bioweapon_mode" },
-                        { command: "set_scheduled_charging-scheduled_charging", type: "number", role: "level" },
-                        { command: "set_scheduled_departure-scheduled_departure", type: "number", role: "level" },
+                        { command: "set_scheduled_charging", name: "Number of minutes from midnight in intervals of 15", type: "json", role: "state" },
+                        { command: "set_scheduled_departure", name: "Change default json to modify", type: "json", role: "state" },
                         { command: "set_charging_amps-charging_amps", type: "number", role: "level" },
                         { command: "remote_seat_heater_request-0", type: "number", role: "level" },
                         { command: "remote_seat_heater_request-1", type: "number", role: "level" },
@@ -259,8 +259,8 @@ class Teslamotors extends utils.Adapter {
                             { command: "off_grid_vehicle_charging_reserve-off_grid_vehicle_charging_reserve_percent", type: "number", role: "level" },
                         ];
                     }
-                    remoteArray.forEach((remote) => {
-                        this.setObjectNotExists(id + ".remote." + remote.command, {
+                    remoteArray.forEach(async (remote) => {
+                        await this.setObjectNotExistsAsync(id + ".remote." + remote.command, {
                             type: "state",
                             common: {
                                 name: remote.name || "",
@@ -271,7 +271,34 @@ class Teslamotors extends utils.Adapter {
                             },
                             native: {},
                         });
+                        if (remote.command === "set_scheduled_departure") {
+                            this.setState(
+                                id + ".remote." + remote.command,
+                                `{
+                                "departure_time": 375,
+                                "preconditioning_weekdays_only": false,
+                                "enable": true,
+                                "off_peak_charging_enabled": true,
+                                "preconditioning_enabled": false,
+                                "end_off_peak_time": 420,
+                                "off_peak_charging_weekdays_only": true
+                            }`,
+                                true
+                            );
+                        }
+                        if (remote.command === "set_scheduled_charging") {
+                            this.setState(
+                                id + ".remote." + remote.command,
+                                `{
+                                    "time": 0,
+                                    "enable": true
+                                }`,
+                                true
+                            );
+                        }
                     });
+                    this.delObjectAsync(this.name + "." + this.instance + "." + id + ".remote.set_scheduled_charging-scheduled_charging");
+                    this.delObjectAsync(this.name + "." + this.instance + "." + id + ".remote.set_scheduled_departure-scheduled_departure");
                 }
             })
             .catch((error) => {
@@ -299,11 +326,15 @@ class Teslamotors extends utils.Adapter {
             },
             {
                 path: ".self_consumption_history_lifetime",
-                url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=self_consumption&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&period=lifetime&time_zone=Europe%2FBerlin&end_date=" + this.getDate(),
+                url:
+                    "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=self_consumption&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&period=lifetime&time_zone=Europe%2FBerlin&end_date=" +
+                    this.getDate(),
             },
             {
                 path: ".energy_history_lifetime",
-                url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&time_zone=Europe/Berlin&period=lifetime&end_date=" + this.getDate(),
+                url:
+                    "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&time_zone=Europe/Berlin&period=lifetime&end_date=" +
+                    this.getDate(),
             },
             // { path: ".historyEnergy", url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/history?kind=energy&period=day" },
             // { path: ".historyPower", url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/history?kind=power&period=day" },
@@ -362,6 +393,7 @@ class Teslamotors extends utils.Adapter {
                 if (this.config.wakeup && state !== "online") {
                     while (state !== "online") {
                         let errorButNotTimeout = false;
+
                         const vehicleState = await this.sendCommand(id, "wake_up").catch((error) => {
                             //timeout and reset connection
                             if (error.response && error.response.status !== 408 && error.response.status !== 503) {
@@ -585,6 +617,13 @@ class Teslamotors extends utils.Adapter {
                 this.setState("info.connection", false, true);
                 this.log.error("own token failed");
                 this.log.error(error);
+                if (error.response && error.response.status === 408) {
+                    this.log.warn("Tesla server not reachable. Retry in 30sec.");
+                    this.reLoginTimeout = setTimeout(() => {
+                        this.getOwnerToken();
+                    }, 1000 * 30);
+                    return;
+                }
                 if (error.response && error.response.status >= 400 && error.response.status < 500) {
                     this.session = {};
                     error.response && this.log.error(JSON.stringify(error.response.data));
@@ -648,8 +687,8 @@ class Teslamotors extends utils.Adapter {
         }
         const passwordArray = ["remote_start_drive"];
         const latlonArray = ["trigger_homelink", "window_control"];
-        const onArray = ["remote_steering_wheel_heater_request", "set_preconditioning_max", "set_sentry_mode"];
-        const valueArray = ["set_temps", "backup", "off_grid_vehicle_charging_reserve", "schedule_software_update", "set_scheduled_charging", "set_scheduled_departure", "set_charging_amps"];
+        const onArray = ["remote_steering_wheel_heater_request", "set_preconditioning_max", "set_sentry_mode", "set_bioweapon_mode"];
+        const valueArray = ["set_temps", "backup", "off_grid_vehicle_charging_reserve", "schedule_software_update", "set_charging_amps"];
         const stateArray = ["sun_roof_control"];
         const commandArray = ["window_control"];
         const percentArray = ["set_charge_limit"];
@@ -657,6 +696,7 @@ class Teslamotors extends utils.Adapter {
         const heaterArray = ["remote_seat_heater_request"];
         const shareArray = ["share"];
         const trunkArray = ["actuate_trunk"];
+        const plainArray = ["set_scheduled_charging", "set_scheduled_departure"];
         let data = {};
         if (passwordArray.includes(command)) {
             data["password"] = this.config.password;
@@ -712,6 +752,9 @@ class Teslamotors extends utils.Adapter {
             };
         }
 
+        if (plainArray.includes(command)) {
+            data = value;
+        }
         this.log.debug(url);
         this.log.debug(JSON.stringify(data));
         return await this.requestClient({
