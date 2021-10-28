@@ -753,7 +753,11 @@ class Teslamotors extends utils.Adapter {
         }
 
         if (plainArray.includes(command)) {
-            data = value;
+            try {
+                data = JSON.parse(value);
+            } catch (error) {
+                this.log.error(error);
+            }
         }
         this.log.debug(url);
         this.log.debug(JSON.stringify(data));
