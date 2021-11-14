@@ -1,6 +1,6 @@
 {
   "name": "iobroker.tesla-motors",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Adapter for Tesla",
   "author": {
     "name": "TA2k",
@@ -18,7 +18,7 @@
   "dependencies": {
     "@iobroker/adapter-core": "^2.5.1",
     "json-bigint": "^1.0.0",
-    "axios": "^0.21.1",
+    "axios": "^0.24.0",
     "qs": "^6.10.1",
     "axios-cookiejar-support": "^1.0.1",
     "tough-cookie": "^4.0.0",

@@ -32,6 +32,10 @@ class Teslamotors extends utils.Adapter {
         this.ownSession = {};
         this.sleepTimes = {};
         this.lastStates = {};
+        this.updateIntervalDrive = {};
+        this.idArray = [];
+
+        this.json2iob = new Json2iob(this);
     }
 
     /**
@@ -77,12 +81,8 @@ class Teslamotors extends utils.Adapter {
             await this.refreshToken(true);
         }
         this.updateInterval = null;
-        this.updateIntervalDrive = {};
         this.reLoginTimeout = null;
         this.refreshTokenTimeout = null;
-        this.idArray = [];
-
-        this.json2iob = new Json2iob(this);
 
         this.subscribeStates("*");
         this.headers = {
@@ -456,6 +456,17 @@ class Teslamotors extends utils.Adapter {
                             this.refreshTokenTimeout = setTimeout(() => {
                                 this.refreshToken();
                             }, 1000 * 30);
+
+                            return;
+                        }
+                        if (error.response && error.response.status >= 405) {
+                            this.log.error(error);
+                            error.response && this.log.error(JSON.stringify(error.response.data));
+                            this.log.error("Remove " + id + " from updates");
+                            const index = this.idArray.indexOf(id);
+                            if (index > -1) {
+                                this.idArray.splice(index, 1);
+                            }
 
                             return;
                         }
