@@ -459,17 +459,7 @@ class Teslamotors extends utils.Adapter {
 
                             return;
                         }
-                        if (error.response && error.response.status >= 405) {
-                            this.log.error(error);
-                            error.response && this.log.error(JSON.stringify(error.response.data));
-                            this.log.error("Remove " + id + " from updates");
-                            const index = this.idArray.indexOf(id);
-                            if (index > -1) {
-                                this.idArray.splice(index, 1);
-                            }
 
-                            return;
-                        }
                         if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
                             this.log.debug(url);
                             this.log.debug(error);
