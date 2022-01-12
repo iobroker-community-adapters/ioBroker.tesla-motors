@@ -470,6 +470,7 @@ class Teslamotors extends utils.Adapter {
                             }
                             this.refreshTokenTimeout = setTimeout(() => {
                                 this.refreshTokenTimeout = null;
+                                this.ownSession = null;
                                 this.log.info("Start refresh token");
                                 this.refreshToken();
                             }, 1000 * 30);
@@ -798,6 +799,8 @@ class Teslamotors extends utils.Adapter {
                     }
                     this.refreshTokenTimeout = setTimeout(() => {
                         this.refreshTokenTimeout = null;
+                        this.ownSession = null;
+                        this.log.info("Start refresh token");
                         this.refreshToken();
                     }, 1000 * 30);
 
