@@ -309,7 +309,7 @@ class Teslamotors extends utils.Adapter {
     async updateDevices(forceUpdate) {
         const vehicleStatusArray = [
             { path: "", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data" },
-            { path: "charge_history", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/charge_history" },
+            { path: ".charge_history", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/charge_history" },
         ];
         const powerwallArray = [
             { path: "", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/status" },
@@ -423,7 +423,7 @@ class Teslamotors extends utils.Adapter {
                 url = url.replace("{energy_site_id}", energy_site_id);
                 this.log.debug(url);
 
-                if (element.path === "charge_history") {
+                if (element.path === ".charge_history") {
                     const diff = 60 * 60 * 1000;
                     if (!this.lastChargeHistory || Date.now() - this.lastChargeHistory > diff) {
                         this.lastChargeHistory = Date.now();
