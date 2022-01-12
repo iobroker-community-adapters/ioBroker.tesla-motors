@@ -439,7 +439,9 @@ class Teslamotors extends utils.Adapter {
                 })
                     .then((res) => {
                         this.log.debug(JSON.stringify(res.data));
-
+                        if (element.path === ".charge_history") {
+                            return;
+                        }
                         if (!res.data) {
                             return;
                         }
