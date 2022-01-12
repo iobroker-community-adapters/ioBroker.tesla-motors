@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "tesla-motors",
-        "version": "1.0.7",
+        "version": "1.0.8",
         "news": {
+            "1.0.8": {
+                "en": "Add charging history",
+                "de": "Ladehistory hinzugefügt"
+            },
             "1.0.7": {
                 "en": "Add new remotes for charging amps and scheduled departure and charging",
                 "de": "Neue remote controls hinzugefügt für den Ladestrom und geplante Abfahrten und Laden "

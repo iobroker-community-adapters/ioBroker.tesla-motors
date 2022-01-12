@@ -307,7 +307,10 @@ class Teslamotors extends utils.Adapter {
             });
     }
     async updateDevices(forceUpdate) {
-        const vehicleStatusArray = [{ path: "", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data" }];
+        const vehicleStatusArray = [
+            { path: "", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data" },
+            { path: "charge_history", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/charge_history" },
+        ];
         const powerwallArray = [
             { path: "", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/status" },
             // { path: ".powerhistory", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/powerhistory" },
@@ -419,6 +422,16 @@ class Teslamotors extends utils.Adapter {
                 let url = element.url.replace("{id}", id);
                 url = url.replace("{energy_site_id}", energy_site_id);
                 this.log.debug(url);
+
+                if (element.path === "charge_history") {
+                    const diff = 60 * 60 * 1000;
+                    if (!this.lastChargeHistory || Date.now() - this.lastChargeHistory > diff) {
+                        this.lastChargeHistory = Date.now();
+                    } else {
+                        this.log.debug("Skip charge history because last update was less than 1h ago");
+                        return;
+                    }
+                }
                 await this.requestClient({
                     method: "get",
                     url: url,
@@ -450,10 +463,14 @@ class Teslamotors extends utils.Adapter {
                     })
                     .catch((error) => {
                         if (error.response && error.response.status === 401) {
-                            error.response && this.log.debug(JSON.stringify(error.response.data));
+                            error.response && this.log.error(JSON.stringify(error.response.data));
                             this.log.info(element.path + " receive 401 error. Refresh Token in 30 seconds");
-                            clearTimeout(this.refreshTokenTimeout);
+                            if (this.refreshTokenTimeout) {
+                                return;
+                            }
                             this.refreshTokenTimeout = setTimeout(() => {
+                                this.refreshTokenTimeout = null;
+                                this.log.info("Start refresh token");
                                 this.refreshToken();
                             }, 1000 * 30);
 
@@ -466,7 +483,7 @@ class Teslamotors extends utils.Adapter {
                             error.response && this.log.debug(JSON.stringify(error.response.data));
                             return;
                         }
-
+                        this.log.error("General error");
                         this.log.error(url);
                         this.log.error(error);
                         error.response && this.log.error(JSON.stringify(error.response.data));
@@ -776,8 +793,11 @@ class Teslamotors extends utils.Adapter {
                 if (error.response && error.response.status === 401) {
                     error.response && this.log.debug(JSON.stringify(error.response.data));
                     this.log.info(command + " receive 401 error. Refresh Token in 30 seconds");
-                    clearTimeout(this.refreshTokenTimeout);
+                    if (this.refreshTokenTimeout) {
+                        return;
+                    }
                     this.refreshTokenTimeout = setTimeout(() => {
+                        this.refreshTokenTimeout = null;
                         this.refreshToken();
                     }, 1000 * 30);
 
