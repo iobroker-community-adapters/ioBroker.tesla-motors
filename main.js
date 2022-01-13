@@ -439,16 +439,16 @@ class Teslamotors extends utils.Adapter {
                 })
                     .then((res) => {
                         this.log.debug(JSON.stringify(res.data));
-                        if (element.path === ".charge_history") {
-                            this.log.info(JSON.stringify(res.data));
-                            return;
-                        }
+
                         if (!res.data) {
                             return;
                         }
                         const data = res.data.response;
-
-                        this.json2iob.parse(id + element.path, data, { preferedArrayName: "timestamp" });
+                        let preferedArrayName = "timestamp";
+                        if (element.path === ".charge_history") {
+                            preferedArrayName = "title";
+                        }
+                        this.json2iob.parse(id + element.path, data, { preferedArrayName: preferedArrayName });
                         if (data.drive_state) {
                             if (data.drive_state.shift_state && this.config.intervalDrive > 0) {
                                 if (!this.updateIntervalDrive[id]) {
