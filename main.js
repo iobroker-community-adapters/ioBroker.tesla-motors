@@ -447,6 +447,10 @@ class Teslamotors extends utils.Adapter {
                         let preferedArrayName = "timestamp";
                         if (element.path === ".charge_history") {
                             preferedArrayName = "title";
+                            if (data && data.charging_history_graph) {
+                                delete data.charging_history_graph.y_labels;
+                                delete data.charging_history_graph.x_labels;
+                            }
                         }
                         this.json2iob.parse(id + element.path, data, { preferedArrayName: preferedArrayName });
                         if (data.drive_state) {
