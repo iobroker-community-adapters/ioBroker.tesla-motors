@@ -36,6 +36,7 @@ class Teslamotors extends utils.Adapter {
         this.idArray = [];
 
         this.json2iob = new Json2iob(this);
+        this.vin2id = {};
     }
 
     /**
@@ -179,12 +180,13 @@ class Teslamotors extends utils.Adapter {
 
                 this.idArray = [];
                 for (const device of res.data.response) {
-                    const id = device.id_s || device.id;
+                    const id = device.vin || device.id;
+                    this.vin2id[id] = device.id_s || device.id;
                     this.log.debug(id);
                     if (device.vehicle_id) {
-                        this.idArray.push({ id: id, type: "vehicle", vehicle_id: device.vehicle_id });
+                        this.idArray.push({ id: this.vin2id[id], type: "vehicle", vehicle_id: device.vehicle_id });
                     } else {
-                        this.idArray.push({ id: id, type: device.resource_type || "unknown", energy_site_id: device.energy_site_id });
+                        this.idArray.push({ id: this.vin2id[id], type: device.resource_type || "unknown", energy_site_id: device.energy_site_id });
                     }
                     await this.setObjectNotExistsAsync(id, {
                         type: "device",
@@ -980,7 +982,7 @@ class Teslamotors extends utils.Adapter {
                     this.log.warn("No remote command");
                     return;
                 }
-                let productId = id.split(".")[2];
+                let productId = this.vin2id[id.split(".")[2]];
 
                 let command = id.split(".")[4];
                 const action = command.split("-")[1];

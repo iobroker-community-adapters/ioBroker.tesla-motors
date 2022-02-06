@@ -1,8 +1,16 @@
 {
     "common": {
         "name": "tesla-motors",
-        "version": "1.0.8",
+        "version": "1.1.0",
         "news": {
+            "1.1.0": {
+                "en": "Changed ID to VIN",
+                "de": "Objekt ID geändert zu VIN"
+            },
+            "1.0.9": {
+                "en": "Add tesla charging history",
+                "de": "Tesla Ladehistory hinzugefügt"
+            },
             "1.0.8": {
                 "en": "Add charging history",
                 "de": "Ladehistory hinzugefügt"
@@ -85,6 +93,46 @@
                 "dsn": "https://b67b9228ae424e36ba2ab0cf38d94699@sentry.iobroker.net/149"
             }
         },
+        "messages": [
+            {
+                "condition": {
+                    "operand": "and",
+                    "rules": [
+                        "oldVersion<1.1.0",
+                        "newVersion>=1.1.0"
+                    ]
+                },
+                "title": {
+                    "en": "Important notice!",
+                    "de": "Wichtiger Hinweis!",
+                    "ru": "Важное замечание!",
+                    "pt": "Notícia importante!",
+                    "nl": "Belangrijke mededeling!",
+                    "fr": "Avis important!",
+                    "it": "Avviso IMPORTANTE!",
+                    "es": "Noticia importante!",
+                    "pl": "Ważna uwaga!",
+                    "zh-cn": "重要通知!"
+                },
+                "text": {
+                    "en": "The id in the object tree are changed from id to vin. Please adjust your scripts and delete the old tree manually.",
+                    "de": "Die ID unter Objekte wird von ID auf Vin geändert. Bitte passen deine Skripte an und löschen den alten Objektbaum manuell.",
+                    "ru": "Идентификатор в дереве объектов меняется с id на vin. Пожалуйста, настройте свои скрипты и удалите старое дерево вручную.",
+                    "pt": "O id na árvore de objetos é alterado de id para vin. Por favor, ajuste seus scripts e exclua a árvore antiga manualmente.",
+                    "nl": "De id in de objectboom wordt gewijzigd van id in vin. Pas uw scripts aan en verwijder de oude boom handmatig.",
+                    "fr": "L'id dans l'arborescence d'objets est changé de id à vin. Veuillez ajuster vos scripts et supprimer l'ancienne arborescence manuellement.",
+                    "it": "L'id nell'albero degli oggetti viene modificato da id a vin. Modifica i tuoi script ed elimina manualmente il vecchio albero.",
+                    "es": "La identificación en el árbol de objetos se cambia de identificación a vin. Ajuste sus scripts y elimine el árbol antiguo manualmente.",
+                    "pl": "Identyfikator w drzewie obiektów zostanie zmieniony z id na vin. Dostosuj swoje skrypty i ręcznie usuń stare drzewo.",
+                    "zh-cn": "对象树中的 id 从 id 更改为 vin。请调整您的脚本并手动删除旧树。"
+                },
+                "level": "warn",
+                "buttons": [
+                    "agree",
+                    "cancel"
+                ]
+            }
+        ],
         "dependencies": [
             {
                 "js-controller": ">=3.0.0"
