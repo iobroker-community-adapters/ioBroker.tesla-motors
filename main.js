@@ -37,6 +37,7 @@ class Teslamotors extends utils.Adapter {
 
         this.json2iob = new Json2iob(this);
         this.vin2id = {};
+        this.id2vin = {};
     }
 
     /**
@@ -181,7 +182,9 @@ class Teslamotors extends utils.Adapter {
                 this.idArray = [];
                 for (const device of res.data.response) {
                     const id = device.vin || device.id;
-                    this.vin2id[id] = device.id_s || device.id;
+                    const deviceId = device.id_s || device.id;
+                    this.vin2id[id] = deviceId;
+                    this.id2vin[deviceId] = id;
                     this.log.debug(id);
                     if (device.vehicle_id) {
                         this.idArray.push({ id: this.vin2id[id], type: "vehicle", vehicle_id: device.vehicle_id });
@@ -454,7 +457,7 @@ class Teslamotors extends utils.Adapter {
                                 delete data.charging_history_graph.x_labels;
                             }
                         }
-                        this.json2iob.parse(id + element.path, data, { preferedArrayName: preferedArrayName });
+                        this.json2iob.parse(this.id2vin[id] + element.path, data, { preferedArrayName: preferedArrayName });
                         if (data.drive_state) {
                             if (data.drive_state.shift_state && this.config.intervalDrive > 0) {
                                 if (!this.updateIntervalDrive[id]) {
@@ -522,7 +525,7 @@ class Teslamotors extends utils.Adapter {
                 }
                 const data = res.data.response;
 
-                this.json2iob.parse(id, data);
+                this.json2iob.parse(this.id2vin[id], data);
             })
             .catch((error) => {
                 if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
@@ -550,7 +553,7 @@ class Teslamotors extends utils.Adapter {
         })
             .then((res) => {
                 this.log.debug(JSON.stringify(res.data));
-                this.json2iob.parse(id, res.data.response, { preferedArrayName: "timestamp" });
+                this.json2iob.parse(this.id2vin[id], res.data.response, { preferedArrayName: "timestamp" });
                 return res.data.response.state;
             })
             .catch((error) => {
@@ -866,7 +869,7 @@ class Teslamotors extends utils.Adapter {
                         est_range: array[11],
                         heading: array[12],
                     };
-                    this.json2iob.parse(id + ".streamData", streamdata);
+                    this.json2iob.parse(this.id2vin[id] + ".streamData", streamdata);
                 }
             } catch (error) {
                 this.log.error(error);
