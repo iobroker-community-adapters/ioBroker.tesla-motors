@@ -29,7 +29,6 @@ class Teslamotors extends utils.Adapter {
         this.on("unload", this.onUnload.bind(this));
 
         this.session = {};
-        this.ownSession = {};
         this.sleepTimes = {};
         this.lastStates = {};
         this.updateIntervalDrive = {};
@@ -89,14 +88,14 @@ class Teslamotors extends utils.Adapter {
         this.subscribeStates("*");
         this.headers = {
             accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "x-tesla-user-agent": "TeslaApp/3.10.14-474/540f6f430/ios/12.5.1",
-            "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+            "x-tesla-user-agent": "TeslaApp/4.7.0-910/fde17d58a/ios/14.8",
+            "user-agent": "Tesla/4.7.0 (com.teslamotors.TeslaApp; build:910; iOS 14.8.0) Alamofire/5.2.1",
             "accept-language": "de-de",
         };
         if (!this.session.access_token) {
             await this.login();
         }
-        if (this.session.access_token && this.ownSession.access_token) {
+        if (this.session.access_token) {
             await this.getDeviceList();
             this.updateDevices();
             this.updateInterval = setInterval(async () => {
@@ -113,6 +112,7 @@ class Teslamotors extends utils.Adapter {
             this.log.info("Waiting for codeURL please visit instance settings and copy url after login");
             return;
         }
+        //
         const codeChallenge = "Tb-FGN3adrpojN8dmKySlVfBPdg-rA-voNN_3lftZVM";
         const code_verifier = "82326a2311262e580d179dc5023f3a7fd9bc3c9e0049f83138596b66c34fcdc7";
         let code = "";
@@ -128,7 +128,7 @@ class Teslamotors extends utils.Adapter {
             code: code,
             client_id: "ownerapi",
             redirect_uri: "https://auth.tesla.com/void/callback",
-            scope: "openid offline_access",
+            scope: "openid email offline_access",
             code_verifier: code_verifier,
         };
         this.log.debug(JSON.stringify(data));
@@ -142,7 +142,6 @@ class Teslamotors extends utils.Adapter {
                 this.log.debug(JSON.stringify(res.data));
                 this.session = res.data;
 
-                await this.getOwnerToken();
                 this.log.info("Login successful");
                 this.setState("info.connection", true, true);
                 return res.data;
@@ -168,12 +167,12 @@ class Teslamotors extends utils.Adapter {
         const headers = {
             "Content-Type": "application/json",
             Accept: "*/*",
-            "User-Agent": "ioBroker 1.0.0",
-            Authorization: "Bearer " + this.ownSession.access_token,
+            "User-Agent": "ioBroker 1.1.0",
+            Authorization: "Bearer " + this.session.access_token,
         };
         await this.requestClient({
             method: "get",
-            url: "https://owner-api.teslamotors.com/api/1/products",
+            url: "https://owner-api.teslamotors.com/api/1/products?orders=1",
             headers: headers,
         })
             .then(async (res) => {
@@ -314,7 +313,11 @@ class Teslamotors extends utils.Adapter {
     async updateDevices(forceUpdate) {
         const vehicleStatusArray = [
             { path: "", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data" },
-            { path: ".charge_history", url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/charge_history" },
+            {
+                path: ".charge_history",
+                url: "https://owner-api.teslamotors.com/api/1/vehicles/{id}/charge_history?vehicle_trim=5&client_time_zone=Europe/Berlin&client_country=DE&currency_code=EUR&state=&time_zone=Europe/Vatican&state_label=&vehicle_model=2&language=de&country_label=Deutschland&country=DE",
+                method: "POST",
+            },
         ];
         const powerwallArray = [
             { path: "", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/status" },
@@ -351,9 +354,9 @@ class Teslamotors extends utils.Adapter {
         const headers = {
             "Content-Type": "application/json; charset=utf-8",
             Accept: "*/*",
-            "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-            "x-tesla-user-agent": "TeslaApp/3.10.14-474/540f6f430/ios/12.5.1",
-            Authorization: "Bearer " + this.ownSession.access_token,
+            "user-agent": "Tesla/4.7.0 (com.teslamotors.TeslaApp; build:910; iOS 14.8.0) Alamofire/5.2.1",
+            "x-tesla-user-agent": "TeslaApp/4.7.0-910/fde17d58a/ios/14.8",
+            Authorization: "Bearer " + this.session.access_token,
         };
 
         this.idArray.forEach(async (product) => {
@@ -438,7 +441,7 @@ class Teslamotors extends utils.Adapter {
                     }
                 }
                 await this.requestClient({
-                    method: "get",
+                    method: element.method || "GET",
                     url: url,
                     headers: headers,
                 })
@@ -482,7 +485,6 @@ class Teslamotors extends utils.Adapter {
                             }
                             this.refreshTokenTimeout = setTimeout(() => {
                                 this.refreshTokenTimeout = null;
-                                this.ownSession = null;
                                 this.log.info("Start refresh token");
                                 this.refreshToken();
                             }, 1000 * 30);
@@ -508,9 +510,9 @@ class Teslamotors extends utils.Adapter {
         const headers = {
             "Content-Type": "application/json; charset=utf-8",
             Accept: "*/*",
-            "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-            "x-tesla-user-agent": "TeslaApp/3.10.14-474/540f6f430/ios/12.5.1",
-            Authorization: "Bearer " + this.ownSession.access_token,
+            "user-agent": "Tesla/4.7.0 (com.teslamotors.TeslaApp; build:910; iOS 14.8.0) Alamofire/5.2.1",
+            "x-tesla-user-agent": "TeslaApp/4.7.0-910/fde17d58a/ios/14.8",
+            Authorization: "Bearer " + this.session.access_token,
         };
         await this.requestClient({
             method: "get",
@@ -542,9 +544,9 @@ class Teslamotors extends utils.Adapter {
         const headers = {
             "Content-Type": "application/json; charset=utf-8",
             Accept: "*/*",
-            "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-            "x-tesla-user-agent": "TeslaApp/3.10.14-474/540f6f430/ios/12.5.1",
-            Authorization: "Bearer " + this.ownSession.access_token,
+            "user-agent": "Tesla/4.7.0 (com.teslamotors.TeslaApp; build:910; iOS 14.8.0) Alamofire/5.2.1",
+            "x-tesla-user-agent": "TeslaApp/4.7.0-910/fde17d58a/ios/14.8",
+            Authorization: "Bearer " + this.session.access_token,
         };
         return await this.requestClient({
             method: "get",
@@ -583,7 +585,6 @@ class Teslamotors extends utils.Adapter {
                 this.session.access_token = res.data.access_token;
                 this.session.expires_in = res.data.expires_in;
 
-                await this.getOwnerToken();
                 this.setState("info.connection", true, true);
                 return res.data;
             })
@@ -612,64 +613,7 @@ class Teslamotors extends utils.Adapter {
                 }
             });
     }
-    async getOwnerToken() {
-        if (this.ownSession && this.ownSession.expires_in && this.ownSession.created_at) {
-            const endTimeStamp = this.ownSession.expires_in * 0.75 + this.ownSession.created_at;
-            if (Date.now() / 1000 <= endTimeStamp) {
-                this.log.debug("Skip OwnerToken request");
-                return;
-            }
-        }
-        this.log.info("Start own Token Refresh");
-        if (this.ownSession && this.ownSession.expires_in) {
-            this.log.info("Expires: " + this.ownSession.expires_in + " Created_at: " + this.ownSession.created_at);
-        }
 
-        await this.requestClient({
-            method: "post",
-            url: "https://owner-api.teslamotors.com/oauth/token",
-            headers: {
-                "content-type": "application/json; charset=utf-8",
-                accept: "*/*",
-                authorization: "bearer " + this.session.access_token,
-                "accept-language": "de-de",
-                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-                "x-tesla-user-agent": "TeslaApp/3.10.14-474/540f6f430/ios/12.5.1",
-            },
-            data: { grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer", client_id: "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384" },
-        })
-            .then(async (res) => {
-                this.log.debug(JSON.stringify(res.data));
-                this.ownSession = res.data;
-
-                return res.data;
-            })
-            .catch(async (error) => {
-                this.setState("info.connection", false, true);
-                this.log.error("own token failed");
-                this.log.error(error);
-                if (error.response && error.response.status === 408) {
-                    this.log.warn("Tesla server not reachable. Retry in 30sec.");
-                    this.reLoginTimeout = setTimeout(() => {
-                        this.getOwnerToken();
-                    }, 1000 * 30);
-                    return;
-                }
-                if (error.response && error.response.status >= 400 && error.response.status < 500) {
-                    this.session = {};
-                    error.response && this.log.error(JSON.stringify(error.response.data));
-                    this.log.error("Start relogin in 1min");
-                    this.reLoginTimeout = setTimeout(() => {
-                        this.login();
-                    }, 1000 * 60 * 1);
-                } else {
-                    this.log.error("No connection to tesla server restart adapter in 1min");
-                    this.reLoginTimeout = setTimeout(() => {
-                        this.restart();
-                    }, 1000 * 60 * 1);
-                }
-            });
-    }
     async checkWaitForSleepState(id) {
         const shift_state = await this.getStateAsync("driveState.shift_state");
         const chargeState = await this.getStateAsync("chargeState.charging_state");
@@ -704,9 +648,9 @@ class Teslamotors extends utils.Adapter {
         const headers = {
             "Content-Type": "application/json; charset=utf-8",
             Accept: "*/*",
-            "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-            "x-tesla-user-agent": "TeslaApp/3.10.14-474/540f6f430/ios/12.5.1",
-            Authorization: "Bearer " + this.ownSession.access_token,
+            "user-agent": "Tesla/4.7.0 (com.teslamotors.TeslaApp; build:910; iOS 14.8.0) Alamofire/5.2.1",
+            "x-tesla-user-agent": "TeslaApp/4.7.0-910/fde17d58a/ios/14.8",
+            Authorization: "Bearer " + this.session.access_token,
         };
         let url = "https://owner-api.teslamotors.com/api/1/vehicles/" + id + "/command/" + command;
 
@@ -811,7 +755,6 @@ class Teslamotors extends utils.Adapter {
                     }
                     this.refreshTokenTimeout = setTimeout(() => {
                         this.refreshTokenTimeout = null;
-                        this.ownSession = null;
                         this.log.info("Start refresh token");
                         this.refreshToken();
                     }, 1000 * 30);
@@ -835,7 +778,7 @@ class Teslamotors extends utils.Adapter {
         });
         this.wsAuthMessage = {
             msg_type: "data:subscribe_oauth",
-            token: this.ownSession.access_token,
+            token: this.session.access_token,
             value: "speed,odometer,soc,elevation,est_heading,est_lat,est_lng,power,shift_state,range,est_range,heading",
             tag: vehicleId.toString(),
         };
