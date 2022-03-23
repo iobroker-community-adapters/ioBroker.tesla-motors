@@ -181,6 +181,10 @@ class Teslamotors extends utils.Adapter {
                 this.idArray = [];
                 for (const device of res.data.response) {
                     const id = device.vin || device.id;
+                    if (!id) {
+                        this.log.info("No VIN or ID found for device " + JSON.stringify(device));
+                        continue;
+                    }
                     const deviceId = device.id_s || device.id;
                     this.vin2id[id] = deviceId;
                     this.id2vin[deviceId] = id;

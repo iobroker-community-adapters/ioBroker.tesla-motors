@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "tesla-motors",
-        "version": "1.2.0",
+        "version": "1.2.1",
         "news": {
+            "1.2.1": {
+                "en": "Ignore empty devices",
+                "de": "Ingnorieren von unvollständigen Produkten"
+            },
             "1.2.0": {
                 "en": "Fix Login and charge history",
                 "de": "Login und charge history gefixt"
