@@ -190,7 +190,7 @@ class Teslamotors extends utils.Adapter {
                     this.id2vin[deviceId] = id;
                     this.log.debug(id);
                     if (device.vehicle_id) {
-                        this.idArray.push({ id: this.vin2id[id], type: "vehicle", vehicle_id: device.vehicle_id });
+                        this.idArray.push({ id: this.vin2id[id], type: "vehicle", vehicle_id: device.vehicle_id, vin: id });
                     } else {
                         this.idArray.push({ id: this.vin2id[id], type: device.resource_type || "unknown", energy_site_id: device.energy_site_id });
                     }
@@ -378,7 +378,7 @@ class Teslamotors extends utils.Adapter {
                 }
                 let waitForSleep = false;
                 if (this.lastStates[id] && this.lastStates[id] !== "asleep" && forceUpdate !== true) {
-                    waitForSleep = await this.checkWaitForSleepState(id);
+                    waitForSleep = await this.checkWaitForSleepState(product.vin);
                 } else {
                     if (forceUpdate) {
                         this.log.debug("Skip wait because force update");
@@ -618,9 +618,9 @@ class Teslamotors extends utils.Adapter {
             });
     }
 
-    async checkWaitForSleepState(id) {
-        const shift_state = await this.getStateAsync("driveState.shift_state");
-        const chargeState = await this.getStateAsync("chargeState.charging_state");
+    async checkWaitForSleepState(vin) {
+        const shift_state = await this.getStateAsync(vin + ".driveState.shift_state");
+        const chargeState = await this.getStateAsync(vin + ".chargeState.charging_state");
 
         if ((shift_state && shift_state.val !== null && shift_state.val !== "P") || (chargeState && !["Disconnected", "Complete", "NoPower", "Stopped"].includes(chargeState.val))) {
             if (shift_state && chargeState) {
@@ -639,7 +639,8 @@ class Teslamotors extends utils.Adapter {
             ".vehicle_state.df",
         ];
         for (const stateId of checkStates) {
-            const curState = await this.getStateAsync(id + stateId);
+            const curState = await this.getStateAsync(vin + stateId);
+            this.log.debug("Check state: " + vin + stateId);
             //laste update not older than 30min and last change not older then 30min
             if (curState && (curState.ts <= Date.now() - 1800000 || curState.ts - curState.lc <= 1800000)) {
                 return false;
@@ -681,8 +682,8 @@ class Teslamotors extends utils.Adapter {
             data["password"] = this.config.password;
         }
         if (latlonArray.includes(command)) {
-            const latState = await this.getStateAsync(id + ".drive_state.latitude");
-            const lonState = await this.getStateAsync(id + ".drive_state.longitude");
+            const latState = await this.getStateAsync(this.id2vin[id] + ".drive_state.latitude");
+            const lonState = await this.getStateAsync(this.id2vin[id] + ".drive_state.longitude");
             data["lat"] = latState ? latState.val : 0;
             data["lon"] = lonState ? lonState.val : 0;
         }
@@ -691,8 +692,8 @@ class Teslamotors extends utils.Adapter {
         }
         if (valueArray.includes(command)) {
             if (command === "set_temps") {
-                const driverState = await this.getStateAsync(id + ".climate_state.driver_temp_setting");
-                const passengerState = await this.getStateAsync(id + ".climate_state.passenger_temp_setting");
+                const driverState = await this.getStateAsync(this.id2vin[id] + ".climate_state.driver_temp_setting");
+                const passengerState = await this.getStateAsync(this.id2vin[id] + ".climate_state.passenger_temp_setting");
                 data["driver_temp"] = driverState ? driverState.val : 23;
                 data["passenger_temp"] = passengerState ? passengerState.val : driverState.val;
             }
