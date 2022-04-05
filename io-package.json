@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "tesla-motors",
-        "version": "1.2.1",
+        "version": "1.3.0",
         "news": {
+            "1.3.0": {
+                "en": "Fix sleep check ",
+                "de": "Fix für Schlaf Überwachung"
+            },
             "1.2.1": {
                 "en": "Ignore empty devices",
                 "de": "Ingnorieren von unvollständigen Produkten"
