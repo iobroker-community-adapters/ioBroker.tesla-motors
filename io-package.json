@@ -1,200 +1,188 @@
 {
-    "common": {
-        "name": "tesla-motors",
-        "version": "1.3.0",
-        "news": {
-            "1.3.0": {
-                "en": "Fix sleep check ",
-                "de": "Fix für Schlaf Überwachung"
-            },
-            "1.2.1": {
-                "en": "Ignore empty devices",
-                "de": "Ingnorieren von unvollständigen Produkten"
-            },
-            "1.2.0": {
-                "en": "Fix Login and charge history",
-                "de": "Login und charge history gefixt"
-            },
-            "1.1.1": {
-                "en": "Changed ID to VIN",
-                "de": "Objekt ID geändert zu VIN"
-            },
-            "1.0.9": {
-                "en": "Add tesla charging history",
-                "de": "Tesla Ladehistory hinzugefügt"
-            },
-            "1.0.8": {
-                "en": "Add charging history",
-                "de": "Ladehistory hinzugefügt"
-            },
-            "1.0.7": {
-                "en": "Add new remotes for charging amps and scheduled departure and charging",
-                "de": "Neue remote controls hinzugefügt für den Ladestrom und geplante Abfahrten und Laden "
-            },
-            "1.0.6": {
-                "en": "Improve Update process",
-                "de": "Updateprozess verbessert"
-            },
-            "1.0.5": {
-                "en": "Fixed problem with relogin",
-                "de": "Problem mit erneuten Login behoben"
-            },
-            "1.0.4": {
-                "en": "Fix remoteseat heater",
-                "de": "Sitzheizung remote Problem behoben"
-            },
-            "1.0.3": {
-                "en": "ALL DATAPOINTS ARE NEW, vis needs to be adjusted. New release with new states for Tesla and Powerwalls.",
-                "de": "ALLE DATENPUNKTE SIND NEU, Vis muss angepasst werden. Neue Version mit neuen Zuständen für Tesla und Powerwalls.",
-                "ru": "ВСЕ ТОЧКИ ДАННЫХ НОВЫЕ, необходимо настроить vis. Новый выпуск с новыми состояниями для Tesla и Powerwall.",
-                "pt": "TODOS OS PONTOS DE DADOS SÃO NOVOS, precisa ser ajustado. Novo lançamento com novos estados para Tesla e Powerwalls.",
-                "nl": "ALLE DATAPOINTS ZIJN NIEUW, vis moet worden aangepast. Nieuwe release met nieuwe statussen voor Tesla en Powerwalls.",
-                "fr": "TOUS LES POINTS DE DONNÉES SONT NOUVEAUX, vis doit être ajusté. Nouvelle version avec de nouveaux états pour Tesla et Powerwalls.",
-                "it": "TUTTI I DATAPOINT SONO NUOVI, vis deve essere regolato. Nuova versione con nuovi stati per Tesla e Powerwall.",
-                "es": "TODOS LOS DATAPOINTS SON NUEVOS, vis necesita ser ajustado. Nueva versión con nuevos estados para Tesla y Powerwalls.",
-                "pl": "WSZYSTKIE PUNKTY DANYCH SĄ NOWE, należy je dostosować. Nowa wersja z nowymi stanami dla Tesli i Powerwalls.",
-                "zh-cn": "所有数据点都是新的，vis 需要调整。 Tesla 和 Powerwall 具有新状态的新版本。"
-            }
-        },
-        "titleLang": {
-            "en": "Tesla",
-            "de": "Tesla",
-            "ru": "Тесла",
-            "pt": "Tesla",
-            "nl": "Tesla",
-            "fr": "Tesla",
-            "it": "Tesla",
-            "es": "Tesla",
-            "pl": "Tesla",
-            "zh-cn": "特斯拉"
-        },
-        "desc": {
-            "en": "Adapter for Tesla",
-            "de": "Adapter für Tesla",
-            "ru": "Адаптер для Tesla",
-            "pt": "Adaptador para Tesla",
-            "nl": "Adapter voor Tesla",
-            "fr": "Adaptateur pour Tesla",
-            "it": "Adattatore per Tesla",
-            "es": "Adaptador para Tesla",
-            "pl": "Adapter do Tesli",
-            "zh-cn": "特斯拉适配器"
-        },
-        "authors": [
-            "TA2k <tombox2020@gmail.com>"
-        ],
-        "keywords": [
-            "tesla"
-        ],
-        "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "main.js",
-        "icon": "tesla-motors.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.tesla-motors/master/admin/tesla-motors.png",
-        "readme": "https://github.com/iobroker-community-adapters/ioBroker.tesla-motors/blob/master/README.md",
-        "loglevel": "info",
-        "mode": "daemon",
-        "type": "vehicle",
-        "compact": true,
-        "connectionType": "cloud",
-        "dataSource": "poll",
-        "materialize": true,
-        "plugins": {
-            "sentry": {
-                "dsn": "https://b67b9228ae424e36ba2ab0cf38d94699@sentry.iobroker.net/149"
-            }
-        },
-        "messages": [
-            {
-                "condition": {
-                    "operand": "and",
-                    "rules": [
-                        "oldVersion<1.1.0",
-                        "newVersion>=1.1.0"
-                    ]
-                },
-                "title": {
-                    "en": "Important notice!",
-                    "de": "Wichtiger Hinweis!",
-                    "ru": "Важное замечание!",
-                    "pt": "Notícia importante!",
-                    "nl": "Belangrijke mededeling!",
-                    "fr": "Avis important!",
-                    "it": "Avviso IMPORTANTE!",
-                    "es": "Noticia importante!",
-                    "pl": "Ważna uwaga!",
-                    "zh-cn": "重要通知!"
-                },
-                "text": {
-                    "en": "The id in the object tree are changed from id to vin. Please adjust your scripts and delete the old tree manually.",
-                    "de": "Die ID unter Objekte wird von ID auf Vin geändert. Bitte passen deine Skripte an und löschen den alten Objektbaum manuell.",
-                    "ru": "Идентификатор в дереве объектов меняется с id на vin. Пожалуйста, настройте свои скрипты и удалите старое дерево вручную.",
-                    "pt": "O id na árvore de objetos é alterado de id para vin. Por favor, ajuste seus scripts e exclua a árvore antiga manualmente.",
-                    "nl": "De id in de objectboom wordt gewijzigd van id in vin. Pas uw scripts aan en verwijder de oude boom handmatig.",
-                    "fr": "L'id dans l'arborescence d'objets est changé de id à vin. Veuillez ajuster vos scripts et supprimer l'ancienne arborescence manuellement.",
-                    "it": "L'id nell'albero degli oggetti viene modificato da id a vin. Modifica i tuoi script ed elimina manualmente il vecchio albero.",
-                    "es": "La identificación en el árbol de objetos se cambia de identificación a vin. Ajuste sus scripts y elimine el árbol antiguo manualmente.",
-                    "pl": "Identyfikator w drzewie obiektów zostanie zmieniony z id na vin. Dostosuj swoje skrypty i ręcznie usuń stare drzewo.",
-                    "zh-cn": "对象树中的 id 从 id 更改为 vin。请调整您的脚本并手动删除旧树。"
-                },
-                "level": "warn",
-                "buttons": [
-                    "agree",
-                    "cancel"
-                ]
-            }
-        ],
-        "dependencies": [
-            {
-                "js-controller": ">=3.0.0"
-            }
-        ],
-        "globalDependencies": [
-            {
-                "admin": ">=4.0.9"
-            }
-        ]
+  "common": {
+    "name": "tesla-motors",
+    "version": "1.3.1",
+    "news": {
+      "1.3.1": {
+        "en": "Fix for login url and ordered cars",
+        "de": "Fix für die Login url und vorbestellte Autos"
+      },
+      "1.3.0": {
+        "en": "Fix sleep check ",
+        "de": "Fix für Schlaf Überwachung"
+      },
+      "1.2.1": {
+        "en": "Ignore empty devices",
+        "de": "Ingnorieren von unvollständigen Produkten"
+      },
+      "1.2.0": {
+        "en": "Fix Login and charge history",
+        "de": "Login und charge history gefixt"
+      },
+      "1.1.1": {
+        "en": "Changed ID to VIN",
+        "de": "Objekt ID geändert zu VIN"
+      },
+      "1.0.9": {
+        "en": "Add tesla charging history",
+        "de": "Tesla Ladehistory hinzugefügt"
+      },
+      "1.0.8": {
+        "en": "Add charging history",
+        "de": "Ladehistory hinzugefügt"
+      },
+      "1.0.7": {
+        "en": "Add new remotes for charging amps and scheduled departure and charging",
+        "de": "Neue remote controls hinzugefügt für den Ladestrom und geplante Abfahrten und Laden "
+      },
+      "1.0.6": {
+        "en": "Improve Update process",
+        "de": "Updateprozess verbessert"
+      },
+      "1.0.5": {
+        "en": "Fixed problem with relogin",
+        "de": "Problem mit erneuten Login behoben"
+      },
+      "1.0.4": {
+        "en": "Fix remoteseat heater",
+        "de": "Sitzheizung remote Problem behoben"
+      },
+      "1.0.3": {
+        "en": "ALL DATAPOINTS ARE NEW, vis needs to be adjusted. New release with new states for Tesla and Powerwalls.",
+        "de": "ALLE DATENPUNKTE SIND NEU, Vis muss angepasst werden. Neue Version mit neuen Zuständen für Tesla und Powerwalls.",
+        "ru": "ВСЕ ТОЧКИ ДАННЫХ НОВЫЕ, необходимо настроить vis. Новый выпуск с новыми состояниями для Tesla и Powerwall.",
+        "pt": "TODOS OS PONTOS DE DADOS SÃO NOVOS, precisa ser ajustado. Novo lançamento com novos estados para Tesla e Powerwalls.",
+        "nl": "ALLE DATAPOINTS ZIJN NIEUW, vis moet worden aangepast. Nieuwe release met nieuwe statussen voor Tesla en Powerwalls.",
+        "fr": "TOUS LES POINTS DE DONNÉES SONT NOUVEAUX, vis doit être ajusté. Nouvelle version avec de nouveaux états pour Tesla et Powerwalls.",
+        "it": "TUTTI I DATAPOINT SONO NUOVI, vis deve essere regolato. Nuova versione con nuovi stati per Tesla e Powerwall.",
+        "es": "TODOS LOS DATAPOINTS SON NUEVOS, vis necesita ser ajustado. Nueva versión con nuevos estados para Tesla y Powerwalls.",
+        "pl": "WSZYSTKIE PUNKTY DANYCH SĄ NOWE, należy je dostosować. Nowa wersja z nowymi stanami dla Tesli i Powerwalls.",
+        "zh-cn": "所有数据点都是新的，vis 需要调整。 Tesla 和 Powerwall 具有新状态的新版本。"
+      }
     },
-    "encryptedNative": [
-        "codeUrl",
-        "session"
-    ],
-    "protectedNative": [
-        "codeUrl",
-        "session"
-    ],
-    "native": {
-        "codeUrl": "",
-        "wakeup": false,
-        "interval": 5,
-        "session": {},
-        "reset": false,
-        "intervalNormal": 60,
-        "intervalDrive": null
+    "titleLang": {
+      "en": "Tesla",
+      "de": "Tesla",
+      "ru": "Тесла",
+      "pt": "Tesla",
+      "nl": "Tesla",
+      "fr": "Tesla",
+      "it": "Tesla",
+      "es": "Tesla",
+      "pl": "Tesla",
+      "zh-cn": "特斯拉"
     },
-    "objects": [],
-    "instanceObjects": [
-        {
-            "_id": "info",
-            "type": "channel",
-            "common": {
-                "name": "Information"
-            },
-            "native": {}
+    "desc": {
+      "en": "Adapter for Tesla",
+      "de": "Adapter für Tesla",
+      "ru": "Адаптер для Tesla",
+      "pt": "Adaptador para Tesla",
+      "nl": "Adapter voor Tesla",
+      "fr": "Adaptateur pour Tesla",
+      "it": "Adattatore per Tesla",
+      "es": "Adaptador para Tesla",
+      "pl": "Adapter do Tesli",
+      "zh-cn": "特斯拉适配器"
+    },
+    "authors": ["TA2k <tombox2020@gmail.com>"],
+    "keywords": ["tesla"],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "tesla-motors.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.tesla-motors/master/admin/tesla-motors.png",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.tesla-motors/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "vehicle",
+    "compact": true,
+    "connectionType": "cloud",
+    "dataSource": "poll",
+    "materialize": true,
+    "plugins": {
+      "sentry": {
+        "dsn": "https://b67b9228ae424e36ba2ab0cf38d94699@sentry.iobroker.net/149"
+      }
+    },
+    "messages": [
+      {
+        "condition": {
+          "operand": "and",
+          "rules": ["oldVersion<1.1.0", "newVersion>=1.1.0"]
         },
-        {
-            "_id": "info.connection",
-            "type": "state",
-            "common": {
-                "role": "indicator.connected",
-                "name": "Device or service connected",
-                "type": "boolean",
-                "read": true,
-                "write": false,
-                "def": false
-            },
-            "native": {}
-        }
+        "title": {
+          "en": "Important notice!",
+          "de": "Wichtiger Hinweis!",
+          "ru": "Важное замечание!",
+          "pt": "Notícia importante!",
+          "nl": "Belangrijke mededeling!",
+          "fr": "Avis important!",
+          "it": "Avviso IMPORTANTE!",
+          "es": "Noticia importante!",
+          "pl": "Ważna uwaga!",
+          "zh-cn": "重要通知!"
+        },
+        "text": {
+          "en": "The id in the object tree are changed from id to vin. Please adjust your scripts and delete the old tree manually.",
+          "de": "Die ID unter Objekte wird von ID auf Vin geändert. Bitte passen deine Skripte an und löschen den alten Objektbaum manuell.",
+          "ru": "Идентификатор в дереве объектов меняется с id на vin. Пожалуйста, настройте свои скрипты и удалите старое дерево вручную.",
+          "pt": "O id na árvore de objetos é alterado de id para vin. Por favor, ajuste seus scripts e exclua a árvore antiga manualmente.",
+          "nl": "De id in de objectboom wordt gewijzigd van id in vin. Pas uw scripts aan en verwijder de oude boom handmatig.",
+          "fr": "L'id dans l'arborescence d'objets est changé de id à vin. Veuillez ajuster vos scripts et supprimer l'ancienne arborescence manuellement.",
+          "it": "L'id nell'albero degli oggetti viene modificato da id a vin. Modifica i tuoi script ed elimina manualmente il vecchio albero.",
+          "es": "La identificación en el árbol de objetos se cambia de identificación a vin. Ajuste sus scripts y elimine el árbol antiguo manualmente.",
+          "pl": "Identyfikator w drzewie obiektów zostanie zmieniony z id na vin. Dostosuj swoje skrypty i ręcznie usuń stare drzewo.",
+          "zh-cn": "对象树中的 id 从 id 更改为 vin。请调整您的脚本并手动删除旧树。"
+        },
+        "level": "warn",
+        "buttons": ["agree", "cancel"]
+      }
+    ],
+    "dependencies": [
+      {
+        "js-controller": ">=3.0.0"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=4.0.9"
+      }
     ]
+  },
+  "encryptedNative": ["codeUrl", "session"],
+  "protectedNative": ["codeUrl", "session"],
+  "native": {
+    "codeUrl": "",
+    "wakeup": false,
+    "interval": 5,
+    "session": {},
+    "reset": false,
+    "intervalNormal": 60,
+    "intervalDrive": null
+  },
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": {
+        "name": "Information"
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "Device or service connected",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
 }
