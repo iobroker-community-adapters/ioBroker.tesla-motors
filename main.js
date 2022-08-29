@@ -117,8 +117,10 @@ class Teslamotors extends utils.Adapter {
     const code_verifier = "82326a2311262e580d179dc5023f3a7fd9bc3c9e0049f83138596b66c34fcdc7";
     let code = "";
     try {
-      code = this.config.codeUrl.split("https://auth.tesla.com/void/callback?code=")[1].split("&state")[0];
+      const queryParams = qs.parse(this.config.codeUrl.split("?")[1]);
+      code = queryParams.code;
     } catch (error) {
+      this.log.error(error);
       this.log.error("Invalid codeURL please visit instance settings and copy url after login");
       return;
     }
