@@ -12,7 +12,7 @@ const qs = require("qs");
 const WebSocket = require("ws");
 const crypto = require("crypto");
 const Json2iob = require("./lib/json2iob");
-const axiosCookieJarSupport = require("axios-cookiejar-support").default;
+// const axiosCookieJarSupport = require("axios-cookiejar-support").default;
 const tough = require("tough-cookie");
 
 class Teslamotors extends utils.Adapter {
@@ -67,12 +67,12 @@ class Teslamotors extends utils.Adapter {
       }
     }
 
-    axiosCookieJarSupport(axios);
-    this.cookieJar = new tough.CookieJar();
+    // axiosCookieJarSupport(axios);
+    // this.cookieJar = new tough.CookieJar();
 
-    if (obj && obj.native.cookies) {
-      this.cookieJar = tough.CookieJar.fromJSON(obj.native.cookies);
-    }
+    // if (obj && obj.native.cookies) {
+    //   this.cookieJar = tough.CookieJar.fromJSON(obj.native.cookies);
+    // }
 
     this.requestClient = axios.create();
 
