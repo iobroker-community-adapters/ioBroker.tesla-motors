@@ -463,6 +463,7 @@ class Teslamotors extends utils.Adapter {
             }
             const data = res.data.response;
             let preferedArrayName = "timestamp";
+            let forceIndex = false;
             if (element.path === ".charge_history") {
               preferedArrayName = "title";
               if (data && data.charging_history_graph) {
@@ -470,7 +471,10 @@ class Teslamotors extends utils.Adapter {
                 delete data.charging_history_graph.x_labels;
               }
             }
-            this.json2iob.parse(this.id2vin[id] + element.path, data, { preferedArrayName: preferedArrayName });
+            if (element.path.includes("history")) {
+              forceIndex = true;
+            }
+            this.json2iob.parse(this.id2vin[id] + element.path, data, { preferedArrayName: preferedArrayName, forceIndex: forceIndex });
             if (data.drive_state) {
               if (data.drive_state.shift_state && this.config.intervalDrive > 0) {
                 if (!this.updateIntervalDrive[id]) {
