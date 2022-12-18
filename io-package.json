@@ -1,8 +1,12 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "1.3.1",
+    "version": "1.3.2",
     "news": {
+      "1.3.2": {
+        "en": "Create history elements by index not by date",
+        "de": "Erstelle History Elemente nach Index und nicht nach Datum"
+      },
       "1.3.1": {
         "en": "Fix for login url and ordered cars",
         "de": "Fix für die Login url und vorbestellte Autos"
