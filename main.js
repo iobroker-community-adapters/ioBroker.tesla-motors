@@ -78,7 +78,8 @@ class Teslamotors extends utils.Adapter {
 
     if (obj && obj.native.session && obj.native.session.refresh_token) {
       this.session = obj.native.session;
-
+      this.log.info("Session loaded");
+      this.log.info("Refresh session");
       await this.refreshToken(true);
     }
     this.updateInterval = null;
@@ -93,9 +94,11 @@ class Teslamotors extends utils.Adapter {
       "accept-language": "de-de",
     };
     if (!this.session.access_token) {
+      this.log.info("Initial login");
       await this.login();
     }
     if (this.session.access_token) {
+      this.log.info("Receive device list");
       await this.getDeviceList();
       this.updateDevices();
       this.updateInterval = setInterval(async () => {
