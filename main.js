@@ -184,6 +184,7 @@ class Teslamotors extends utils.Adapter {
         this.log.debug(JSON.stringify(res.data));
 
         this.idArray = [];
+        this.log.info(`Found ${res.data.response.length} devices`);
         for (const device of res.data.response) {
           const id = device.vin || device.id;
           if (!device.id) {
