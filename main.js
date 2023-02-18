@@ -633,8 +633,8 @@ class Teslamotors extends utils.Adapter {
   }
 
   async checkWaitForSleepState(vin) {
-    const shift_state = await this.getStateAsync(vin + ".driveState.shift_state");
-    const chargeState = await this.getStateAsync(vin + ".chargeState.charging_state");
+    const shift_state = await this.getStateAsync(vin + ".drive_state.shift_state");
+    const chargeState = await this.getStateAsync(vin + ".charge_state.charging_state");
 
     if (
       (shift_state && shift_state.val !== null && shift_state.val !== "P") ||
@@ -658,6 +658,11 @@ class Teslamotors extends utils.Adapter {
     for (const stateId of checkStates) {
       const curState = await this.getStateAsync(vin + stateId);
       this.log.debug("Check state: " + vin + stateId);
+      //shift state switches between P and null so we ignore it
+      if (stateId === ".drive_state.shift_state" && curState && (curState.val === "P" || curState.val === null)) {
+        continue;
+      }
+
       //laste update not older than 30min and last change not older then 30min
       if (curState && (curState.ts >= Date.now() - 1800000 || curState.ts - curState.lc <= 1800000)) {
         this.log.debug(
