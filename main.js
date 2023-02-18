@@ -664,7 +664,7 @@ class Teslamotors extends utils.Adapter {
       }
 
       //laste update not older than 30min and last change not older then 30min
-      if (curState && (curState.ts >= Date.now() - 1800000 || curState.ts - curState.lc <= 1800000)) {
+      if (curState && (curState.ts <= Date.now() - 1800000 || curState.ts - curState.lc <= 1800000)) {
         this.log.debug(
           `Skip sleep waiting because state ${vin + stateId} changed in last 30min TS: ${new Date(curState.ts).toLocaleString()} LC: ${new Date(
             curState.lc
