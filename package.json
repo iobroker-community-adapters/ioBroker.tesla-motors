@@ -20,7 +20,7 @@
     "axios": "^0.27.2",
     "json-bigint": "^1.0.0",
     "qs": "^6.11.2",
-    "ws": "^8.13.0"
+    "ws": "^8.14.1"
   },
   "devDependencies": {
     "@iobroker/testing": "^4.1.0",
