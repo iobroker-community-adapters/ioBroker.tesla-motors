@@ -468,7 +468,7 @@ class Teslamotors extends utils.Adapter {
 
       for (const element of currentArray) {
         const exlucdeList = this.config.excludeElementList.replace(/\s/g, '').split(',');
-        if (exlucdeList.includes(element.path.replace('.', ''))) {
+        if (element.path && exlucdeList.includes(element.path.replace('.', ''))) {
           this.log.info('Skip path ' + element.path);
           continue;
         }
