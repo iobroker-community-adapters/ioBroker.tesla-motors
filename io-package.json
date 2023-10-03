@@ -163,7 +163,9 @@
     "session": {},
     "reset": false,
     "intervalNormal": 60,
-    "intervalDrive": null
+    "intervalDrive": null,
+    "excludeDeviceList": "",
+    "excludeElementList": ""
   },
   "objects": [],
   "instanceObjects": [

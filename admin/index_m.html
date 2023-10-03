@@ -1,139 +1,160 @@
 <html>
-    <head>
-        <!-- Load ioBroker scripts and styles-->
-        <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
-        <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css" />
+  <head>
+    <!-- Load ioBroker scripts and styles-->
+    <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+    <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css" />
 
-        <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
-        <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
 
-        <script type="text/javascript" src="../../js/translate.js"></script>
-        <script type="text/javascript" src="../../lib/js/materialize.js"></script>
-        <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+    <script type="text/javascript" src="../../js/translate.js"></script>
+    <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+    <script type="text/javascript" src="../../js/adapter-settings.js"></script>
 
-        <!-- Load our own files -->
-        <link rel="stylesheet" type="text/css" href="style.css" />
-        <script type="text/javascript" src="words.js"></script>
+    <!-- Load our own files -->
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="words.js"></script>
 
-        <script type="text/javascript">
-            // This will be called by the admin adapter when the settings page loads
-            function load(settings, onChange) {
-                // example: select elements with id=key and class=value and insert value
-                if (!settings) return;
-                $("#captchaSvg").append(settings.captchaSvg);
-                $(".value").each(function () {
-                    var $key = $(this);
-                    var id = $key.attr("id");
-                    if ($key.attr("type") === "checkbox") {
-                        // do not call onChange direct, because onChange could expect some arguments
-                        $key.prop("checked", settings[id]).on("change", () => onChange());
-                    } else {
-                        // do not call onChange direct, because onChange could expect some arguments
-                        $key.val(settings[id])
-                            .on("change", () => onChange())
-                            .on("keyup", () => onChange());
-                    }
-                });
-                onChange(false);
-                // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
-                if (M) M.updateTextFields();
-            }
+    <script type="text/javascript">
+      // This will be called by the admin adapter when the settings page loads
+      function load(settings, onChange) {
+        // example: select elements with id=key and class=value and insert value
+        if (!settings) return;
+        $('#captchaSvg').append(settings.captchaSvg);
+        $('.value').each(function () {
+          var $key = $(this);
+          var id = $key.attr('id');
+          if ($key.attr('type') === 'checkbox') {
+            // do not call onChange direct, because onChange could expect some arguments
+            $key.prop('checked', settings[id]).on('change', () => onChange());
+          } else {
+            // do not call onChange direct, because onChange could expect some arguments
+            $key
+              .val(settings[id])
+              .on('change', () => onChange())
+              .on('keyup', () => onChange());
+          }
+        });
+        onChange(false);
+        // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
+        if (M) M.updateTextFields();
+      }
 
-            // This will be called by the admin adapter when the user presses the save button
-            function save(callback) {
-                // example: select elements with class=value and build settings object
-                var obj = {};
-                $(".value").each(function () {
-                    var $this = $(this);
-                    if ($this.attr("type") === "checkbox") {
-                        obj[$this.attr("id")] = $this.prop("checked");
-                    } else if ($this.attr("type") === "number") {
-                        obj[$this.attr("id")] = parseFloat($this.val());
-                    } else {
-                        obj[$this.attr("id")] = $this.val();
-                    }
-                });
+      // This will be called by the admin adapter when the user presses the save button
+      function save(callback) {
+        // example: select elements with class=value and build settings object
+        var obj = {};
+        $('.value').each(function () {
+          var $this = $(this);
+          if ($this.attr('type') === 'checkbox') {
+            obj[$this.attr('id')] = $this.prop('checked');
+          } else if ($this.attr('type') === 'number') {
+            obj[$this.attr('id')] = parseFloat($this.val());
+          } else {
+            obj[$this.attr('id')] = $this.val();
+          }
+        });
 
-                callback(obj);
-            }
-        </script>
-    </head>
+        callback(obj);
+      }
+    </script>
+  </head>
 
-    <body>
-        <div class="m adapter-container">
-            <div class="row">
-                <div class="col s12 m4 l2">
-                    <img src="tesla-motors.png" class="logo" />
-                </div>
-            </div>
-
-            <!-- Put your content here -->
-
-            <!-- For example columns with settings: -->
-            <div class="row">
-                <div class="col s12 input-field">
-                    Schritt #1
-                    <p></p>
-                    Besuche diese offizielle Tesla Seite und logge dich ein.
-                    <p>Falls die Url nach dem Login "https://auth.tesla.com/static/404.html" lautet, bitte erneut den Link klicken.</p>
-                    <p>
-                        <a
-                            target="_blank"
-                            href="
-                https://auth.tesla.com/oauth2/v3/authorize?audience=&client_id=ownerapi&code_challenge=Tb-FGN3adrpojN8dmKySlVfBPdg-rA-voNN_3lftZVM&code_challenge_method=S256&locale=de&prompt=login&redirect_uri=https%3A%2F%2Fauth.tesla.com%2Fvoid%2Fcallback&response_type=code&scope=openid%20email%20offline_access&state=AVpzayWF0Ws%2BbdGWYoM3xYg1Hjm42slwiO3GjCzmTeI%3D"
-                            >https://auth.tesla.com</a
-                        >
-                    </p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 input-field">
-                    Schritt #2
-                    <p></p>
-                    Nach dem du "Page Not Found" siehst kopiere die URL aus der Addresszeile und füge Sie in das untere Feld.
-                    <h6>Teile die URL niemals anderen Personen mit. Sie erlaubt Zugang zu deinem kompletten Konto.</h6>
-                    <br />
-                    <img src="./url.jpg" width="400px" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 input-field">
-                    <input type="text" class="value" id="codeUrl" />
-                    <label for="codeUrl" class="translate">https://auth.tesla.com/void/callback?code=......</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6 input-field">
-                    <input type="number" class="value" id="intervalNormal" />
-                    <label for="intervalNormal" class="translate">Update interval in Sekunden. Minimum 10</label>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col s6 input-field">
-                    <input type="number" class="value" id="intervalDrive" />
-                    <label for="intervalDrive" class="translate">Update interval während der Fahrt in Sekunden. 0 oder kein Wert zum deaktivieren.</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6 input-field">
-                    <input type="checkbox" class="value" id="streaming" />
-                    <label for="streaming" class="translate">Streaming von live Daten aktivieren (Beta nur aktivieren wenn es benötigt wird)</label>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col s6 input-field">
-                    <input type="checkbox" class="value" id="wakeup" />
-                    <label for="wakeup" class="translate">Auto für jedes Update aufwecken. Auto schläft nicht ein um Battery zu sparen.</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6 input-field">
-                    <input type="checkbox" class="value" id="reset" />
-                    <label for="reset" class="translate">Reset Login/Token Information</label>
-                </div>
-            </div>
+  <body>
+    <div class="m adapter-container">
+      <div class="row">
+        <div class="col s12 m4 l2">
+          <img src="tesla-motors.png" class="logo" />
         </div>
-    </body>
+      </div>
+
+      <!-- Put your content here -->
+
+      <!-- For example columns with settings: -->
+      <div class="row">
+        <div class="col s12 input-field">
+          Schritt #1
+          <p></p>
+          Besuche diese offizielle Tesla Seite und logge dich ein.
+          <p>
+            Falls die Url nach dem Login "https://auth.tesla.com/static/404.html" lautet, bitte erneut den Link klicken.
+          </p>
+          <p>
+            <a
+              target="_blank"
+              href="
+                https://auth.tesla.com/oauth2/v3/authorize?audience=&client_id=ownerapi&code_challenge=Tb-FGN3adrpojN8dmKySlVfBPdg-rA-voNN_3lftZVM&code_challenge_method=S256&locale=de&prompt=login&redirect_uri=https%3A%2F%2Fauth.tesla.com%2Fvoid%2Fcallback&response_type=code&scope=openid%20email%20offline_access&state=AVpzayWF0Ws%2BbdGWYoM3xYg1Hjm42slwiO3GjCzmTeI%3D"
+              >https://auth.tesla.com</a
+            >
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 input-field">
+          Schritt #2
+          <p></p>
+          Nach dem du "Page Not Found" siehst kopiere die URL aus der Addresszeile und füge Sie in das untere Feld.
+          <h6>Teile die URL niemals anderen Personen mit. Sie erlaubt Zugang zu deinem kompletten Konto.</h6>
+          <br />
+          <img src="./url.jpg" width="400px" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 input-field">
+          <input type="text" class="value" id="codeUrl" />
+          <label for="codeUrl" class="translate">https://auth.tesla.com/void/callback?code=......</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s6 input-field">
+          <input type="number" class="value" id="intervalNormal" />
+          <label for="intervalNormal" class="translate">Update interval in Sekunden. Minimum 10</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s6 input-field">
+          <input type="number" class="value" id="intervalDrive" />
+          <label for="intervalDrive" class="translate"
+            >Update interval während der Fahrt in Sekunden. 0 oder kein Wert zum deaktivieren.</label
+          >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s6 input-field">
+          <input type="checkbox" class="value" id="streaming" />
+          <label for="streaming" class="translate"
+            >Streaming von live Daten aktivieren (Beta nur aktivieren wenn es benötigt wird)</label
+          >
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s6 input-field">
+          <input type="checkbox" class="value" id="wakeup" />
+          <label for="wakeup" class="translate"
+            >Auto für jedes Update aufwecken. Auto schläft nicht ein um Battery zu sparen.</label
+          >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s6 input-field">
+          <input type="checkbox" class="value" id="reset" />
+          <label for="reset" class="translate">Reset Login/Token Information</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s6 input-field">
+          <input type="text" class="value" id="excludeDeviceList" />
+          <label for="excludeDeviceList" class="translate">Exclude device ids (comma separated)</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s6 input-field">
+          <input type="text" class="value" id="excludeElementList" />
+          <label for="excludeElementList" class="translate">Exclude objects for update (comma separated)</label>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
