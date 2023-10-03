@@ -37,6 +37,8 @@ class Teslamotors extends utils.Adapter {
     this.json2iob = new Json2iob(this);
     this.vin2id = {};
     this.id2vin = {};
+
+    this.requestClient = axios.create();
   }
 
   /**
@@ -73,8 +75,6 @@ class Teslamotors extends utils.Adapter {
     // if (obj && obj.native.cookies) {
     //   this.cookieJar = tough.CookieJar.fromJSON(obj.native.cookies);
     // }
-
-    this.requestClient = axios.create();
 
     if (obj && obj.native.session && obj.native.session.refresh_token) {
       this.session = obj.native.session;
@@ -117,7 +117,7 @@ class Teslamotors extends utils.Adapter {
       return;
     }
     //
-    const codeChallenge = 'Tb-FGN3adrpojN8dmKySlVfBPdg-rA-voNN_3lftZVM';
+    // const codeChallenge = 'Tb-FGN3adrpojN8dmKySlVfBPdg-rA-voNN_3lftZVM';
     const code_verifier = '82326a2311262e580d179dc5023f3a7fd9bc3c9e0049f83138596b66c34fcdc7';
     let code = '';
     try {
