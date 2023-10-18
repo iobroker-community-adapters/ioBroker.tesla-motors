@@ -44,7 +44,7 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### 1.1.1 (2023-10-18)
+### **WORK IN PROGRESS**
 
 - (mcm1957) Standard iobroker release environment has been added.
 - (mcm1957) Some dependencies have been updated.
