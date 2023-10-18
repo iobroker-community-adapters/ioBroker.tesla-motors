@@ -44,14 +44,14 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 1.3.4-alpha.0 (2023-10-18)
 
 - (mcm1957) Standard iobroker release environment has been added.
 - (mcm1957) Some dependencies have been updated.
 
 ### 1.3.2
 * Create history elements by index not by date
-  
+
 ### 1.3.1
 * login url and ordered car fix
 
