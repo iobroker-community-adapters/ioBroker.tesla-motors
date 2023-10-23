@@ -197,6 +197,7 @@ class Teslamotors extends utils.Adapter {
             this.log.info('Skip device ' + id);
             continue;
           }
+          this.log.info(`Found device ${id} from type ${device.resource_type}`);
           const deviceId = device.id_s || device.id;
           this.vin2id[id] = deviceId;
           this.id2vin[deviceId] = id;
@@ -393,7 +394,20 @@ class Teslamotors extends utils.Adapter {
       // { path: ".historyEnergy", url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/history?kind=energy&period=day" },
       // { path: ".historyPower", url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/history?kind=power&period=day" },
     ];
+    const wallboxArray = [
+      { path: '', url: 'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/site_info' },
 
+      {
+        path: '.live_status',
+        url: 'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/live_status',
+      },
+      {
+        path: '.telemetry_history',
+        url:
+          'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/telemetry_history?period=month&time_zone=Europe%2FBerlin&kind=charge&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&end_date=' +
+          this.getDate(),
+      },
+    ];
     const headers = {
       'Content-Type': 'application/json; charset=utf-8',
       Accept: '*/*',
@@ -466,6 +480,9 @@ class Teslamotors extends utils.Adapter {
         if (this.config.streaming) {
           this.connectToWS(product.vehicle_id, product.id);
         }
+      }
+      if (product.resource_type === 'wall_connector') {
+        currentArray = wallboxArray;
       } else {
         currentArray = powerwallArray;
       }
