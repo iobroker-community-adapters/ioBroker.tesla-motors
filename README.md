@@ -40,10 +40,18 @@ tesla-motors.0.id.remote
 https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
 ## Changelog
+<!--
+    Placeholder for the next version (at the beginning of the line):
+    ### **WORK IN PROGRESS**
+-->
+### 1.3.4-alpha.0 (2023-10-18)
+
+- (mcm1957) Standard iobroker release environment has been added.
+- (mcm1957) Some dependencies have been updated.
 
 ### 1.3.2
 * Create history elements by index not by date
-  
+
 ### 1.3.1
 * login url and ordered car fix
 
@@ -53,7 +61,7 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 ## License
 MIT License
 
-Copyright (c) 2021 iobroker-community
+Copyright (c) 2021-2023 iobroker-community
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

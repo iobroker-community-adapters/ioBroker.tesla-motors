@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "1.3.3",
+    "version": "1.3.4-alpha.0",
     "news": {
+      "1.3.4-alpha.0": {
+        "en": "Standard iobroker release environment has been added.\nSome dependencies have been updated.",
+        "de": "Es wurde die Standard iobroker Release Umgebung hinzugefügt.\nEinige Abhängigkeiten wurden aktualisiert.",
+        "ru": "Добавлена стандартная среда релиза iobroker.\nНекоторые зависимости были обновлены.",
+        "pt": "O ambiente padrão de liberação do iobroker foi adicionado.\nAlgumas dependências foram atualizadas.",
+        "nl": "Standaard iobroker vrijlating is toegevoegd.\nSommige afhankelijkheden zijn geüpdateerd.",
+        "fr": "L'environnement de libération standard d'iobroker a été ajouté.\nCertaines dépendances ont été mises à jour.",
+        "it": "L'ambiente standard di rilascio dello iobroker è stato aggiunto.\nAlcune dipendenze sono state aggiornate.",
+        "es": "Se ha añadido un entorno de liberación estándar de iobroker.\nSe han actualizado algunas dependencias.",
+        "pl": "Dodano do użytku podstawowe iobrokerowe środowisko.\nNiektóre zależności zostały zaktualizowane.",
+        "uk": "Додано стандартне середовище вивільнення йоброкера.\nДеякі залежності були оновлено.",
+        "zh-cn": "标准简化者释放环境已经增加。.\n已经更新了一些依赖情况。."
+      },
       "1.3.3": {
         "en": "Removed disabled powerwall status endpoint",
         "de": "Powerwall Status entfernt, da nicht mehr verfügbar"
@@ -26,46 +39,6 @@
       "1.2.0": {
         "en": "Fix Login and charge history",
         "de": "Login und charge history gefixt"
-      },
-      "1.1.1": {
-        "en": "Changed ID to VIN",
-        "de": "Objekt ID geändert zu VIN"
-      },
-      "1.0.9": {
-        "en": "Add tesla charging history",
-        "de": "Tesla Ladehistory hinzugefügt"
-      },
-      "1.0.8": {
-        "en": "Add charging history",
-        "de": "Ladehistory hinzugefügt"
-      },
-      "1.0.7": {
-        "en": "Add new remotes for charging amps and scheduled departure and charging",
-        "de": "Neue remote controls hinzugefügt für den Ladestrom und geplante Abfahrten und Laden "
-      },
-      "1.0.6": {
-        "en": "Improve Update process",
-        "de": "Updateprozess verbessert"
-      },
-      "1.0.5": {
-        "en": "Fixed problem with relogin",
-        "de": "Problem mit erneuten Login behoben"
-      },
-      "1.0.4": {
-        "en": "Fix remoteseat heater",
-        "de": "Sitzheizung remote Problem behoben"
-      },
-      "1.0.3": {
-        "en": "ALL DATAPOINTS ARE NEW, vis needs to be adjusted. New release with new states for Tesla and Powerwalls.",
-        "de": "ALLE DATENPUNKTE SIND NEU, Vis muss angepasst werden. Neue Version mit neuen Zuständen für Tesla und Powerwalls.",
-        "ru": "ВСЕ ТОЧКИ ДАННЫХ НОВЫЕ, необходимо настроить vis. Новый выпуск с новыми состояниями для Tesla и Powerwall.",
-        "pt": "TODOS OS PONTOS DE DADOS SÃO NOVOS, precisa ser ajustado. Novo lançamento com novos estados para Tesla e Powerwalls.",
-        "nl": "ALLE DATAPOINTS ZIJN NIEUW, vis moet worden aangepast. Nieuwe release met nieuwe statussen voor Tesla en Powerwalls.",
-        "fr": "TOUS LES POINTS DE DONNÉES SONT NOUVEAUX, vis doit être ajusté. Nouvelle version avec de nouveaux états pour Tesla et Powerwalls.",
-        "it": "TUTTI I DATAPOINT SONO NUOVI, vis deve essere regolato. Nuova versione con nuovi stati per Tesla e Powerwall.",
-        "es": "TODOS LOS DATAPOINTS SON NUEVOS, vis necesita ser ajustado. Nueva versión con nuevos estados para Tesla y Powerwalls.",
-        "pl": "WSZYSTKIE PUNKTY DANYCH SĄ NOWE, należy je dostosować. Nowa wersja z nowymi stanami dla Tesli i Powerwalls.",
-        "zh-cn": "所有数据点都是新的，vis 需要调整。 Tesla 和 Powerwall 具有新状态的新版本。"
       }
     },
     "titleLang": {
@@ -92,8 +65,12 @@
       "pl": "Adapter do Tesli",
       "zh-cn": "特斯拉适配器"
     },
-    "authors": ["TA2k <tombox2020@gmail.com>"],
-    "keywords": ["tesla"],
+    "authors": [
+      "TA2k <tombox2020@gmail.com>"
+    ],
+    "keywords": [
+      "tesla"
+    ],
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "main": "main.js",
@@ -117,7 +94,10 @@
       {
         "condition": {
           "operand": "and",
-          "rules": ["oldVersion<1.1.0", "newVersion>=1.1.0"]
+          "rules": [
+            "oldVersion<1.1.0",
+            "newVersion>=1.1.0"
+          ]
         },
         "title": {
           "en": "Important notice!",
@@ -144,7 +124,10 @@
           "zh-cn": "对象树中的 id 从 id 更改为 vin。请调整您的脚本并手动删除旧树。"
         },
         "level": "warn",
-        "buttons": ["agree", "cancel"]
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
       }
     ],
     "dependencies": [
@@ -158,8 +141,14 @@
       }
     ]
   },
-  "encryptedNative": ["codeUrl", "session"],
-  "protectedNative": ["codeUrl", "session"],
+  "encryptedNative": [
+    "codeUrl",
+    "session"
+  ],
+  "protectedNative": [
+    "codeUrl",
+    "session"
+  ],
   "native": {
     "codeUrl": "",
     "wakeup": false,
