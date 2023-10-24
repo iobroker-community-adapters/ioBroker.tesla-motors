@@ -205,6 +205,10 @@ class Teslamotors extends utils.Adapter {
           if (device.vehicle_id) {
             this.idArray.push({ id: this.vin2id[id], type: 'vehicle', vehicle_id: device.vehicle_id, vin: id });
           } else {
+            if (!device.energy_site_id) {
+              this.log.warn('No energy_site_id found for device ' + JSON.stringify(device));
+              continue;
+            }
             this.idArray.push({
               id: this.vin2id[id],
               type: device.resource_type || 'unknown',
@@ -525,6 +529,15 @@ class Teslamotors extends utils.Adapter {
               if (data && data.charging_history_graph) {
                 delete data.charging_history_graph.y_labels;
                 delete data.charging_history_graph.x_labels;
+              }
+              if (data && data.gas_savings) {
+                delete data.gas_savings.card;
+              }
+              if (data && data.energy_cost_breakdown) {
+                delete data.energy_cost_breakdown.card;
+              }
+              if (data && data.charging_tips) {
+                delete data.charging_tips;
               }
             }
             if (element.path.includes('history')) {
