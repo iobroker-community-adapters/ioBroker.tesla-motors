@@ -47,8 +47,7 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
-
-### **WORK IN PROGRESS**
+### 1.3.5 (2023-10-24)
 
 - fix vehicle update
 
