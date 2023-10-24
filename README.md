@@ -47,6 +47,11 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### **WORK IN PROGRESS**
+
+- fix vehicle update
+
 ### 1.3.4 (2023-10-24)
 
 - add wall_connector devices

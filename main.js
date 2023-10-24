@@ -484,8 +484,7 @@ class Teslamotors extends utils.Adapter {
         if (this.config.streaming) {
           this.connectToWS(product.vehicle_id, product.id);
         }
-      }
-      if (product.type === 'wall_connector') {
+      } else if (product.type === 'wall_connector') {
         currentArray = wallboxArray;
       } else {
         currentArray = powerwallArray;
