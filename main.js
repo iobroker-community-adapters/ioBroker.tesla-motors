@@ -197,7 +197,7 @@ class Teslamotors extends utils.Adapter {
             this.log.info('Skip device ' + id);
             continue;
           }
-          this.log.info(`Found device ${id} from type ${device.resource_type}`);
+          this.log.info(`Found device ${id} from type ${device.vehicle_id ? 'vehicle' : device.resource_type}`);
           const deviceId = device.id_s || device.id;
           this.vin2id[id] = deviceId;
           this.id2vin[deviceId] = id;
