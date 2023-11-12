@@ -350,7 +350,10 @@ class Teslamotors extends utils.Adapter {
   }
   async updateDevices(forceUpdate) {
     const vehicleStatusArray = [
-      { path: '', url: 'https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data' },
+      {
+        path: '',
+        url: 'https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data?endpoints=charge_state;climate_state;closures_state;drive_state;gui_settings;location_data;vehicle_config;vehicle_state;vehicle_data_combo',
+      },
       {
         path: '.charge_history',
         url: 'https://owner-api.teslamotors.com/api/1/vehicles/{id}/charge_history?vehicle_trim=5&client_time_zone=Europe/Berlin&client_country=DE&currency_code=EUR&state=&time_zone=Europe/Vatican&state_label=&vehicle_model=2&language=de&country_label=Deutschland&country=DE',
