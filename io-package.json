@@ -83,12 +83,8 @@
       "pl": "Adapter do Tesli",
       "zh-cn": "特斯拉适配器"
     },
-    "authors": [
-      "TA2k <tombox2020@gmail.com>"
-    ],
-    "keywords": [
-      "tesla"
-    ],
+    "authors": ["TA2k <tombox2020@gmail.com>"],
+    "keywords": ["tesla"],
     "license": "MIT",
     "platform": "Javascript/Node.js",
     "main": "main.js",
@@ -112,10 +108,7 @@
       {
         "condition": {
           "operand": "and",
-          "rules": [
-            "oldVersion<1.1.0",
-            "newVersion>=1.1.0"
-          ]
+          "rules": ["oldVersion<1.1.0", "newVersion>=1.1.0"]
         },
         "title": {
           "en": "Important notice!",
@@ -142,10 +135,7 @@
           "zh-cn": "对象树中的 id 从 id 更改为 vin。请调整您的脚本并手动删除旧树。"
         },
         "level": "warn",
-        "buttons": [
-          "agree",
-          "cancel"
-        ]
+        "buttons": ["agree", "cancel"]
       }
     ],
     "dependencies": [
@@ -159,14 +149,8 @@
       }
     ]
   },
-  "encryptedNative": [
-    "codeUrl",
-    "session"
-  ],
-  "protectedNative": [
-    "codeUrl",
-    "session"
-  ],
+  "encryptedNative": ["codeUrl", "session"],
+  "protectedNative": ["codeUrl", "session"],
   "native": {
     "codeUrl": "",
     "wakeup": false,
@@ -174,6 +158,7 @@
     "session": {},
     "reset": false,
     "intervalNormal": 60,
+    "locationInterval": 60,
     "intervalDrive": null,
     "excludeDeviceList": "",
     "excludeElementList": ""

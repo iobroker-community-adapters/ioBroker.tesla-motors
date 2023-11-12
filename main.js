@@ -105,6 +105,14 @@ class Teslamotors extends utils.Adapter {
       this.updateInterval = setInterval(async () => {
         await this.updateDevices();
       }, this.config.intervalNormal * 1000);
+      if (this.config.locationInterval > 10) {
+        this.updateDevices(false, true);
+        setInterval(async () => {
+          await this.updateDevices(false, true);
+        }, this.config.locationInterval * 1000);
+      } else {
+        this.log.info('Location interval is less than 10s. Skip location update');
+      }
       const intervalTime = this.session.expires_in ? (this.session.expires_in - 200) * 1000 : 3000 * 1000;
       this.refreshTokenInterval = setInterval(() => {
         this.refreshToken();
@@ -348,11 +356,11 @@ class Teslamotors extends utils.Adapter {
         error.response && this.log.error(JSON.stringify(error.response.data));
       });
   }
-  async updateDevices(forceUpdate) {
-    const vehicleStatusArray = [
+  async updateDevices(forceUpdate, location = false) {
+    let vehicleStatusArray = [
       {
         path: '',
-        url: 'https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data?endpoints=charge_state%3Bclimate_state%3Bclosures_state%3Bdrive_state%3Bgui_settings%3Blocation_data%3Bvehicle_config%3Bvehicle_state%3Bvehicle_data_combo',
+        url: 'https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data',
       },
       {
         path: '.charge_history',
@@ -360,6 +368,14 @@ class Teslamotors extends utils.Adapter {
         method: 'POST',
       },
     ];
+    if (location) {
+      vehicleStatusArray = [
+        {
+          path: '',
+          url: 'https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data?endpoints=location_data',
+        },
+      ];
+    }
     const powerwallArray = [
       // { path: '', url: 'https://owner-api.teslamotors.com/api/1/powerwalls/{id}/status' },
       // { path: ".powerhistory", url: "https://owner-api.teslamotors.com/api/1/powerwalls/{id}/powerhistory" },
@@ -1070,6 +1086,7 @@ class Teslamotors extends utils.Adapter {
         command = command.split('-')[0];
         if (command === 'force_update') {
           this.updateDevices(true);
+          this.updateDevices(true, true);
           return;
         }
         let vehicleState = await this.checkState(productId);
