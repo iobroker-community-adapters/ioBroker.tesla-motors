@@ -352,7 +352,7 @@ class Teslamotors extends utils.Adapter {
     const vehicleStatusArray = [
       {
         path: '',
-        url: 'https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data?endpoints=charge_state;climate_state;closures_state;drive_state;gui_settings;location_data;vehicle_config;vehicle_state;vehicle_data_combo',
+        url: 'https://owner-api.teslamotors.com/api/1/vehicles/{id}/vehicle_data?endpoints=charge_state%3Bclimate_state%3Bclosures_state%3Bdrive_state%3Bgui_settings%3Blocation_data%3Bvehicle_config%3Bvehicle_state%3Bvehicle_data_combo',
       },
       {
         path: '.charge_history',
