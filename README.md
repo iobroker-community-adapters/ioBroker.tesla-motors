@@ -42,6 +42,7 @@ tesla-motors.0.id.remote
 https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
 ## Changelog
+
 ### 1.4.0 (2023-11-14)
 
 - fix location fetching and add new option to change location fetching interval
