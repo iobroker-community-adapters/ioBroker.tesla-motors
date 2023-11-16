@@ -107,7 +107,7 @@ class Teslamotors extends utils.Adapter {
       }, this.config.intervalNormal * 1000);
       if (this.config.locationInterval > 10) {
         this.updateDevices(false, true);
-        setInterval(async () => {
+        this.locationInterval = setInterval(async () => {
           await this.updateDevices(false, true);
         }, this.config.locationInterval * 1000);
       } else {
@@ -508,7 +508,7 @@ class Teslamotors extends utils.Adapter {
       } else {
         currentArray = powerwallArray;
       }
-
+      this.log.debug(`Update ${id} with array: ${JSON.stringify(currentArray)}`);
       for (const element of currentArray) {
         const exlucdeList = this.config.excludeElementList.replace(/\s/g, '').split(',');
         if (element.path && exlucdeList.includes(element.path.replace('.', ''))) {
@@ -1050,9 +1050,11 @@ class Teslamotors extends utils.Adapter {
       Object.keys(this.updateIntervalDrive).forEach((element) => {
         clearInterval(this.updateIntervalDrive[element]);
       });
-      clearInterval(this.updateInterval);
-      clearTimeout(this.refreshTimeout);
-      clearTimeout(this.refreshTokenTimeout);
+      this.updateInterval && clearInterval(this.updateInterval);
+      this.refreshTimeout && clearTimeout(this.refreshTimeout);
+      this.refreshTokenTimeout && clearTimeout(this.refreshTokenTimeout);
+      this.locationInterval && clearInterval(this.locationInterval);
+      this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
       const obj = await this.getForeignObjectAsync(this.adapterConfig);
       this.log.info('Save login session');
       if (obj) {
