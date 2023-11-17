@@ -42,6 +42,11 @@ tesla-motors.0.id.remote
 https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+
+- fix km states are not refreshed
+
 ### 1.4.1 (2023-11-17)
 
 - fix \_km states are not refreshed
