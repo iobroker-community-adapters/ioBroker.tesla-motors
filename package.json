@@ -1,6 +1,6 @@
 {
   "name": "iobroker.tesla-motors",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Adapter for Tesla",
   "author": {
     "name": "TA2k",

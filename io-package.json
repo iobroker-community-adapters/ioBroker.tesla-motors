@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "news": {
+      "1.4.2": {
+        "en": "fix km states are not refreshed",
+        "de": "fix km State wurden nicht aktualisiert",
+        "ru": "исправление состояния км не обновляется",
+        "pt": "fix km estados não são atualizados",
+        "nl": "er is geen verfrissing",
+        "fr": "les états de km fixes ne sont pas rafraîchis",
+        "it": "fix km stati non sono rinfrescati",
+        "es": "estados de km fijados no se refrescan",
+        "pl": "planowanie km nie jest odświeżone",
+        "uk": "не освіжаючі кмні стани",
+        "zh-cn": "fix公里的州没有被驳斥。"
+      },
       "1.4.1": {
         "en": "fix _km states are not refreshed",
         "de": "Fix für _km States werden nicht aktualisiert",
@@ -71,10 +84,6 @@
       "1.3.3": {
         "en": "Removed disabled powerwall status endpoint",
         "de": "Powerwall Status entfernt, da nicht mehr verfügbar"
-      },
-      "1.3.2": {
-        "en": "Create history elements by index not by date",
-        "de": "Erstelle History Elemente nach Index und nicht nach Datum"
       }
     },
     "titleLang": {
