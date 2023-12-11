@@ -23,7 +23,7 @@
     "axios": "^1.6.2",
     "json-bigint": "^1.0.0",
     "qs": "^6.11.2",
-    "ws": "^8.14.2"
+    "ws": "^8.15.0"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^3.7.0",
