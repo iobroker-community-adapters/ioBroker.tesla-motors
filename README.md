@@ -42,6 +42,11 @@ tesla-motors.0.id.remote
 https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+
+- fix for too many state in the powerwall energy history
+
 ### 1.4.2 (2023-11-17)
 
 - fix km states are not refreshed
