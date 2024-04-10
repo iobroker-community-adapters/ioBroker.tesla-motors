@@ -388,26 +388,24 @@ class Teslamotors extends utils.Adapter {
       },
       {
         path: '.energy_history',
-        url:
-          'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy&period=day&time_zone=Europe%2FBerlin&end_date=' +
-          this.getDate(),
+        url: 'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy&period=day&time_zone=Europe%2FBerlin',
       },
       {
         path: '.self_consumption_history',
         url:
-          'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=self_consumption&period=day&time_zone=Europe%2FBerlin&end_date=' +
+          'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=self_consumption&period=day&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&time_zone=Europe%2FBerlin&end_date=' +
           this.getDate(),
       },
       {
         path: '.self_consumption_history_lifetime',
         url:
-          'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=self_consumption&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&period=lifetime&time_zone=Europe%2FBerlin&end_date=' +
+          'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=self_consumption&period=lifetime&time_zone=Europe%2FBerlin&end_date=' +
           this.getDate(),
       },
       {
         path: '.energy_history_lifetime',
         url:
-          'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy&start_date=2016-01-01T00%3A00%3A00%2B01%3A00&time_zone=Europe/Berlin&period=lifetime&end_date=' +
+          'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy&time_zone=Europe/Berlin&period=lifetime&end_date=' +
           this.getDate(),
       },
       // { path: ".historyEnergy", url: "https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/history?kind=energy&period=day" },
@@ -554,13 +552,6 @@ class Teslamotors extends utils.Adapter {
                 delete data.charging_tips;
               }
             }
-            if (element.path.includes('energy_history')) {
-              //use only first 10 elements
-              data.time_series = data.time_series.slice(0, 10);
-            }
-            if (element.path.includes('history')) {
-              forceIndex = true;
-            }
             if (element.path.includes('lifetime')) {
               for (const serie of data.time_series) {
                 if (!data.total) {
@@ -577,6 +568,36 @@ class Teslamotors extends utils.Adapter {
                 }
               }
             }
+            if (element.path.includes('energy_history')) {
+              //sum up all values to total for each day
+              const totals = {};
+              for (const serie of data.time_series) {
+                let date = serie.timestamp.split('T')[0];
+                if (element.path.includes('lifetime')) {
+                  date = serie.timestamp.slice(0, 4);
+                }
+                if (!totals[date]) {
+                  totals[date] = JSON.parse(JSON.stringify(serie));
+                } else {
+                  for (const key in serie) {
+                    if (typeof serie[key] === 'number') {
+                      totals[date][key] += serie[key];
+                    } else {
+                      totals[date][key] = serie[key];
+                    }
+                  }
+                }
+              }
+              const totalArray = [];
+              for (const key in totals) {
+                totalArray.push(totals[key]);
+              }
+              data.time_series = totalArray;
+            }
+            if (element.path.includes('history')) {
+              forceIndex = true;
+            }
+
             this.json2iob.parse(this.id2vin[id] + element.path, data, {
               preferedArrayName: preferedArrayName,
               forceIndex: forceIndex,
