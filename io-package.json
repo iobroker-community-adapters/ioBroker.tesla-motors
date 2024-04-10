@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "news": {
+      "1.4.4": {
+        "en": "improve energy history data",
+        "de": "energy history daten verbessert",
+        "ru": "улучшение данных истории энергетики",
+        "pt": "melhorar os dados do histórico de energia",
+        "nl": "gegevens over de energiegeschiedenis verbeteren",
+        "fr": "améliorer les données d'historique énergétique",
+        "it": "migliorare i dati sulla storia dell'energia",
+        "es": "mejorar los datos del historial energético",
+        "pl": "poprawa danych dotyczących historii energetycznej",
+        "uk": "поліпшення даних історії енергії",
+        "zh-cn": "改进能源历史数据"
+      },
       "1.4.3": {
         "en": "fix for too many state in the powerwall energy history",
         "de": "Fix für zu viele Zustände im Powerwall-energy history",
@@ -80,19 +93,6 @@
         "pl": "dodać do nich urządzenia z systemem ścisły",
         "uk": "додавання настінних пристроїв",
         "zh-cn": "增加墙:连接装置"
-      },
-      "1.3.4-alpha.0": {
-        "en": "Standard iobroker release environment has been added.\nSome dependencies have been updated.",
-        "de": "Es wurde die Standard iobroker Release Umgebung hinzugefügt.\nEinige Abhängigkeiten wurden aktualisiert.",
-        "ru": "Добавлена стандартная среда релиза iobroker.\nНекоторые зависимости были обновлены.",
-        "pt": "O ambiente padrão de liberação do iobroker foi adicionado.\nAlgumas dependências foram atualizadas.",
-        "nl": "Standaard iobroker vrijlating is toegevoegd.\nSommige afhankelijkheden zijn geüpdateerd.",
-        "fr": "L'environnement de libération standard d'iobroker a été ajouté.\nCertaines dépendances ont été mises à jour.",
-        "it": "L'ambiente standard di rilascio dello iobroker è stato aggiunto.\nAlcune dipendenze sono state aggiornate.",
-        "es": "Se ha añadido un entorno de liberación estándar de iobroker.\nSe han actualizado algunas dependencias.",
-        "pl": "Dodano do użytku podstawowe iobrokerowe środowisko.\nNiektóre zależności zostały zaktualizowane.",
-        "uk": "Додано стандартне середовище вивільнення йоброкера.\nДеякі залежності були оновлено.",
-        "zh-cn": "标准简化者释放环境已经增加。.\n已经更新了一些依赖情况。."
       }
     },
     "titleLang": {

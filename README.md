@@ -42,6 +42,10 @@ tesla-motors.0.id.remote
 https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
 ## Changelog
+### 1.4.4 (2024-04-10)
+
+- improve energy history data
+
 ### 1.4.3 (2024-04-10)
 
 - fix for too many state in the powerwall energy history
