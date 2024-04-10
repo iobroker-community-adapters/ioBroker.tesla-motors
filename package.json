@@ -1,6 +1,6 @@
 {
   "name": "iobroker.tesla-motors",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Adapter for Tesla",
   "author": {
     "name": "TA2k",
@@ -45,7 +45,7 @@
     "check": "tsc --noEmit -p tsconfig.check.json",
     "lint": "eslint",
     "translate": "translate-adapter",
-    "release": "release-script"
+    "release": "release-script --all"
   },
   "bugs": {
     "url": "https://github.com/iobroker-community-adapters/ioBroker.tesla-motors/issues"

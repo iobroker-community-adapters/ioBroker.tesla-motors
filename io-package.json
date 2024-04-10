@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "news": {
+      "1.4.3": {
+        "en": "fix for too many state in the powerwall energy history",
+        "de": "Fix für zu viele Zustände im Powerwall-energy history",
+        "ru": "исправление для слишком многих государств в энергетической истории",
+        "pt": "correção para muitos estados no histórico de energia powerwall",
+        "nl": "vast te stellen voor te veel toestand in de powerwall energie geschiedenis",
+        "fr": "fixer pour trop d'état dans l'histoire de l'énergie de powerwall",
+        "it": "fissare per troppi stati nella storia energetica del powerwall",
+        "es": "fijado para demasiados estados en la historia de energía de la pared eléctrica",
+        "pl": "naprawić zbyt wiele stanów w historii energii powerwall",
+        "uk": "виправити занадто багато стану в енергетичній історії powerwall",
+        "zh-cn": "为电墙能源史上太多的状态修补"
+      },
       "1.4.2": {
         "en": "fix km states are not refreshed",
         "de": "fix km State wurden nicht aktualisiert",
@@ -80,10 +93,6 @@
         "pl": "Dodano do użytku podstawowe iobrokerowe środowisko.\nNiektóre zależności zostały zaktualizowane.",
         "uk": "Додано стандартне середовище вивільнення йоброкера.\nДеякі залежності були оновлено.",
         "zh-cn": "标准简化者释放环境已经增加。.\n已经更新了一些依赖情况。."
-      },
-      "1.3.3": {
-        "en": "Removed disabled powerwall status endpoint",
-        "de": "Powerwall Status entfernt, da nicht mehr verfügbar"
       }
     },
     "titleLang": {

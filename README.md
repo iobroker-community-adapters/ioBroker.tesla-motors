@@ -42,8 +42,7 @@ tesla-motors.0.id.remote
 https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 1.4.3 (2024-04-10)
 
 - fix for too many state in the powerwall energy history
 
@@ -88,7 +87,7 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
 MIT License
 
-Copyright (c) 2021-2023 iobroker-community
+Copyright (c) 2021-2029 iobroker-community
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
