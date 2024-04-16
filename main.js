@@ -329,7 +329,7 @@ class Teslamotors extends utils.Adapter {
                                 "end_off_peak_time": 420,
                                 "off_peak_charging_weekdays_only": true
                             }`,
-                true
+                true,
               );
             }
             if (remote.command === 'set_scheduled_charging') {
@@ -339,12 +339,17 @@ class Teslamotors extends utils.Adapter {
                                     "time": 0,
                                     "enable": true
                                 }`,
-                true
+                true,
               );
             }
           });
-          this.delObjectAsync(this.name + '.' + this.instance + '.' + id + '.remote.set_scheduled_charging-scheduled_charging');
-          this.delObjectAsync(this.name + '.' + this.instance + '.' + id + '.remote.set_scheduled_departure-scheduled_departure');
+          this.delObjectAsync(
+            this.name + '.' + this.instance + '.' + id + '.remote.set_scheduled_charging-scheduled_charging',
+          );
+          this.delObjectAsync(
+            this.name + '.' + this.instance + '.' + id + '.remote.set_scheduled_departure-scheduled_departure',
+          );
+          this.delObject(id + '.tokens', { recursive: true });
         }
       })
       .catch((error) => {
@@ -533,6 +538,9 @@ class Teslamotors extends utils.Adapter {
             if (!res.data) {
               return;
             }
+            if (res.data.response && res.data.response.tokens) {
+              delete res.data.response.tokens;
+            }
             const data = res.data.response;
             let preferedArrayName = 'timestamp';
             let forceIndex = false;
@@ -719,7 +727,9 @@ class Teslamotors extends utils.Adapter {
       method: 'post',
       url: 'https://auth.tesla.com/oauth2/v3/token',
       headers: this.headers,
-      data: 'grant_type=refresh_token&client_id=ownerapi&scope=openid email offline_access&refresh_token=' + this.session.refresh_token,
+      data:
+        'grant_type=refresh_token&client_id=ownerapi&scope=openid email offline_access&refresh_token=' +
+        this.session.refresh_token,
     })
       .then(async (res) => {
         this.log.debug(JSON.stringify(res.data));
@@ -764,7 +774,9 @@ class Teslamotors extends utils.Adapter {
       (chargeState && !['Disconnected', 'Complete', 'NoPower', 'Stopped'].includes(chargeState.val))
     ) {
       if (shift_state && chargeState) {
-        this.log.debug('Skip sleep waiting because shift state: ' + shift_state.val + ' or charge state: ' + chargeState.val);
+        this.log.debug(
+          'Skip sleep waiting because shift state: ' + shift_state.val + ' or charge state: ' + chargeState.val,
+        );
       }
       return false;
     }
@@ -789,9 +801,9 @@ class Teslamotors extends utils.Adapter {
       //laste update not older than 30min and last change not older then 30min
       if (curState && (curState.ts <= Date.now() - 1800000 || curState.ts - curState.lc <= 1800000)) {
         this.log.debug(
-          `Skip sleep waiting because state ${vin + stateId} changed in last 30min TS: ${new Date(curState.ts).toLocaleString()} LC: ${new Date(
-            curState.lc
-          ).toLocaleString()} value: ${curState.val}`
+          `Skip sleep waiting because state ${vin + stateId} changed in last 30min TS: ${new Date(
+            curState.ts,
+          ).toLocaleString()} LC: ${new Date(curState.lc).toLocaleString()} value: ${curState.val}`,
         );
         return false;
       }
@@ -817,8 +829,19 @@ class Teslamotors extends utils.Adapter {
     }
     const passwordArray = ['remote_start_drive'];
     const latlonArray = ['trigger_homelink', 'window_control'];
-    const onArray = ['remote_steering_wheel_heater_request', 'set_preconditioning_max', 'set_sentry_mode', 'set_bioweapon_mode'];
-    const valueArray = ['set_temps', 'backup', 'off_grid_vehicle_charging_reserve', 'schedule_software_update', 'set_charging_amps'];
+    const onArray = [
+      'remote_steering_wheel_heater_request',
+      'set_preconditioning_max',
+      'set_sentry_mode',
+      'set_bioweapon_mode',
+    ];
+    const valueArray = [
+      'set_temps',
+      'backup',
+      'off_grid_vehicle_charging_reserve',
+      'schedule_software_update',
+      'set_charging_amps',
+    ];
     const stateArray = ['sun_roof_control'];
     const commandArray = ['window_control'];
     const percentArray = ['set_charge_limit'];
@@ -1005,7 +1028,7 @@ class Teslamotors extends utils.Adapter {
       matches = body.matchAll(/<input (?=[^>]* name=["']([^'"]*)|)(?=[^>]* value=["']([^'"]*)|)/g);
     } else {
       this.log.warn(
-        'The adapter needs in the future NodeJS v12. https://forum.iobroker.net/topic/22867/how-to-node-js-f%C3%BCr-iobroker-richtig-updaten'
+        'The adapter needs in the future NodeJS v12. https://forum.iobroker.net/topic/22867/how-to-node-js-f%C3%BCr-iobroker-richtig-updaten',
       );
       matches = this.matchAll(/<input (?=[^>]* name=["']([^'"]*)|)(?=[^>]* value=["']([^'"]*)|)/g, body);
     }
@@ -1140,14 +1163,21 @@ class Teslamotors extends utils.Adapter {
           charge_port_door_open: 'charge_port_door_open',
           passenger_temp_setting: 'set_temps-passenger_temp',
           backup_reserve_percent: 'backup-backup_reserve_percent',
-          off_grid_vehicle_charging_reserve_percent: 'off_grid_vehicle_charging_reserve-off_grid_vehicle_charging_reserve_percent',
+          off_grid_vehicle_charging_reserve_percent:
+            'off_grid_vehicle_charging_reserve-off_grid_vehicle_charging_reserve_percent',
         };
         const idArray = id.split('.');
         const stateName = idArray[idArray.length - 1];
         const vin = id.split('.')[2];
         let value = true;
         if (resultDict[stateName] && isNaN(state.val)) {
-          if (!state.val || state.val === 'INVALID' || state.val === 'NOT_CHARGING' || state.val === 'ERROR' || state.val === 'UNLOCKED') {
+          if (
+            !state.val ||
+            state.val === 'INVALID' ||
+            state.val === 'NOT_CHARGING' ||
+            state.val === 'ERROR' ||
+            state.val === 'UNLOCKED'
+          ) {
             value = false;
           }
         } else {
