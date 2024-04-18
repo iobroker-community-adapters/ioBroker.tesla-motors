@@ -674,6 +674,9 @@ class Teslamotors extends utils.Adapter {
         if (!res.data) {
           return;
         }
+        if (res.data.response && res.data.response.tokens) {
+          delete res.data.response.tokens;
+        }
         const data = res.data.response;
 
         this.json2iob.parse(this.id2vin[id], data);
@@ -704,6 +707,9 @@ class Teslamotors extends utils.Adapter {
     })
       .then((res) => {
         this.log.debug(JSON.stringify(res.data));
+        if (res.data.response && res.data.response.tokens) {
+          delete res.data.response.tokens;
+        }
         this.json2iob.parse(this.id2vin[id], res.data.response, { preferedArrayName: 'timestamp' });
         return res.data.response.state;
       })
