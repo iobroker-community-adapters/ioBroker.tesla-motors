@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "1.4.4",
+    "version": "1.4.5",
     "news": {
+      "1.4.5": {
+        "en": "cleaned up token folder to reduce state objects",
+        "de": "tokens Ordner aufgeräumt, um Anzahl der Statusobjekte zu reduzieren",
+        "ru": "очистить папку токенов, чтобы уменьшить государственные объекты",
+        "pt": "limpar a pasta token para reduzir objetos de estado",
+        "nl": "opgeschoond token map om status objecten te verminderen",
+        "fr": "dossier jeton nettoyé pour réduire les objets d'état",
+        "it": "pulire la cartella token per ridurre gli oggetti di stato",
+        "es": "limpiar la carpeta token para reducir los objetos estatales",
+        "pl": "wyczyszczone folder token w celu ograniczenia obiektów stanu",
+        "uk": "очистити папку token, щоб зменшити об'єкти стану",
+        "zh-cn": "清除令牌文件夹以减少状态对象"
+      },
       "1.4.4": {
         "en": "improve energy history data",
         "de": "energy history daten verbessert",
@@ -80,19 +93,6 @@
         "pl": "aktualizacja",
         "uk": "виправлено оновлення транспортного засобу",
         "zh-cn": "f 车辆更新"
-      },
-      "1.3.4": {
-        "en": "add wall_connector devices",
-        "de": "wall connector Geräte hinzugefügt",
-        "ru": "добавить устройства wall_connector",
-        "pt": "adicionar dispositivos wall_connector",
-        "nl": "voeg muurconnector apparatuur toe",
-        "fr": "ajouter des périphériques mur_connecteur",
-        "it": "aggiungere dispositivi wall_connector",
-        "es": "añadir dispositivos wall_connector",
-        "pl": "dodać do nich urządzenia z systemem ścisły",
-        "uk": "додавання настінних пристроїв",
-        "zh-cn": "增加墙:连接装置"
       }
     },
     "titleLang": {

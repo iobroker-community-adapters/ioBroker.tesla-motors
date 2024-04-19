@@ -928,6 +928,9 @@ class Teslamotors extends utils.Adapter {
     })
       .then((res) => {
         this.log.info(JSON.stringify(res.data));
+        if (res.data.response && res.data.response.tokens) {
+          delete res.data.response.tokens;
+        }
         return res.data.response;
       })
       .catch((error) => {
