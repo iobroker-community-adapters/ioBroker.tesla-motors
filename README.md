@@ -97,7 +97,7 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
 MIT License
 
-Copyright (c) 2021-2029 iobroker-community
+Copyright (c) 2021-2025 iobroker-community
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
