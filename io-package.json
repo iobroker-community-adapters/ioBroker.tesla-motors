@@ -3,19 +3,6 @@
     "name": "tesla-motors",
     "version": "1.4.6",
     "news": {
-      "1.4.6": {
-        "en": "fix for powerwall backup history",
-        "de": "fix für powerwall backup-geschichte",
-        "ru": "историю резервного копирования powerwall",
-        "pt": "corrigir para o histórico de backup do powerwall",
-        "nl": "fix voor powerwall back-upgeschiedenis",
-        "fr": "correctif pour l'historique de sauvegarde powerwall",
-        "it": "correzione per la cronologia dei backup di powerwall",
-        "es": "solución para la historia de copia de seguridad de powerwall",
-        "pl": "fix for powerwall backup history",
-        "uk": "виправити для історії резервного копіювання електромереж",
-        "zh-cn": "电网备份历史的修复"
-      },
       "1.4.5": {
         "en": "cleaned up token folder to reduce state objects",
         "de": "tokens Ordner aufgeräumt, um Anzahl der Statusobjekte zu reduzieren",
@@ -41,19 +28,6 @@
         "pl": "poprawa danych dotyczących historii energetycznej",
         "uk": "поліпшення даних історії енергії",
         "zh-cn": "改进能源历史数据"
-      },
-      "1.4.3": {
-        "en": "fix for too many state in the powerwall energy history",
-        "de": "Fix für zu viele Zustände im Powerwall-energy history",
-        "ru": "исправление для слишком многих государств в энергетической истории",
-        "pt": "correção para muitos estados no histórico de energia powerwall",
-        "nl": "vast te stellen voor te veel toestand in de powerwall energie geschiedenis",
-        "fr": "fixer pour trop d'état dans l'histoire de l'énergie de powerwall",
-        "it": "fissare per troppi stati nella storia energetica del powerwall",
-        "es": "fijado para demasiados estados en la historia de energía de la pared eléctrica",
-        "pl": "naprawić zbyt wiele stanów w historii energii powerwall",
-        "uk": "виправити занадто багато стану в енергетичній історії powerwall",
-        "zh-cn": "为电墙能源史上太多的状态修补"
       },
       "1.4.2": {
         "en": "fix km states are not refreshed",
@@ -189,12 +163,12 @@
     ],
     "dependencies": [
       {
-        "js-controller": ">=3.0.0"
+        "js-controller": ">=6.0.11"
       }
     ],
     "globalDependencies": [
       {
-        "admin": ">=4.0.9"
+        "admin": ">=6.17.14"
       }
     ]
   },
