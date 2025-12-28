@@ -41,9 +41,14 @@ tesla-motors.0.id.remote
 
 https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
+<!--
+  Placeholder for the next version (at the beginning of the line):
+  ### **WORK IN PROGRESS**
+-->
+
 ## Changelog
 
-### **WORK_IN_PROGRESS**
+### **WORK IN PROGRESS**
 - (mcm1957) Adapter requires node.js >= 20, js-controller >= 6.0.11 adn admin >= 6.17.14 now.
 - (TA2k) powerwall backup history has been fixed
 - (TA2k) Dependencies have been updated.
