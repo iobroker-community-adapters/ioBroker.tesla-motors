@@ -1101,7 +1101,7 @@ class Teslamotors extends utils.Adapter {
         await this.setForeignObjectAsync(this.adapterConfig, obj);
       }
       callback();
-    } catch (e) {
+    } catch (_e) {
       callback();
     }
   }
