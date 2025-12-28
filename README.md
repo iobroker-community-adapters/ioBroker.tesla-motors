@@ -29,7 +29,7 @@ tesla-motors.0.id.remote
 **Field Description**
 
 - df driver front
-- dr driver rear  
+- dr driver rear
 - pf passenger front
 - pr passenger rear
 - ft front trunk
@@ -42,8 +42,10 @@ tesla-motors.0.id.remote
 https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 
 ## Changelog
+### 1.4.6 (2025-12-28)
 
-<!-- ### **WORK IN PROGRESS** -->
+fix for powerwall backup history
+
 ### 1.4.5 (2024-04-19)
 
 - cleaned up token folder to reduce state objects
