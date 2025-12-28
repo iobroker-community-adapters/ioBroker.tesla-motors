@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "1.4.6",
+    "version": "1.5.0",
     "news": {
+      "1.5.0": {
+        "en": "Adapter requires node.js >= 20, js-controller >= 6.0.11 and admin >= 6.17.14 now.\npowerwall backup history has been fixed\nDependencies have been updated.",
+        "de": "Adapter erfordert jetzt node.js >= 20, js-controller >= 6.0.11 und admin >= 6.17.14.\npowerwall backup-history Fehler wurde behoben\nAbhängigkeiten wurden aktualisiert.",
+        "ru": "Адаптер требует node.js >= 20, js-контроллер >= 6.0.11 и админ >= 6.17.14 сейчас.\nистория резервного копирования powerwall была исправлена\nЗависимости были обновлены.",
+        "pt": "O adaptador necessita de nodo.js >= 20, js-controlador >= 6,0.11 e administrador >= 6,17,14 agora.\nhistórico de backup do powerwall foi corrigido\nAs dependências foram atualizadas.",
+        "nl": "Voor adapters zijn node.js (m.u.v. js-controller > 6,0.11 en admin > 6,17.14 nu) vereist.\npowerwall back-upgeschiedenis is hersteld\nAfhankelijkheden zijn bijgewerkt.",
+        "fr": "Adapter nécessite node.js >= 20, js-controller >= 6.0.11 et admin >= 6.17.14 maintenant.\nl'historique de sauvegarde de powerwall a été corrigé\nLes dépendances ont été actualisées.",
+        "it": "Adattatore richiede node.js >= 20, js-controller >= 6.0.11 e admin >= 6.17.14 ora.\nstoria di backup powerwall è stato risolto\nLe dipendenze sono state aggiornate.",
+        "es": "Adaptador requiere node.js >= 20, js-controller ≤ 6.0.11 y admin= 6.17.14 ahora.\nhistorial de copia de seguridad de powerwall ha sido fijo\nSe han actualizado las dependencias.",
+        "pl": "Adapter wymaga node.js > = 20, kontroler js- i admin > = 6.17.14 teraz.\nhistoria backupu powerwall została naprawiona\nZaktualizowano zależność.",
+        "uk": "Адаптер вимагає node.js >= 20, js-controller >= 6.0.11 і admin >= 6.17.14 тепер.\nісторія резервної копії електромереж була виправлена\nОновлено залежність.",
+        "zh-cn": "适配器需要节点.js >= 20,js控制器 >= 6.0.11和管理员 >= 6.17.14 现在.\n电网备份历史已被修复\n附属关系已经更新."
+      },
       "1.4.5": {
         "en": "cleaned up token folder to reduce state objects",
         "de": "tokens Ordner aufgeräumt, um Anzahl der Statusobjekte zu reduzieren",
