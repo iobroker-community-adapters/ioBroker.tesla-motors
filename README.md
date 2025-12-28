@@ -44,7 +44,7 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 ## Changelog
 ### 1.4.6 (2025-12-28)
 
-fix for powerwall backup history
+- (@TA2k) fix for powerwall backup history
 
 ### 1.4.5 (2024-04-19)
 
