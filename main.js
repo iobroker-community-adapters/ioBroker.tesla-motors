@@ -389,7 +389,7 @@ class Teslamotors extends utils.Adapter {
       },
       {
         path: '.backup_history',
-        url: 'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/history?kind=backup',
+        url: 'https://owner-api.teslamotors.com/api/1/energy_sites/{energy_site_id}/calendar_history?kind=backup&period=day&time_zone=Europe%2FBerlin',
       },
       {
         path: '.energy_history',
