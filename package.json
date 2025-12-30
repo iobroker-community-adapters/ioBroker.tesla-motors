@@ -2,10 +2,10 @@
   "name": "iobroker.tesla-motors",
   "version": "1.5.0",
   "description": "Adapter for Tesla",
-  "author": {
-    "name": "TA2k",
-    "email": "tombox2020@gmail.com"
-  },
+  "author": "TA2k <tombox2020@gmail.com>",
+  "contributors": [
+    "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
+  ],
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.tesla-motors",
   "license": "MIT",
   "keywords": [
