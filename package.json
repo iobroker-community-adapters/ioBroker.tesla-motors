@@ -33,7 +33,7 @@
     "@alcalzone/release-script-plugin-manual-review": "^4.0.0",
     "@iobroker/testing": "^5.2.2",
     "@types/node": "^25.5.0",
-    "eslint": "^9.39.2",
+    "eslint": "^10.1.0",
     "typescript": "~5.9.3"
   },
   "main": "main.js",
