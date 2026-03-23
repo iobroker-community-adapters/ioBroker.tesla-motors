@@ -27,29 +27,37 @@ Vehicle commands (lock, unlock, climate, charging, etc.) are supported for all m
 
 ### Setup (Step by Step)
 
-The adapter admin UI guides you through 5 steps:
+The adapter admin UI guides you through 4 steps:
 
 #### Step 1: Generate Key Pair
 
-Click **Generate Key Pair** in the adapter settings. This creates an ECDSA P-256 key pair used for signing vehicle commands. The keys are stored in the adapter configuration.
+1. Click **Generate Key Pair** in the adapter settings to create an EC key pair (prime256v1)
+2. Click **Copy Public Key** and go to [fleetkey.net](https://fleetkey.net) - create an account and get your subdomain (e.g. `abc123.fleetkey.net`)
+3. Upload the Public Key to your FleetKey.net account. Tesla will download the key from there during registration.
 
-#### Step 2: Fleet API Credentials
+#### Step 2: Tesla Developer App
 
-Enter your **Client ID** and **Client Secret** from your Tesla Developer application. Select the correct **Region** (EU, NA, or CN) - this is auto-detected from the JWT token after login.
+1. Create a Fleet API Application at [developer.tesla.com](https://developer.tesla.com/request)
+2. Set **Origin** to your full FleetKey subdomain (e.g. `https://abc123.fleetkey.net`)
+3. Set **Redirect URL** to `https://auth.tesla.com/void/callback`
+4. Copy **Client ID** and **Client Secret** from the created app and enter them below together with your FleetKey domain (e.g. `abc123.fleetkey.net`)
 
-#### Step 3: Fleet Key Domain
+#### Step 3: Authentication (OAuth2)
 
-Enter your **Fleet Key Domain** (e.g. `abc123.fleetkey.net`). This domain must host your public key so Tesla can verify your application. The adapter shows a link and QR code for installing the virtual key on your vehicle.
+1. Click **Generate Auth Link** - a new browser tab opens with the Tesla login page
+2. Log in with your Tesla account and authorize the app
+3. After login you will see "Page Not Found" - this is expected! Copy the complete URL from the browser address bar
+4. Paste the URL into the code URL field and click **Save and close**
 
-#### Step 4: Tesla Login (OAuth2)
+**Warning:** Never share this URL with anyone! It grants access to your Tesla account.
 
-Click **Login with Tesla** to authenticate via OAuth2. You will be redirected to `auth.tesla.com`. After login, copy the callback URL and paste it into the adapter settings.
+#### Step 4: Install Virtual Key
 
-Required scopes: `openid offline_access vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds energy_device_data energy_cmds`
+The Virtual Key is required to send commands to your vehicle (lock/unlock, climate, charging, etc.). Without it, you can only read vehicle data. You can do this step after the adapter is running.
 
-#### Step 5: Virtual Key Installation
-
-Open the virtual key URL (`https://tesla.com/_ak/<your-domain>`) on your phone while near your vehicle. Confirm the key on the vehicle's touchscreen. This is required for signed vehicle commands on post-2021 models.
+1. Open the Virtual Key URL shown in the adapter settings on your phone (or scan the QR code)
+2. The Tesla App will ask you to confirm adding a "third-party key"
+3. Go to your vehicle and hold your key card to the center console to confirm the installation
 
 ### Remote Commands
 
