@@ -14,32 +14,78 @@
 
 ## Tesla adapter for ioBroker
 
-All Tesla models and Powerwalls from the Tesla App are displayed and updated.
+All Tesla vehicles and Powerwalls from the Tesla App are displayed and updated via the official **Tesla Fleet API**.
 
-**Remote commands for Tesla and Powerwall are available under**
-tesla-motors.0.id.remote
+Vehicle commands (lock, unlock, climate, charging, etc.) are supported for all models including post-2021 vehicles that require **end-to-end command signing** (Vehicle Command Protocol).
 
-**Login process:**
+### Requirements
 
-- Click the Auth Link in the instance options.
-- Enter your login credentials and, if necessary, complete Captcha/reCaptcha and MFA.
-- On the "Page not Found" page, copy the complete URL from the browser and paste it into the instance options, then click Save and Close.
-- The initial data may only appear after the first drive
+- Tesla account with vehicles or energy products
+- Node.js >= 20
+- A registered Tesla Fleet API application (Client ID + Client Secret) from [developer.tesla.com](https://developer.tesla.com)
+- A Fleet Key domain (for virtual key installation on the vehicle)
 
-**Field Description**
+### Setup (Step by Step)
 
-- df driver front
-- dr driver rear
-- pf passenger front
-- pr passenger rear
-- ft front trunk
-- rt rear trunk
+The adapter admin UI guides you through 5 steps:
 
-[Option Codes Explanation](https://tesla-api.timdorr.com/vehicle/optioncodes)
+#### Step 1: Generate Key Pair
 
-## Questions and Discussions:
+Click **Generate Key Pair** in the adapter settings. This creates an ECDSA P-256 key pair used for signing vehicle commands. The keys are stored in the adapter configuration.
 
-https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
+#### Step 2: Fleet API Credentials
+
+Enter your **Client ID** and **Client Secret** from your Tesla Developer application. Select the correct **Region** (EU, NA, or CN) - this is auto-detected from the JWT token after login.
+
+#### Step 3: Fleet Key Domain
+
+Enter your **Fleet Key Domain** (e.g. `abc123.fleetkey.net`). This domain must host your public key so Tesla can verify your application. The adapter shows a link and QR code for installing the virtual key on your vehicle.
+
+#### Step 4: Tesla Login (OAuth2)
+
+Click **Login with Tesla** to authenticate via OAuth2. You will be redirected to `auth.tesla.com`. After login, copy the callback URL and paste it into the adapter settings.
+
+Required scopes: `openid offline_access vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds energy_device_data energy_cmds`
+
+#### Step 5: Virtual Key Installation
+
+Open the virtual key URL (`https://tesla.com/_ak/<your-domain>`) on your phone while near your vehicle. Confirm the key on the vehicle's touchscreen. This is required for signed vehicle commands on post-2021 models.
+
+### Remote Commands
+
+Remote commands are available under `tesla-motors.0.<VIN>.remote`.
+
+Supported commands include:
+
+- **Lock/Unlock**: `door_lock`, `door_unlock`
+- **Climate**: `auto_conditioning_start`, `auto_conditioning_stop`, `set_temps`, `set_preconditioning_max`, `remote_seat_heater_request`, `remote_steering_wheel_heater_request`
+- **Charging**: `charge_start`, `charge_stop`, `set_charge_limit`, `set_charging_amps`, `charge_port_door_open`, `charge_port_door_close`, `set_scheduled_charging`
+- **Trunk**: `actuate_trunk` (front/rear)
+- **Windows**: `window_control` (vent/close)
+- **Security**: `set_sentry_mode`, `remote_start_drive`
+- **Media**: `media_toggle_playback`, `media_next_track`, `media_prev_track`
+- **Other**: `flash_lights`, `honk_horn`, `trigger_homelink`, `schedule_software_update`
+
+### Field Description
+
+- df: driver front
+- dr: driver rear
+- pf: passenger front
+- pr: passenger rear
+- ft: front trunk
+- rt: rear trunk
+
+### Technical Details
+
+- **Fleet API**: Regional endpoints (EU/NA/CN) with automatic region detection from JWT token
+- **Command Signing**: ECDSA P-256 + HMAC-SHA256 via protobuf (Vehicle Command Protocol)
+- **Two Domains**: DOMAIN_INFOTAINMENT (climate, charging, media) and DOMAIN_VEHICLE_SECURITY (lock, unlock, trunk)
+- **Session Management**: ECDH handshake per domain, epoch + counter based, stored in ioBroker state
+- **Token Refresh**: Automatic refresh before expiry
+
+### Questions and Discussions
+
+<https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0>
 
 <!--
   Placeholder for the next version (at the beginning of the line):
@@ -49,10 +95,17 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 ## Changelog
 
 ### **WORK IN PROGRESS**
+
+- (TA2k) Migrate to Tesla Fleet API with OAuth2
+- (TA2k) Add Vehicle Command Protocol signing (ECDSA P-256) for post-2021 vehicles
+- (TA2k) Add admin UI for Fleet API setup (key generation, credentials, virtual key)
+- (TA2k) Add regional endpoint detection (EU/NA/CN) from JWT token
+- (TA2k) Store session in ioBroker state to avoid restart loops
 - (copilot) Adapter requires admin >= 7.7.22 now
 - (copilot) Adapter requires admin >= 7.6.17 now
 
 ### 1.5.0 (2025-12-28)
+
 - (mcm1957) Adapter requires node.js >= 20, js-controller >= 6.0.11 and admin >= 6.17.14 now.
 - (TA2k) powerwall backup history has been fixed
 - (TA2k) Dependencies have been updated.
@@ -109,7 +162,6 @@ https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0
 ## License
 
 MIT License
-
 
 Copyright (c) 2026 iobroker-community-adapters <iobroker-community-adapters@gmx.de>  
 Copyright (c) 2021-2025 iobroker-community
