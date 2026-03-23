@@ -187,18 +187,31 @@
     ]
   },
   "encryptedNative": [
+    "clientSecret",
+    "privateKey",
     "codeUrl",
-    "session"
+    "session",
+    "fleetSession"
   ],
   "protectedNative": [
+    "clientSecret",
+    "privateKey",
     "codeUrl",
-    "session"
+    "session",
+    "fleetSession"
   ],
   "native": {
+    "clientId": "",
+    "clientSecret": "",
+    "privateKey": "",
+    "publicKey": "",
+    "fleetApiRegion": "eu",
+    "fleetkeyDomain": "",
     "codeUrl": "",
     "wakeup": false,
     "interval": 5,
     "session": {},
+    "fleetSession": {},
     "reset": false,
     "intervalNormal": 60,
     "locationInterval": 60,

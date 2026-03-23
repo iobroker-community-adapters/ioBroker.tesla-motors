@@ -15,34 +15,166 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="words.js"></script>
 
+    <style>
+      .step-instructions { padding-left: 20px; margin-top: 8px; margin-bottom: 8px; }
+      .step-instructions li { margin-bottom: 6px; }
+      .step-note { color: #666; font-size: 0.9em; margin-top: 4px; }
+      .step-warning { color: #d32f2f; font-weight: bold; }
+      .qr-container { margin-top: 12px; }
+      .qr-container img { border: 1px solid #ddd; padding: 8px; background: #fff; }
+    </style>
+
     <script type="text/javascript">
+      // Global reference to onChange callback
+      var _onChange = function () {};
+
       // This will be called by the admin adapter when the settings page loads
       function load(settings, onChange) {
-        // example: select elements with id=key and class=value and insert value
         if (!settings) return;
-        $('#captchaSvg').append(settings.captchaSvg);
+        _onChange = onChange;
+
         $('.value').each(function () {
           var $key = $(this);
           var id = $key.attr('id');
           if ($key.attr('type') === 'checkbox') {
-            // do not call onChange direct, because onChange could expect some arguments
             $key.prop('checked', settings[id]).on('change', () => onChange());
           } else {
-            // do not call onChange direct, because onChange could expect some arguments
             $key
               .val(settings[id])
               .on('change', () => onChange())
               .on('keyup', () => onChange());
           }
         });
+
+        // Initialize region select (formSelect may not exist in all admin versions)
+        if (typeof $.fn.formSelect === 'function') {
+          $('select').formSelect();
+        }
+        $('select').on('change', () => onChange());
+
+        // Show existing public key if present
+        if (settings.publicKey) {
+          $('#publicKeyDisplay').val(settings.publicKey);
+          $('#publicKeySection').show();
+          $('#copyPublicKey').show();
+        }
+
+        // Update virtual key URL when fleetkeyDomain changes
+        $('#fleetkeyDomain').on('keyup change', function () {
+          updateVirtualKeyUrl();
+        });
+        updateVirtualKeyUrl();
+
         onChange(false);
-        // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
         if (M) M.updateTextFields();
+      }
+
+      // Generate EC P-256 key pair using Web Crypto API
+      async function onGenerateKeyPair() {
+        try {
+          var keyPair = await crypto.subtle.generateKey(
+            { name: 'ECDSA', namedCurve: 'P-256' },
+            true,
+            ['sign', 'verify']
+          );
+
+          // Export public key as SPKI DER
+          var publicKeyDer = await crypto.subtle.exportKey('spki', keyPair.publicKey);
+          var publicKeyPem = derToPem(publicKeyDer, 'PUBLIC KEY');
+
+          // Export private key as PKCS8 DER
+          var privateKeyDer = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
+          var privateKeyPem = derToPem(privateKeyDer, 'EC PRIVATE KEY');
+
+          // Store in hidden fields
+          $('#publicKey').val(publicKeyPem);
+          $('#privateKey').val(privateKeyPem);
+
+          // Show public key for user to copy
+          $('#publicKeyDisplay').val(publicKeyPem);
+          $('#publicKeySection').show();
+          $('#copyPublicKey').show();
+
+          if (typeof M !== 'undefined' && M.toast) M.toast({ html: 'Key pair generated! Click Save to persist.' });
+
+          if (typeof M !== 'undefined' && M.updateTextFields) M.updateTextFields();
+          _onChange();
+        } catch (e) {
+          alert('Key generation failed: ' + e.message);
+        }
+      }
+
+      function onCopyPublicKey() {
+        var text = $('#publicKeyDisplay').val();
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(function () {
+            if (typeof M !== 'undefined' && M.toast) M.toast({ html: 'Public Key copied!' });
+          });
+        } else {
+          // Fallback: select textarea content
+          var el = document.getElementById('publicKeyDisplay');
+          el.select();
+          document.execCommand('copy');
+        }
+      }
+
+      // Convert DER ArrayBuffer to PEM string
+      function derToPem(der, label) {
+        var b64 = btoa(String.fromCharCode.apply(null, new Uint8Array(der)));
+        var lines = [];
+        for (var i = 0; i < b64.length; i += 64) {
+          lines.push(b64.substring(i, i + 64));
+        }
+        return '-----BEGIN ' + label + '-----\n' + lines.join('\n') + '\n-----END ' + label + '-----';
+      }
+
+      function onGenerateAuthLink() {
+        var clientId = $('#clientId').val();
+
+        if (!clientId) {
+          if (typeof M !== 'undefined' && M.toast) M.toast({ html: 'Client ID is required' });
+          return;
+        }
+
+        var state = btoa(
+          String.fromCharCode.apply(
+            null,
+            Array.from(crypto.getRandomValues(new Uint8Array(32)))
+          )
+        )
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+
+        var scopes = 'openid offline_access vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds energy_device_data energy_cmds';
+
+        var authUrl =
+          'https://auth.tesla.com/oauth2/v3/authorize' +
+          '?client_id=' + encodeURIComponent(clientId) +
+          '&redirect_uri=' + encodeURIComponent('https://auth.tesla.com/void/callback') +
+          '&response_type=code' +
+          '&scope=' + encodeURIComponent(scopes) +
+          '&state=' + state;
+
+        $('#authLink').attr('href', authUrl).text('Tesla Login').show();
+        $('#authLinkContainer').show();
+        window.open(authUrl, '_blank');
+      }
+
+      function updateVirtualKeyUrl() {
+        var domain = $('#fleetkeyDomain').val();
+        if (domain) {
+          var url = 'https://tesla.com/_ak/' + domain;
+          $('#virtualKeyUrl').attr('href', url).text(url).show();
+          $('#virtualKeyQr').attr('src', 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(url)).show();
+          $('#virtualKeyContainer').show();
+        } else {
+          $('#virtualKeyContainer').hide();
+        }
       }
 
       // This will be called by the admin adapter when the user presses the save button
       function save(callback) {
-        // example: select elements with class=value and build settings object
         var obj = {};
         $('.value').each(function () {
           var $this = $(this);
@@ -54,7 +186,6 @@
             obj[$this.attr('id')] = $this.val();
           }
         });
-
         callback(obj);
       }
     </script>
@@ -68,81 +199,176 @@
         </div>
       </div>
 
-      <!-- Put your content here -->
-
-      <!-- For example columns with settings: -->
+      <!-- ============================================================ -->
+      <!-- Step 1: Key Pair Generation -->
+      <!-- ============================================================ -->
       <div class="row">
-        <div class="col s12 input-field">
-          Schritt #1
-          <p></p>
-          Besuche diese offizielle Tesla Seite und logge dich ein.
-          <p>
-            Falls die Url nach dem Login "https://auth.tesla.com/static/404.html" lautet, bitte erneut den Link klicken.
-          </p>
-          <p>
-            <a
-              target="_blank"
-              href="
-                https://auth.tesla.com/oauth2/v3/authorize?audience=&client_id=ownerapi&code_challenge=Tb-FGN3adrpojN8dmKySlVfBPdg-rA-voNN_3lftZVM&code_challenge_method=S256&locale=de&prompt=login&redirect_uri=https%3A%2F%2Fauth.tesla.com%2Fvoid%2Fcallback&response_type=code&scope=openid%20email%20offline_access&state=AVpzayWF0Ws%2BbdGWYoM3xYg1Hjm42slwiO3GjCzmTeI%3D"
-              >https://auth.tesla.com</a
-            >
-          </p>
+        <div class="col s12">
+          <h5 class="translate">Step 1: Generate Key Pair</h5>
+          <ol class="step-instructions">
+            <li class="translate">step1_instruction1</li>
+            <li class="translate">step1_instruction2</li>
+            <li class="translate">step1_instruction3</li>
+          </ol>
         </div>
       </div>
       <div class="row">
+        <div class="col s12">
+          <a id="generateKeyPair" onclick="onGenerateKeyPair()" class="btn waves-effect waves-light translate">Generate Key Pair</a>
+          <a id="copyPublicKey" onclick="onCopyPublicKey()" class="btn-flat waves-effect translate" style="display:none; margin-left:10px">Copy Public Key</a>
+        </div>
+      </div>
+      <div class="row" id="publicKeySection" style="display:none">
         <div class="col s12 input-field">
-          Schritt #2
-          <p></p>
-          Nach dem du "Page Not Found" siehst kopiere die URL aus der Addresszeile und füge Sie in das untere Feld.
-          <h6>Teile die URL niemals anderen Personen mit. Sie erlaubt Zugang zu deinem kompletten Konto.</h6>
-          <br />
-          <img src="./url.jpg" width="400px" />
+          <textarea id="publicKeyDisplay" class="materialize-textarea" readonly style="font-family:monospace; font-size:12px; min-height:160px; height:auto; overflow-y:visible"></textarea>
+          <label for="publicKeyDisplay" class="translate active">Public Key (copy to FleetKey.net)</label>
+        </div>
+      </div>
+      <!-- Hidden fields for storing keys -->
+      <input type="hidden" class="value" id="publicKey" />
+      <input type="hidden" class="value" id="privateKey" />
+
+      <!-- ============================================================ -->
+      <!-- Step 2: Developer App + FleetKey -->
+      <!-- ============================================================ -->
+      <div class="row">
+        <div class="col s12">
+          <h5 class="translate">Step 2: Tesla Developer App</h5>
+          <ol class="step-instructions">
+            <li>
+              <span class="translate">step2_instruction1</span>
+              <a href="https://developer.tesla.com/request" target="_blank">developer.tesla.com</a>
+            </li>
+            <li class="translate">step2_instruction2</li>
+            <li class="translate">step2_instruction3</li>
+            <li class="translate">step2_instruction4</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s12 m6 input-field">
+          <input type="text" class="value" id="clientId" />
+          <label for="clientId" class="translate">Client ID</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m6 input-field">
+          <input type="password" class="value" id="clientSecret" />
+          <label for="clientSecret" class="translate">Client Secret</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m6 input-field">
+          <select class="value" id="fleetApiRegion">
+            <option value="eu">EU (Europe)</option>
+            <option value="na">NA (North America)</option>
+            <option value="cn">CN (China)</option>
+          </select>
+          <label for="fleetApiRegion" class="translate">Region (Fallback)</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m6 input-field">
+          <input type="text" class="value" id="fleetkeyDomain" placeholder="e.g. abc123.fleetkey.net" />
+          <label for="fleetkeyDomain" class="translate">FleetKey Domain</label>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- Step 3: Auth Flow -->
+      <!-- ============================================================ -->
+      <div class="row">
+        <div class="col s12">
+          <h5 class="translate">Step 3: Authentication</h5>
+          <ol class="step-instructions">
+            <li class="translate">step3_instruction1</li>
+            <li class="translate">step3_instruction2</li>
+            <li class="translate">step3_instruction3</li>
+            <li class="translate">step3_instruction4</li>
+          </ol>
+          <p class="step-warning translate">step3_warning</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <a id="generateAuthLink" onclick="onGenerateAuthLink()" class="btn waves-effect waves-light translate">Generate Auth Link</a>
+        </div>
+      </div>
+      <div class="row" id="authLinkContainer" style="display:none">
+        <div class="col s12">
+          <a id="authLink" target="_blank" href="#" class="btn-flat waves-effect" style="text-transform:none">Tesla Login</a>
         </div>
       </div>
       <div class="row">
         <div class="col s12 input-field">
           <input type="text" class="value" id="codeUrl" />
-          <label for="codeUrl" class="translate">https://auth.tesla.com/void/callback?code=......</label>
+          <label for="codeUrl">https://auth.tesla.com/void/callback?code=......</label>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- Step 4: Virtual Key -->
+      <!-- ============================================================ -->
+      <div class="row">
+        <div class="col s12">
+          <h5 class="translate">Step 4: Install Virtual Key</h5>
+          <p class="translate">step4_description</p>
+          <ol class="step-instructions">
+            <li class="translate">step4_instruction1</li>
+            <li class="translate">step4_instruction2</li>
+            <li class="translate">step4_instruction3</li>
+          </ol>
+        </div>
+      </div>
+      <div class="row" id="virtualKeyContainer" style="display:none">
+        <div class="col s12">
+          <p><b class="translate">step4_url_label</b></p>
+          <a id="virtualKeyUrl" target="_blank" href="#" style="font-size:1.1em"></a>
+          <div class="qr-container">
+            <img id="virtualKeyQr" src="" style="display:none; max-width:200px;" />
+          </div>
+          <p class="step-note translate">step4_qr_hint</p>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- Update Settings -->
+      <!-- ============================================================ -->
+      <div class="row">
+        <div class="col s12">
+          <h5 class="translate">Update Settings</h5>
         </div>
       </div>
       <div class="row">
         <div class="col s6 input-field">
           <input type="number" class="value" id="intervalNormal" />
-          <label for="intervalNormal" class="translate">Update interval in Sekunden. Minimum 10</label>
+          <label for="intervalNormal" class="translate">Update interval in seconds (minimum 10)</label>
         </div>
       </div>
       <div class="row">
         <div class="col s6 input-field">
           <input type="number" class="value" id="locationInterval" />
-          <label for="locationInterval" class="translate"
-            >Lokation Update interval in Sekunden. 0 ist deaktiviert</label
-          >
+          <label for="locationInterval" class="translate">Location update interval in seconds (0 = disabled)</label>
         </div>
       </div>
-
       <div class="row">
         <div class="col s6 input-field">
           <input type="number" class="value" id="intervalDrive" />
-          <label for="intervalDrive" class="translate"
-            >Update interval während der Fahrt in Sekunden. 0 oder kein Wert zum deaktivieren.</label
-          >
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s6 input-field">
-          <input type="checkbox" class="value" id="streaming" />
-          <label for="streaming" class="translate"
-            >Streaming von live Daten aktivieren (Beta nur aktivieren wenn es benötigt wird)</label
-          >
+          <label for="intervalDrive" class="translate">Update interval while driving in seconds (0 = disabled)</label>
         </div>
       </div>
 
+      <!-- Options -->
+      <div class="row">
+        <div class="col s12">
+          <h5 class="translate">Options</h5>
+        </div>
+      </div>
       <div class="row">
         <div class="col s6 input-field">
           <input type="checkbox" class="value" id="wakeup" />
-          <label for="wakeup" class="translate"
-            >Auto für jedes Update aufwecken. Auto schläft nicht ein um Battery zu sparen.</label
-          >
+          <label for="wakeup" class="translate">Wake up vehicle for each update (prevents sleep to save battery)</label>
         </div>
       </div>
       <div class="row">
@@ -154,7 +380,7 @@
       <div class="row">
         <div class="col s6 input-field">
           <input type="text" class="value" id="excludeDeviceList" />
-          <label for="excludeDeviceList" class="translate">Exclude device ids (comma separated)</label>
+          <label for="excludeDeviceList" class="translate">Exclude device IDs (comma separated)</label>
         </div>
       </div>
       <div class="row">

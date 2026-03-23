@@ -63,6 +63,6 @@ module.exports = [
     },
   },
   {
-    ignores: ['node_modules/**', '.git/**', 'test/**', 'admin/**'],
+    ignores: ['node_modules/**', '.git/**', 'test/**', 'admin/**', 'tesla-cmd-api/**'],
   },
 ];
