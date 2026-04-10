@@ -110,7 +110,6 @@ Supported commands include:
 - (TA2k) Add regional endpoint detection (EU/NA/CN) from JWT token
 - (TA2k) Store session in ioBroker state to avoid restart loops
 - (copilot) Adapter requires admin >= 7.7.22 now
-- (copilot) Adapter requires admin >= 7.6.17 now
 
 ### 1.5.0 (2025-12-28)
 
