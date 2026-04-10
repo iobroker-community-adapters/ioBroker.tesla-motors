@@ -28,6 +28,7 @@ class Teslamotors extends utils.Adapter {
     });
     this.on('ready', this.onReady.bind(this));
     this.on('stateChange', this.onStateChange.bind(this));
+    this.on('message', this.onMessage.bind(this));
     this.on('unload', this.onUnload.bind(this));
 
     this.session = {};
@@ -1251,6 +1252,27 @@ class Teslamotors extends utils.Adapter {
 
   getDate() {
     return new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString();
+  }
+
+  /**
+   * Handle messages from admin UI (e.g. server-side key pair generation).
+   * @param {ioBroker.Message} obj
+   */
+  async onMessage(obj) {
+    if (obj.command === 'generateKeyPair') {
+      try {
+        // @ts-ignore - TS confuses Node.js crypto with browser global
+        const nodeCrypto = require('crypto');
+        const { publicKey, privateKey } = nodeCrypto.generateKeyPairSync('ec', {
+          namedCurve: 'prime256v1',
+          publicKeyEncoding: { type: 'spki', format: 'pem' },
+          privateKeyEncoding: { type: 'sec1', format: 'pem' },
+        });
+        this.sendTo(obj.from, obj.command, { publicKey, privateKey }, obj.callback);
+      } catch (/** @type {any} */ e) {
+        this.sendTo(obj.from, obj.command, { error: e.message }, obj.callback);
+      }
+    }
   }
 
   /**

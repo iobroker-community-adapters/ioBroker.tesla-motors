@@ -69,39 +69,25 @@
         if (M) M.updateTextFields();
       }
 
-      // Generate EC P-256 key pair using Web Crypto API
-      async function onGenerateKeyPair() {
-        try {
-          var keyPair = await crypto.subtle.generateKey(
-            { name: 'ECDSA', namedCurve: 'P-256' },
-            true,
-            ['sign', 'verify']
-          );
-
-          // Export public key as SPKI DER
-          var publicKeyDer = await crypto.subtle.exportKey('spki', keyPair.publicKey);
-          var publicKeyPem = derToPem(publicKeyDer, 'PUBLIC KEY');
-
-          // Export private key as PKCS8 DER
-          var privateKeyDer = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
-          var privateKeyPem = derToPem(privateKeyDer, 'EC PRIVATE KEY');
-
-          // Store in hidden fields
-          $('#publicKey').val(publicKeyPem);
-          $('#privateKey').val(privateKeyPem);
-
-          // Show public key for user to copy
-          $('#publicKeyDisplay').val(publicKeyPem);
-          $('#publicKeySection').show();
-          $('#copyPublicKey').show();
-
-          if (typeof M !== 'undefined' && M.toast) M.toast({ html: 'Key pair generated! Click Save to persist.' });
-
-          if (typeof M !== 'undefined' && M.updateTextFields) M.updateTextFields();
-          _onChange();
-        } catch (e) {
-          alert('Key generation failed: ' + e.message);
-        }
+      // Generate EC P-256 key pair on adapter backend via sendTo (works on HTTP and HTTPS)
+      function onGenerateKeyPair() {
+        var namespace = 'tesla-motors.' + instance;
+        sendTo(namespace, 'generateKeyPair', {}, function (result) {
+          if (result && result.error) {
+            alert('Key generation failed: ' + result.error);
+          } else if (result && result.publicKey && result.privateKey) {
+            $('#publicKey').val(result.publicKey);
+            $('#privateKey').val(result.privateKey);
+            $('#publicKeyDisplay').val(result.publicKey);
+            $('#publicKeySection').show();
+            $('#copyPublicKey').show();
+            if (typeof M !== 'undefined' && M.toast) M.toast({ html: 'Key pair generated! Click Save to persist.' });
+            if (typeof M !== 'undefined' && M.updateTextFields) M.updateTextFields();
+            _onChange();
+          } else {
+            alert('Key generation failed: No response from adapter. Make sure the adapter is running.');
+          }
+        });
       }
 
       function onCopyPublicKey() {
@@ -116,16 +102,6 @@
           el.select();
           document.execCommand('copy');
         }
-      }
-
-      // Convert DER ArrayBuffer to PEM string
-      function derToPem(der, label) {
-        var b64 = btoa(String.fromCharCode.apply(null, new Uint8Array(der)));
-        var lines = [];
-        for (var i = 0; i < b64.length; i += 64) {
-          lines.push(b64.substring(i, i + 64));
-        }
-        return '-----BEGIN ' + label + '-----\n' + lines.join('\n') + '\n-----END ' + label + '-----';
       }
 
       function onGenerateAuthLink() {
