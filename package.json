@@ -22,9 +22,9 @@
   "dependencies": {
     "@eiannone/tesla-cmd-api": "github:eiannone/tesla-cmd-api",
     "@iobroker/adapter-core": "^3.3.2",
-    "axios": "^1.13.6",
+    "axios": "^1.15.0",
     "json-bigint": "^1.0.0",
-    "qs": "^6.15.0",
+    "qs": "^6.15.1",
     "ws": "^8.20.0"
   },
   "devDependencies": {
@@ -34,9 +34,9 @@
     "@alcalzone/release-script-plugin-manual-review": "^5.1.1",
     "@eslint/js": "^10.0.1",
     "@iobroker/testing": "^5.2.2",
-    "@types/node": "^25.5.0",
-    "eslint": "^10.1.0",
-    "typescript": "~5.9.3"
+    "@types/node": "^25.6.0",
+    "eslint": "^10.2.0",
+    "typescript": "~6.0.2"
   },
   "main": "main.js",
   "scripts": {
