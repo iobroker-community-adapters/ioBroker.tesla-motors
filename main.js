@@ -1262,7 +1262,7 @@ class Teslamotors extends utils.Adapter {
     if (obj.command === 'generateKeyPair') {
       try {
         // @ts-ignore - TS confuses Node.js crypto with browser global
-        const nodeCrypto = require('crypto');
+        const nodeCrypto = require('node:crypto');
         const { publicKey, privateKey } = nodeCrypto.generateKeyPairSync('ec', {
           namedCurve: 'prime256v1',
           publicKeyEncoding: { type: 'spki', format: 'pem' },
