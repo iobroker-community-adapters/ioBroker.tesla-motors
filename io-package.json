@@ -92,7 +92,8 @@
       "it": "Tesla",
       "es": "Tesla",
       "pl": "Tesla",
-      "zh-cn": "特斯拉"
+      "zh-cn": "特斯拉",
+      "uk": "Тесла"
     },
     "desc": {
       "en": "Adapter for Tesla",
@@ -104,7 +105,8 @@
       "it": "Adattatore per Tesla",
       "es": "Adaptador para Tesla",
       "pl": "Adapter do Tesli",
-      "zh-cn": "特斯拉适配器"
+      "zh-cn": "特斯拉适配器",
+      "uk": "Адаптер для Tesla"
     },
     "authors": [
       "TA2k <tombox2020@gmail.com>",
@@ -154,7 +156,8 @@
           "it": "Avviso IMPORTANTE!",
           "es": "Noticia importante!",
           "pl": "Ważna uwaga!",
-          "zh-cn": "重要通知!"
+          "zh-cn": "重要通知!",
+          "uk": "Важливе повідомлення!"
         },
         "text": {
           "en": "The id in the object tree are changed from id to vin. Please adjust your scripts and delete the old tree manually.",
@@ -166,7 +169,8 @@
           "it": "L'id nell'albero degli oggetti viene modificato da id a vin. Modifica i tuoi script ed elimina manualmente il vecchio albero.",
           "es": "La identificación en el árbol de objetos se cambia de identificación a vin. Ajuste sus scripts y elimine el árbol antiguo manualmente.",
           "pl": "Identyfikator w drzewie obiektów zostanie zmieniony z id na vin. Dostosuj swoje skrypty i ręcznie usuń stare drzewo.",
-          "zh-cn": "对象树中的 id 从 id 更改为 vin。请调整您的脚本并手动删除旧树。"
+          "zh-cn": "对象树中的 id 从 id 更改为 vin。请调整您的脚本并手动删除旧树。",
+          "uk": "Ідентифікатор у дереві об’єктів змінено з id на vin. Налаштуйте свої сценарії та видаліть старе дерево вручну."
         },
         "level": "warn",
         "buttons": [
