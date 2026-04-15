@@ -142,6 +142,7 @@
     "mode": "daemon",
     "type": "vehicle",
     "compact": true,
+    "messagebox": true,
     "connectionType": "cloud",
     "dataSource": "poll",
     "materialize": true,
