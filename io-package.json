@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "news": {
-      "2.0.0": {
+      "2.0.1": {
         "en": "Migrate to Tesla Fleet API with OAuth2\nAdd Vehicle Command Protocol signing (ECDSA P-256) for post-2021 vehicles\nAdd admin UI for Fleet API setup (key generation, credentials, virtual key)\nAdd regional endpoint detection (EU/NA/CN) from JWT token\nStore session in ioBroker state to avoid restart loops\nAdapter requires admin >= 7.7.22 now",
         "de": "Migration auf Tesla Fleet API mit OAuth2\nHinzufügen von Fahrzeugkommando-Protokoll-signing (ECDSA P-256) für Post-2021 Fahrzeuge\nAdmin UI für Fleet API-Setup (Schlüsselgeneration, Anmeldeinformationen, virtueller Schlüssel)\nRegionale Endpunkterkennung (EU/NA/CN) von JWT-Token hinzufügen\nSpeichern der Session in ioBroker, um Neustartschleifen zu vermeiden\nAdapter benötigt admin >= 7.7.22",
         "ru": "Тесла Флит API с OAuth2\nДобавить подписание командного протокола транспортного средства (ECDSA P-256) для транспортных средств после 2021 года\nДобавить админ UI для установки Fleet API (генерация ключей, учетные данные, виртуальный ключ)\nДобавить региональное обнаружение конечных точек (EU/NA/CN) из токена JWT\nСеанс магазина в состоянии ioBroker, чтобы избежать перезапуска петель\nАдаптер требует администратора >= 7.7.22",
@@ -80,19 +80,6 @@
         "pl": "stany _\\km nie są odświeżone",
         "uk": "фіксувати _\\км стани не освіжаються",
         "zh-cn": "fix 冰箱州没有被破裂。"
-      },
-      "1.4.0": {
-        "en": "fix location fetching and add new option to change location fetching interval",
-        "de": "standort-fetching fixieren und neue option hinzufügen, um standort-fetching-intervall zu ändern",
-        "ru": "исправить местоположение забора и добавить новый вариант, чтобы изменить место забора интервал",
-        "pt": "corrigir busca de local e adicionar nova opção para alterar o intervalo de busca de local",
-        "nl": "vertaling:",
-        "fr": "correction de l'emplacement et ajouter une nouvelle option pour changer l'intervalle de localisation",
-        "it": "correggere l'acquisizione posizione e aggiungere nuova opzione per cambiare l'intervallo di acquisizione posizione",
-        "es": "fijar ubicación buscar y añadir nueva opción para cambiar el intervalo de búsqueda de ubicación",
-        "pl": "naprawić lokalizację i dodać nową opcję w celu zmiany lokalizacji",
-        "uk": "фіксувати розташування fetching і додати новий варіант, щоб змінити інтервал розташування",
-        "zh-cn": "f 固定地点制造和增加新的选择,改变地点的间隔"
       }
     },
     "titleLang": {
@@ -121,13 +108,8 @@
       "zh-cn": "特斯拉适配器",
       "uk": "Адаптер для Tesla"
     },
-    "authors": [
-      "TA2k <tombox2020@gmail.com>",
-      "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
-    ],
-    "keywords": [
-      "tesla"
-    ],
+    "authors": ["TA2k <tombox2020@gmail.com>", "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"],
+    "keywords": ["tesla"],
     "licenseInformation": {
       "type": "free",
       "license": "MIT"
@@ -155,10 +137,7 @@
       {
         "condition": {
           "operand": "and",
-          "rules": [
-            "oldVersion<1.1.0",
-            "newVersion>=1.1.0"
-          ]
+          "rules": ["oldVersion<1.1.0", "newVersion>=1.1.0"]
         },
         "title": {
           "en": "Important notice!",
@@ -187,10 +166,7 @@
           "uk": "Ідентифікатор у дереві об’єктів змінено з id на vin. Налаштуйте свої сценарії та видаліть старе дерево вручну."
         },
         "level": "warn",
-        "buttons": [
-          "agree",
-          "cancel"
-        ]
+        "buttons": ["agree", "cancel"]
       }
     ],
     "dependencies": [
@@ -204,20 +180,8 @@
       }
     ]
   },
-  "encryptedNative": [
-    "clientSecret",
-    "privateKey",
-    "codeUrl",
-    "session",
-    "fleetSession"
-  ],
-  "protectedNative": [
-    "clientSecret",
-    "privateKey",
-    "codeUrl",
-    "session",
-    "fleetSession"
-  ],
+  "encryptedNative": ["clientSecret", "privateKey", "codeUrl", "session", "fleetSession"],
+  "protectedNative": ["clientSecret", "privateKey", "codeUrl", "session", "fleetSession"],
   "native": {
     "clientId": "",
     "clientSecret": "",

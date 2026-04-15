@@ -1,6 +1,6 @@
 {
   "name": "iobroker.tesla-motors",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Adapter for Tesla",
   "author": "TA2k <tombox2020@gmail.com>",
   "contributors": [

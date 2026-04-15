@@ -101,7 +101,7 @@ Supported commands include:
 -->
 
 ## Changelog
-### 2.0.0 (2026-04-12)
+### 2.0.1 (2026-04-15)
 
 - (TA2k) Migrate to Tesla Fleet API with OAuth2
 - (TA2k) Add Vehicle Command Protocol signing (ECDSA P-256) for post-2021 vehicles
