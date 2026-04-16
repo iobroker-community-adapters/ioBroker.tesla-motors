@@ -640,12 +640,12 @@ class Teslamotors extends utils.Adapter {
         return;
       }
       if (error.response && error.response.status === 401) {
-        this.log.warn(vin + ' 401 on state check, scheduling token refresh');
+        this.log.info(vin + ' 401 on state check, scheduling token refresh');
         this.scheduleTokenRefresh();
         return;
       }
       if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
-        this.log.warn(vin + ' server error on state check: ' + error.response.status);
+        this.log.info(vin + ' server error on state check: ' + error.response.status);
         return;
       }
       this.log.error('Vehicle state check failed for ' + vin);
@@ -709,7 +709,7 @@ class Teslamotors extends utils.Adapter {
       const res = await this.requestClient({ method: 'get', url: url, headers: headers });
 
       if (!res.data || !res.data.response) {
-        this.log.warn(vin + ' vehicle_data response is empty or malformed');
+        this.log.info(vin + ' vehicle_data response is empty or malformed');
         this.log.debug(vin + ' raw response: ' + JSON.stringify(res.data).substring(0, 500));
         return;
       }
@@ -724,7 +724,7 @@ class Teslamotors extends utils.Adapter {
         if (data[ep] === null || data[ep] === undefined) {
           this.log.debug(vin + ' endpoint ' + ep + ' is null/missing');
         } else if (data[ep] && data[ep].error) {
-          this.log.warn(vin + ' endpoint ' + ep + ' returned error: ' + data[ep].error);
+          this.log.info(vin + ' endpoint ' + ep + ' returned error: ' + data[ep].error);
         } else if (typeof data[ep] === 'object') {
           this.log.debug(vin + ' endpoint ' + ep + ' has ' + Object.keys(data[ep]).length + ' fields');
         }
@@ -766,12 +766,12 @@ class Teslamotors extends utils.Adapter {
         return;
       }
       if (error.response && error.response.status === 401) {
-        this.log.warn(vin + ' 401 on vehicle_data, scheduling token refresh');
+        this.log.info(vin + ' 401 on vehicle_data, scheduling token refresh');
         this.scheduleTokenRefresh();
         return;
       }
       if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
-        this.log.warn(vin + ' server error on vehicle_data: ' + error.response.status);
+        this.log.info(vin + ' server error on vehicle_data: ' + error.response.status);
         return;
       }
       this.log.error('Vehicle data failed for ' + vin);
