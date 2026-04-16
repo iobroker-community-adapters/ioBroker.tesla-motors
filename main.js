@@ -313,15 +313,24 @@ class Teslamotors extends utils.Adapter {
                   privateKey: keys.privateKey,
                   publicKey: keys.publicKey,
                   sendSignedCommand: async (vin, buffer) => {
+                    const b64 = buffer.toString('base64');
+                    self.log.debug('[SignedCmd] POST /signed_command for ' + vin + ', payload size=' + buffer.length + 'B, base64 length=' + b64.length);
+                    self.log.debug('[SignedCmd] routable_message: ' + b64);
                     try {
+                      const url = self.getFleetApiBaseUrl() + '/api/1/vehicles/' + vin + '/signed_command';
+                      self.log.debug('[SignedCmd] URL: ' + url);
                       const res = await self.requestClient({
                         method: 'post',
-                        url: self.getFleetApiBaseUrl() + '/api/1/vehicles/' + vin + '/signed_command',
+                        url: url,
                         headers: self.getFleetHeaders(),
-                        data: { routable_message: buffer.toString('base64') },
+                        data: { routable_message: b64 },
                       });
+                      self.log.debug('[SignedCmd] Response status: ' + res.status);
+                      self.log.debug('[SignedCmd] Response data: ' + JSON.stringify(res.data));
                       if (!res.data || !res.data.response) throw new Error('Invalid signed_command response: ' + JSON.stringify(res.data));
-                      return Buffer.from(res.data.response, 'base64');
+                      const respBuf = Buffer.from(res.data.response, 'base64');
+                      self.log.debug('[SignedCmd] Decoded response size: ' + respBuf.length + 'B');
+                      return respBuf;
                     } catch (/** @type {any} */ e) {
                       if (e.response) {
                         self.log.error('signed_command HTTP ' + e.response.status + ': ' + JSON.stringify(e.response.data));
@@ -717,7 +726,7 @@ class Teslamotors extends utils.Adapter {
 
       if (!res.data || !res.data.response) {
         this.log.info(vin + ' vehicle_data response is empty or malformed');
-        this.log.debug(vin + ' raw response: ' + JSON.stringify(res.data).substring(0, 500));
+        this.log.debug(vin + ' raw response: ' + JSON.stringify(res.data));
         return;
       }
       if (res.data.response.tokens) delete res.data.response.tokens;
