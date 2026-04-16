@@ -178,10 +178,12 @@ class Teslamotors extends utils.Adapter {
 
       this.log.info('Receive device list');
       await this.getDeviceList();
-      this.updateDevices();
+      this.log.info('Device list received, ' + this.idArray.length + ' devices found. Starting first update (forceUpdate=true)');
+      await this.updateDevices(true);
       this.updateInterval = setInterval(async () => {
         await this.updateDevices();
       }, this.config.intervalNormal * 1000);
+      this.log.info('Update interval set to ' + this.config.intervalNormal + 's');
       if (this.config.locationInterval > 10) {
         this.updateDevices(false, true);
         this.locationInterval = setInterval(async () => {
@@ -547,6 +549,7 @@ class Teslamotors extends utils.Adapter {
    * Energy Sites: live_status, site_info, calendar_history (like HA coordinator.py:175-181).
    */
   async updateDevices(forceUpdate, location = false) {
+    this.log.debug('updateDevices start (forceUpdate=' + forceUpdate + ', location=' + location + ', devices=' + this.idArray.length + ')');
     const fleetBase = this.getFleetApiBaseUrl();
 
     const energySiteArray = [
@@ -615,6 +618,8 @@ class Teslamotors extends utils.Adapter {
     const fleetBase = this.getFleetApiBaseUrl();
     const headers = this.getFleetHeaders();
 
+    this.log.debug(vin + ' updateVehicle start (forceUpdate=' + forceUpdate + ', location=' + location + ')');
+
     // Free API call - check vehicle state without using quota (like HA coordinator.py:103)
     let state;
     try {
@@ -628,17 +633,19 @@ class Teslamotors extends utils.Adapter {
       }
       this.json2iob.parse(vin, stateRes.data.response, { preferedArrayName: 'timestamp' });
       state = stateRes.data.response.state;
-    } catch (error) {
+      this.log.debug(vin + ' state check response keys: ' + Object.keys(stateRes.data.response || {}).join(', '));
+    } catch (/** @type {any} */ error) {
       if (error.response && error.response.status === 429) {
         this.log.warn(vin + ' rate limited on state check, skip this refresh');
         return;
       }
       if (error.response && error.response.status === 401) {
+        this.log.warn(vin + ' 401 on state check, scheduling token refresh');
         this.scheduleTokenRefresh();
         return;
       }
       if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
-        this.log.debug(vin + ' server error on state check: ' + error.response.status);
+        this.log.warn(vin + ' server error on state check: ' + error.response.status);
         return;
       }
       this.log.error('Vehicle state check failed for ' + vin);
@@ -647,15 +654,16 @@ class Teslamotors extends utils.Adapter {
       return;
     }
 
-    this.log.debug(vin + ' state: ' + state);
+    this.log.info(vin + ' vehicle state: ' + state);
 
     // If not online, skip expensive call (like HA coordinator.py:106-107)
     if (state !== 'online') {
       if (this.config.wakeup && forceUpdate) {
         // Wake up if configured and forced
+        this.log.info(vin + ' is ' + state + ', waking up (wakeup=' + this.config.wakeup + ', forceUpdate=' + forceUpdate + ')');
         await this.wakeUpVehicle(vin, headers, fleetBase);
       } else {
-        this.log.debug(vin + ' is ' + state + ', skip vehicle_data call');
+        this.log.info(vin + ' is ' + state + ', skip vehicle_data call (wakeup=' + this.config.wakeup + ')');
         this.lastStates[vin] = state;
         return;
       }
@@ -670,10 +678,10 @@ class Teslamotors extends utils.Adapter {
           this.sleepTimes[vin] = Date.now();
         }
         if (Date.now() - this.sleepTimes[vin] >= 900000) {
-          this.log.debug(vin + ' wait for sleep was not successful');
+          this.log.info(vin + ' wait for sleep was not successful after 15min, resuming updates');
           this.sleepTimes[vin] = null;
         } else {
-          this.log.debug(vin + ' skip update. Waiting for sleep');
+          this.log.debug(vin + ' skip update, waiting for sleep (' + Math.round((Date.now() - this.sleepTimes[vin]) / 1000) + 's)');
           return;
         }
       }
@@ -697,14 +705,33 @@ class Teslamotors extends utils.Adapter {
     // Vehicle data call (quota-consuming)
     try {
       const url = fleetBase + '/api/1/vehicles/' + vin + '/vehicle_data?endpoints=' + endpoints.join(',');
-      this.log.debug('Fetch vehicle_data: ' + url);
+      this.log.info(vin + ' fetching vehicle_data: ' + endpoints.join(','));
       const res = await this.requestClient({ method: 'get', url: url, headers: headers });
 
-      if (!res.data || !res.data.response) return;
+      if (!res.data || !res.data.response) {
+        this.log.warn(vin + ' vehicle_data response is empty or malformed');
+        this.log.debug(vin + ' raw response: ' + JSON.stringify(res.data).substring(0, 500));
+        return;
+      }
       if (res.data.response.tokens) delete res.data.response.tokens;
 
       const data = res.data.response;
+      const dataKeys = Object.keys(data);
+      this.log.info(vin + ' vehicle_data received, keys: ' + dataKeys.join(', '));
+
+      // Log which endpoints returned data vs null/error
+      for (const ep of VEHICLE_ENDPOINTS) {
+        if (data[ep] === null || data[ep] === undefined) {
+          this.log.debug(vin + ' endpoint ' + ep + ' is null/missing');
+        } else if (data[ep] && data[ep].error) {
+          this.log.warn(vin + ' endpoint ' + ep + ' returned error: ' + data[ep].error);
+        } else if (typeof data[ep] === 'object') {
+          this.log.debug(vin + ' endpoint ' + ep + ' has ' + Object.keys(data[ep]).length + ' fields');
+        }
+      }
+
       this.json2iob.parse(vin, data);
+      this.log.debug(vin + ' vehicle_data parsed to ioBroker objects');
 
       // Drive state interval management
       if (data.drive_state) {
@@ -733,17 +760,18 @@ class Teslamotors extends utils.Adapter {
           this.sleepTimes[vin] = null;
         }
       }
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       if (error.response && error.response.status === 429) {
         this.log.warn(vin + ' rate limited on vehicle_data, skip this refresh');
         return;
       }
       if (error.response && error.response.status === 401) {
+        this.log.warn(vin + ' 401 on vehicle_data, scheduling token refresh');
         this.scheduleTokenRefresh();
         return;
       }
       if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
-        this.log.debug(vin + ' server error: ' + error.response.status);
+        this.log.warn(vin + ' server error on vehicle_data: ' + error.response.status);
         return;
       }
       this.log.error('Vehicle data failed for ' + vin);
