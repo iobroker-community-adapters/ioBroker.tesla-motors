@@ -658,9 +658,9 @@ class Teslamotors extends utils.Adapter {
 
     // If not online, skip expensive call (like HA coordinator.py:106-107)
     if (state !== 'online') {
-      if (this.config.wakeup && forceUpdate) {
-        // Wake up if configured and forced
-        this.log.info(vin + ' is ' + state + ', waking up (wakeup=' + this.config.wakeup + ', forceUpdate=' + forceUpdate + ')');
+      if (forceUpdate || this.config.wakeup) {
+        // Wake up on first poll after start (forceUpdate) or if wakeup is configured
+        this.log.info(vin + ' is ' + state + ', waking up (forceUpdate=' + forceUpdate + ', wakeup=' + this.config.wakeup + ')');
         await this.wakeUpVehicle(vin, headers, fleetBase);
       } else {
         this.log.info(vin + ' is ' + state + ', skip vehicle_data call (wakeup=' + this.config.wakeup + ')');
