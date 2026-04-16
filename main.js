@@ -313,14 +313,21 @@ class Teslamotors extends utils.Adapter {
                   privateKey: keys.privateKey,
                   publicKey: keys.publicKey,
                   sendSignedCommand: async (vin, buffer) => {
-                    const res = await self.requestClient({
-                      method: 'post',
-                      url: self.getFleetApiBaseUrl() + '/api/1/vehicles/' + vin + '/signed_command',
-                      headers: self.getFleetHeaders(),
-                      data: { routable_message: buffer.toString('base64') },
-                    });
-                    if (!res.data || !res.data.response) throw new Error('Invalid signed_command response');
-                    return Buffer.from(res.data.response, 'base64');
+                    try {
+                      const res = await self.requestClient({
+                        method: 'post',
+                        url: self.getFleetApiBaseUrl() + '/api/1/vehicles/' + vin + '/signed_command',
+                        headers: self.getFleetHeaders(),
+                        data: { routable_message: buffer.toString('base64') },
+                      });
+                      if (!res.data || !res.data.response) throw new Error('Invalid signed_command response: ' + JSON.stringify(res.data));
+                      return Buffer.from(res.data.response, 'base64');
+                    } catch (/** @type {any} */ e) {
+                      if (e.response) {
+                        self.log.error('signed_command HTTP ' + e.response.status + ': ' + JSON.stringify(e.response.data));
+                      }
+                      throw e;
+                    }
                   },
                   log: self.log,
                 });
