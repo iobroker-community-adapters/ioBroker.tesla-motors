@@ -721,8 +721,8 @@ class Teslamotors extends utils.Adapter {
 
     // Vehicle data call (quota-consuming)
     try {
-      const url = fleetBase + '/api/1/vehicles/' + vin + '/vehicle_data?endpoints=' + endpoints.join(',');
-      this.log.info(vin + ' fetching vehicle_data: ' + endpoints.join(','));
+      const url = fleetBase + '/api/1/vehicles/' + vin + '/vehicle_data?endpoints=' + endpoints.join('%3B');
+      this.log.info(vin + ' fetching vehicle_data: ' + endpoints.join(';'));
       const res = await this.requestClient({ method: 'get', url: url, headers: headers });
 
       if (!res.data || !res.data.response) {

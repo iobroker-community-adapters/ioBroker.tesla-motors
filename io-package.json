@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "2.0.2-beta1",
+    "version": "2.0.2-beta2",
     "news": {
       "2.0.2": {
         "en": "Migrate to Tesla Fleet API with OAuth2\nAdd Vehicle Command Protocol signing (ECDSA P-256) for post-2021 vehicles\nAdd admin UI for Fleet API setup (key generation, credentials, virtual key)\nAdd regional endpoint detection (EU/NA/CN) from JWT token\nStore session in ioBroker state to avoid restart loops\nAdapter requires admin >= 7.7.22 now",
