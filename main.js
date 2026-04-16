@@ -307,6 +307,7 @@ class Teslamotors extends utils.Adapter {
             if (this.config.privateKey) {
               try {
                 const keys = parseECKeyFromPem(this.config.privateKey);
+                this.log.debug(`Parsed EC key: privateKey=${keys.privateKey.length}B, publicKey=${keys.publicKey.length}B (${keys.publicKey.toString('hex')})`);
                 const self = this;
                 this.commandSigners[id] = new TeslaCommandSigner({
                   vin: id,
