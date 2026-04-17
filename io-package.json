@@ -1,7 +1,7 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "2.0.2-beta2",
+    "version": "2.0.2",
     "news": {
       "2.0.2": {
         "en": "Migrate to Tesla Fleet API with OAuth2\nAdd Vehicle Command Protocol signing (ECDSA P-256) for post-2021 vehicles\nAdd admin UI for Fleet API setup (key generation, credentials, virtual key)\nAdd regional endpoint detection (EU/NA/CN) from JWT token\nStore session in ioBroker state to avoid restart loops\nAdapter requires admin >= 7.7.22 now",
@@ -108,8 +108,13 @@
       "zh-cn": "特斯拉适配器",
       "uk": "Адаптер для Tesla"
     },
-    "authors": ["TA2k <tombox2020@gmail.com>", "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"],
-    "keywords": ["tesla"],
+    "authors": [
+      "TA2k <tombox2020@gmail.com>",
+      "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
+    ],
+    "keywords": [
+      "tesla"
+    ],
     "licenseInformation": {
       "type": "free",
       "license": "MIT"
@@ -137,7 +142,10 @@
       {
         "condition": {
           "operand": "and",
-          "rules": ["oldVersion<1.1.0", "newVersion>=1.1.0"]
+          "rules": [
+            "oldVersion<1.1.0",
+            "newVersion>=1.1.0"
+          ]
         },
         "title": {
           "en": "Important notice!",
@@ -166,7 +174,10 @@
           "uk": "Ідентифікатор у дереві об’єктів змінено з id на vin. Налаштуйте свої сценарії та видаліть старе дерево вручну."
         },
         "level": "warn",
-        "buttons": ["agree", "cancel"]
+        "buttons": [
+          "agree",
+          "cancel"
+        ]
       }
     ],
     "dependencies": [
@@ -180,8 +191,20 @@
       }
     ]
   },
-  "encryptedNative": ["clientSecret", "privateKey", "codeUrl", "session", "fleetSession"],
-  "protectedNative": ["clientSecret", "privateKey", "codeUrl", "session", "fleetSession"],
+  "encryptedNative": [
+    "clientSecret",
+    "privateKey",
+    "codeUrl",
+    "session",
+    "fleetSession"
+  ],
+  "protectedNative": [
+    "clientSecret",
+    "privateKey",
+    "codeUrl",
+    "session",
+    "fleetSession"
+  ],
   "native": {
     "clientId": "",
     "clientSecret": "",
