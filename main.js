@@ -598,7 +598,7 @@ class Teslamotors extends utils.Adapter {
       {
         path: '.energy_history_lifetime',
         url:
-          fleetBase + '/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy&time_zone=Europe/Berlin&period=lifetime&end_date=' +
+          fleetBase + '/api/1/energy_sites/{energy_site_id}/calendar_history?kind=energy&time_zone=Europe%2FBerlin&period=lifetime&end_date=' +
           this.getDate(),
       },
     ];
@@ -616,14 +616,18 @@ class Teslamotors extends utils.Adapter {
       },
     ];
 
-    this.idArray.forEach(async (product) => {
-      if (product.type === 'vehicle') {
-        await this.updateVehicle(product, forceUpdate, location);
-      } else {
-        const currentArray = product.type === 'wall_connector' ? wallboxArray : energySiteArray;
-        await this.updateEnergyDevice(product, currentArray);
+    for (const product of this.idArray) {
+      try {
+        if (product.type === 'vehicle') {
+          await this.updateVehicle(product, forceUpdate, location);
+        } else {
+          const currentArray = product.type === 'wall_connector' ? wallboxArray : energySiteArray;
+          await this.updateEnergyDevice(product, currentArray);
+        }
+      } catch (/** @type {any} */ e) {
+        this.log.error('Update failed for ' + (product.vin || product.id) + ': ' + e.message);
       }
-    });
+    }
   }
 
   /**
@@ -1074,7 +1078,7 @@ class Teslamotors extends utils.Adapter {
       if (stateId === '.drive_state.shift_state' && curState && (curState.val === 'P' || curState.val === null)) {
         continue;
       }
-      if (curState && (curState.ts <= Date.now() - 1800000 || curState.ts - curState.lc <= 1800000)) {
+      if (curState && Date.now() - curState.lc <= 1800000) {
         this.log.debug(
           `Skip sleep waiting because state ${vin + stateId} changed in last 30min TS: ${new Date(
             curState.ts,
@@ -1331,6 +1335,7 @@ class Teslamotors extends utils.Adapter {
       });
       this.updateInterval && clearInterval(this.updateInterval);
       this.refreshTimeout && clearTimeout(this.refreshTimeout);
+      this.reLoginTimeout && clearTimeout(this.reLoginTimeout);
       this.refreshTokenTimeout && clearTimeout(this.refreshTokenTimeout);
       this.locationInterval && clearInterval(this.locationInterval);
       this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
