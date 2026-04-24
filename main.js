@@ -529,8 +529,9 @@ class Teslamotors extends utils.Adapter {
     }
     let anySuccess = false;
     for (const [region, baseUrl] of Object.entries(FLEET_API_REGIONS)) {
-      if (region === 'cn') continue; // Skip China (like HA)
+      if (region === 'cn') continue;
       try {
+        this.log.info(`Partner registration ${region}: requesting client_credentials token...`);
         const tokenRes = await this.requestClient({
           method: 'post',
           url: FLEET_AUTH_URL + '/oauth2/v3/token',
@@ -544,6 +545,7 @@ class Teslamotors extends utils.Adapter {
           }),
         });
         const partnerToken = tokenRes.data.access_token;
+        this.log.info(`Partner registration ${region}: token obtained, registering domain ${this.config.fleetkeyDomain}...`);
 
         const regRes = await this.requestClient({
           method: 'post',
@@ -556,8 +558,11 @@ class Teslamotors extends utils.Adapter {
         });
         this.log.info(`Partner registered in ${region}: ${JSON.stringify(regRes.data)}`);
         anySuccess = true;
-      } catch (error) {
-        this.log.warn(`Partner registration failed for ${region}: ${error instanceof Error ? error.message : String(error)}`);
+      } catch (/** @type {any} */ error) {
+        this.log.warn(`Partner registration failed for ${region}: ${error.message}`);
+        if (error.response) {
+          this.log.warn(`Partner registration ${region} response ${error.response.status}: ${JSON.stringify(error.response.data)}`);
+        }
       }
     }
     return anySuccess;
