@@ -964,12 +964,7 @@
   }
 
   function getTelemetryDefaultFieldEntry(fieldName) {
-    var entry = { interval_seconds: TELEMETRY_DEFAULT_FIELD_INTERVALS[fieldName] };
-    var minimumDelta = getTelemetryDefaultMinimumDelta(fieldName);
-    if (minimumDelta !== '') {
-      entry.minimum_delta = minimumDelta;
-    }
-    return entry;
+    return { interval_seconds: TELEMETRY_DEFAULT_FIELD_INTERVALS[fieldName] };
   }
 
   function cloneTelemetryDefaultFields() {
@@ -982,16 +977,16 @@
 
   function normalizeTelemetryFieldOption(fieldName, rawValue) {
     if (rawValue === false || rawValue === null) {
-      return { enabled: false, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
+      return { enabled: false, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: '', extraOptions: {} };
     }
     if (rawValue === true || rawValue === undefined) {
-      return { enabled: true, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
+      return { enabled: true, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: '', extraOptions: {} };
     }
     if (typeof rawValue === 'number' || typeof rawValue === 'string') {
-      return { enabled: true, interval: Number(rawValue) || getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
+      return { enabled: true, interval: Number(rawValue) || getTelemetryDefaultInterval(fieldName), minimumDelta: '', extraOptions: {} };
     }
     if (typeof rawValue !== 'object' || Array.isArray(rawValue)) {
-      return { enabled: false, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
+      return { enabled: false, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: '', extraOptions: {} };
     }
 
     var extraOptions = $.extend(true, {}, rawValue);
@@ -1070,7 +1065,7 @@
         telemetryFieldState[fieldName] = {
           enabled: false,
           interval: getTelemetryDefaultInterval(fieldName),
-          minimumDelta: getTelemetryDefaultMinimumDelta(fieldName),
+          minimumDelta: '',
           extraOptions: {},
         };
       }
@@ -1132,7 +1127,7 @@
       var state = telemetryFieldState[fieldName] || {
         enabled: false,
         interval: getTelemetryDefaultInterval(fieldName),
-        minimumDelta: getTelemetryDefaultMinimumDelta(fieldName),
+        minimumDelta: '',
         extraOptions: {},
       };
       if (search && haystack.indexOf(search) === -1) return;
@@ -1190,7 +1185,7 @@
     $tbody.find('.telemetry-field-enabled').on('change', function () {
       var $row = $(this).closest('.telemetry-field-row');
       var fieldName = $row.attr('data-field');
-      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
+      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { interval: getTelemetryDefaultInterval(fieldName), minimumDelta: '', extraOptions: {} };
       telemetryFieldState[fieldName].enabled = $(this).prop('checked');
       $row.toggleClass('telemetry-field-row-disabled', !telemetryFieldState[fieldName].enabled);
       syncTelemetryFieldsJsonFromEditor();
@@ -1201,7 +1196,7 @@
     $tbody.find('.telemetry-field-interval').on('change keyup', function () {
       var $row = $(this).closest('.telemetry-field-row');
       var fieldName = $row.attr('data-field');
-      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: false, minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
+      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: false, minimumDelta: '', extraOptions: {} };
       var interval = Number($(this).val());
       telemetryFieldState[fieldName].interval = interval > 0 ? Math.round(interval) : getTelemetryDefaultInterval(fieldName);
       syncTelemetryFieldsJsonFromEditor();
@@ -1251,7 +1246,7 @@
   function updateVisibleTelemetryFields(enabled) {
     $('.telemetry-field-row:visible').each(function () {
       var fieldName = $(this).attr('data-field');
-      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
+      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { interval: getTelemetryDefaultInterval(fieldName), minimumDelta: '', extraOptions: {} };
       telemetryFieldState[fieldName].enabled = enabled;
       $(this).find('.telemetry-field-enabled').prop('checked', enabled);
       $(this).toggleClass('telemetry-field-row-disabled', !enabled);
@@ -1265,12 +1260,11 @@
     $('.telemetry-field-row:visible').each(function () {
       var fieldName = $(this).attr('data-field');
       var interval = getTelemetryDefaultInterval(fieldName);
-      var minimumDelta = getTelemetryDefaultMinimumDelta(fieldName);
       telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: false, extraOptions: {} };
       telemetryFieldState[fieldName].interval = interval;
-      telemetryFieldState[fieldName].minimumDelta = minimumDelta;
+      telemetryFieldState[fieldName].minimumDelta = '';
       $(this).find('.telemetry-field-interval').val(interval);
-      $(this).find('.telemetry-field-minimum-delta').val(minimumDelta);
+      $(this).find('.telemetry-field-minimum-delta').val('');
     });
     syncTelemetryFieldsJsonFromEditor();
     if (window._onChange) window._onChange();
@@ -1286,7 +1280,7 @@
     if (TELEMETRY_AVAILABLE_FIELDS.indexOf(fieldName) < 0 && telemetryCustomFields.indexOf(fieldName) < 0) {
       telemetryCustomFields.push(fieldName);
     }
-    telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: true, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
+    telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: true, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: '', extraOptions: {} };
     telemetryFieldState[fieldName].enabled = true;
     $('#telemetryCustomFieldName').val('');
     renderTelemetryFieldRows();
