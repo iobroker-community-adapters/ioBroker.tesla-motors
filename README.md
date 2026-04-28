@@ -91,6 +91,56 @@ Supported commands include:
 - **Session Management**: ECDH handshake per domain, epoch + counter based, stored in ioBroker state
 - **Token Refresh**: Automatic refresh before expiry
 
+### Optional Fleet Telemetry mode (MQTT bridge)
+
+Starting with the Fleet API migration, the adapter can also be used together
+with Tesla's **Fleet Telemetry** service to reduce `vehicle_data` polling costs.
+
+The first implementation uses an **MQTT bridge**:
+
+1. Tesla vehicles stream telemetry to a self-hosted
+   [fleet-telemetry](https://github.com/teslamotors/fleet-telemetry) server.
+2. The server publishes selected vehicle fields to MQTT.
+3. The adapter subscribes to the MQTT topics and writes the data back into the
+   existing Tesla state tree.
+
+This keeps current scripts and aliases working while reducing regular
+`vehicle_data` requests.
+
+Additional adapter settings are available for:
+
+- enabling telemetry mode
+- the local `vehicle-command` proxy URL used to configure telemetry on the car
+- the telemetry server hostname / port / certificate chain
+- MQTT broker, topic base and credentials
+- the Fleet Telemetry field selection and per-field `interval_seconds`
+- an optional polling fallback for endpoints that are not covered by telemetry
+
+The admin UI contains a dedicated **Fleet Telemetry fields** tab. There you can
+enable/disable individual Tesla telemetry fields and set the update interval in
+seconds per field. Fields that are already mapped by the adapter are written
+back into the existing Tesla state tree. Other selected fields are stored as raw
+values under `<VIN>.telemetry.fields.<FieldName>` so scripts can still use them.
+
+Internally, the selection is stored as JSON for backwards compatibility with
+older admin versions. Manual JSON values may be plain seconds or full Tesla
+field options:
+
+```json
+{
+  "Soc": 60,
+  "ChargeState": 1,
+  "DetailedChargeState": 1,
+  "ChargeAmps": 1,
+  "Location": { "interval_seconds": 10 },
+  "Locked": 1
+}
+```
+
+Fleet Telemetry is change-based: a field is only emitted after its
+`interval_seconds` elapsed **and** the value changed. Setting a field to
+`false` omits it from the vehicle configuration.
+
 ### Questions and Discussions
 
 <https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0>

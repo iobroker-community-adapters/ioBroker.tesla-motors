@@ -11,6 +11,8 @@ iobroker.*.tgz
 .dev-server/
 
 Thumbs.db
+.DS_Store
+._*
 
 # i18n intermediate files
 admin/i18n/flat.txt

@@ -196,14 +196,16 @@
     "privateKey",
     "codeUrl",
     "session",
-    "fleetSession"
+    "fleetSession",
+    "telemetryMqttPassword"
   ],
   "protectedNative": [
     "clientSecret",
     "privateKey",
     "codeUrl",
     "session",
-    "fleetSession"
+    "fleetSession",
+    "telemetryMqttPassword"
   ],
   "native": {
     "clientId": "",
@@ -222,7 +224,19 @@
     "locationInterval": 60,
     "intervalDrive": null,
     "excludeDeviceList": "",
-    "excludeElementList": ""
+    "excludeElementList": "",
+    "telemetryEnabled": false,
+    "telemetryProxyUrl": "",
+    "telemetryProxyAllowInsecure": false,
+    "telemetryServerHost": "",
+    "telemetryServerPort": 443,
+    "telemetryServerCaPem": "",
+    "telemetryMqttBroker": "",
+    "telemetryMqttUsername": "",
+    "telemetryMqttPassword": "",
+    "telemetryMqttTopicBase": "tesla-telemetry",
+    "telemetryFieldsJson": "",
+    "telemetryFallbackPollEnabled": true
   },
   "objects": [],
   "instanceObjects": [
@@ -244,6 +258,71 @@
         "read": true,
         "write": false,
         "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.telemetryConnected",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "Telemetry MQTT connected",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.telemetryConfigured",
+      "type": "state",
+      "common": {
+        "role": "indicator",
+        "name": "Telemetry configured",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.telemetrySynced",
+      "type": "state",
+      "common": {
+        "role": "indicator",
+        "name": "Telemetry synced on vehicle",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.telemetryLastMessage",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "Last telemetry MQTT message metadata",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.telemetryLastError",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Last telemetry error",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
       },
       "native": {}
     }
