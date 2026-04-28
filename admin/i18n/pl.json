@@ -63,7 +63,7 @@
     "telemetry_action_result": "Wynik akcji Telemetry",
     "telemetry_fields_title": "Pola Fleet Telemetry",
     "telemetry_fields_description": "Wybierz pola Fleet Telemetry do skonfigurowania w pojeździe, ustaw minimalny interwał aktualizacji dla każdego pola oraz opcjonalnie minimum_delta. Tesla wysyła wartości tylko wtedy, gdy wartość się zmieniła i upłynął skonfigurowany interwał.",
-    "telemetry_fields_note": "Pola oznaczone <b>domyślne</b> należą do standardowego presetu adaptera. <b>Minimum delta</b> tłumi bardzo małe zmiany liczbowe; dla <code>Location</code> Tesla interpretuje wartość w metrach. Pola <b>vehicle_location</b> wymagają scope OAuth <code>vehicle_location</code>. Niezmapowane pola są zapisywane w <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "telemetry_fields_note": "Pola oznaczone jako <b>domyślne</b> należą do presetu adaptera. <b>Minimalna zmiana</b> tłumi małe zmiany liczbowe; jeśli pole pozostanie puste i widoczny jest placeholder, adapter użyje tej wartości domyślnej (np. <code>100 m</code> dla lokalizacji). Pola lokalizacji wymagają scope OAuth <code>vehicle_location</code>. Niezmapowane pola są zapisywane w <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
     "telemetry_search_field": "Szukaj pola",
     "telemetry_category_label": "Kategoria",
     "telemetry_use_default_preset": "Użyj domyślnego presetu adaptera",
@@ -86,7 +86,7 @@
     "telemetry_invalid_json_default": "JSON pól Telemetry jest nieprawidłowy. Używany jest preset domyślny.",
     "telemetry_selected_summary": "{selected} wybranych pól / {total} dostępnych pól",
     "telemetry_raw_state_target": "Wartość surowa: telemetry.fields.{field}",
-    "telemetry_badge_location_scope": "vehicle_location",
+    "telemetry_badge_location_scope": "Scope lokalizacji",
     "telemetry_badge_default": "domyślne",
     "telemetry_all_categories": "Wszystkie kategorie",
     "telemetry_default_preset_filter": "Domyślny preset adaptera",
@@ -108,5 +108,6 @@
     "telemetry_filter_all_fields": "Wszystkie pola",
     "telemetry_filter_selected_fields": "Tylko wybrane pola",
     "telemetry_filter_unselected_fields": "Tylko niewybrane pola",
-    "telemetry_table_minimum_delta": "Minimalna zmiana"
+    "telemetry_table_minimum_delta": "Minimalna zmiana",
+    "telemetry_minimum_delta_default_hint": "Pozostaw puste, aby użyć wartości domyślnej {value}."
 }

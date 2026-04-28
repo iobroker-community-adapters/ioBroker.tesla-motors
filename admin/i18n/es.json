@@ -63,7 +63,7 @@
     "telemetry_action_result": "Resultado de la acción Telemetry",
     "telemetry_fields_title": "Campos de Fleet Telemetry",
     "telemetry_fields_description": "Seleccione qué campos de Fleet Telemetry deben configurarse en el vehículo, defina el intervalo mínimo de actualización por campo y opcionalmente un minimum_delta. Tesla solo envía valores cuando el valor ha cambiado y ha transcurrido el intervalo configurado.",
-    "telemetry_fields_note": "Los campos marcados con <b>predeterminado</b> pertenecen al preset estándar del adaptador. <b>Minimum delta</b> suprime cambios numéricos muy pequeños; para <code>Location</code>, Tesla lo interpreta en metros. Los campos <b>vehicle_location</b> requieren el scope OAuth <code>vehicle_location</code>. Los campos sin mapeo se guardan en <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "telemetry_fields_note": "Los campos marcados como <b>predeterminado</b> pertenecen al preset del adaptador. <b>Cambio mínimo</b> suprime pequeños cambios numéricos; si el campo se deja vacío y se muestra un marcador, el adaptador usa ese valor predeterminado (por ejemplo <code>100 m</code> para ubicación). Los campos de ubicación requieren el scope OAuth <code>vehicle_location</code>. Los campos sin mapeo se guardan en <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
     "telemetry_search_field": "Buscar campo",
     "telemetry_category_label": "Categoría",
     "telemetry_use_default_preset": "Usar preset predeterminado del adaptador",
@@ -86,7 +86,7 @@
     "telemetry_invalid_json_default": "El JSON de campos Telemetry no es válido. Se usa el preset predeterminado.",
     "telemetry_selected_summary": "{selected} campos seleccionados / {total} campos disponibles",
     "telemetry_raw_state_target": "Valor sin procesar: telemetry.fields.{field}",
-    "telemetry_badge_location_scope": "vehicle_location",
+    "telemetry_badge_location_scope": "Scope de ubicación",
     "telemetry_badge_default": "predeterminado",
     "telemetry_all_categories": "Todas las categorías",
     "telemetry_default_preset_filter": "Preset predeterminado del adaptador",
@@ -108,5 +108,6 @@
     "telemetry_filter_all_fields": "Todos los campos",
     "telemetry_filter_selected_fields": "Solo campos seleccionados",
     "telemetry_filter_unselected_fields": "Solo campos no seleccionados",
-    "telemetry_table_minimum_delta": "Cambio mínimo"
+    "telemetry_table_minimum_delta": "Cambio mínimo",
+    "telemetry_minimum_delta_default_hint": "Dejar vacío para usar el valor predeterminado {value}."
 }

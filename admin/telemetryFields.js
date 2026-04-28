@@ -271,10 +271,120 @@
 
   var TELEMETRY_DEFAULT_FIELD_MINIMUM_DELTAS = {
   "Soc": 1,
+  "BatteryLevel": 1,
+  "ChargeLimitSoc": 1,
+  "ExpectedEnergyPercentAtTripArrival": 1,
+  "SoftwareUpdateDownloadPercentComplete": 1,
+  "SoftwareUpdateInstallationPercentComplete": 1,
+  "TonneauOpenPercent": 1,
   // Tesla expects Location minimum_delta in meters. 100m is approximately
   // equivalent to 0.001° latitude/longitude and filters GPS jitter well.
+  "OriginLocation": 100,
+  "DestinationLocation": 100,
   "Location": 100
 };
+
+  var TELEMETRY_MINIMUM_DELTA_RULES = [
+  { pattern: /(?:Soc|BatteryLevel|Percent|LimitSoc|PedalPosition|BrakePedalPos)$/i, minimumDelta: 1, unit: '%' },
+  { pattern: /(?:Temp|Temperature)/i, minimumDelta: 0.5, unit: '°C' },
+  { pattern: /Pressure/i, minimumDelta: 0.1, unit: 'bar' },
+  { pattern: /(?:Voltage|VBat|BrickVoltage)/i, minimumDelta: 0.1, unit: 'V' },
+  { pattern: /(?:Current|Amps)/i, minimumDelta: 1, unit: 'A' },
+  { pattern: /(?:PowerKW|Power|KW)/i, minimumDelta: 0.1, unit: 'kW' },
+  { pattern: /(?:Energy|Remaining)/i, minimumDelta: 0.1, unit: 'kWh' },
+  { pattern: /(?:Range|Odometer|Miles|Mile)/i, minimumDelta: 1, unit: 'mi' },
+  { pattern: /(?:Mph|Speed)/i, minimumDelta: 1, unit: 'mph' },
+  { pattern: /Heading/i, minimumDelta: 1, unit: '°' },
+  { pattern: /Acceleration/i, minimumDelta: 0.1, unit: 'g' },
+  { pattern: /(?:Duration|Minutes|Delay)/i, minimumDelta: 1, unit: 'min' },
+  { pattern: /Hours/i, minimumDelta: 0.1, unit: 'h' },
+  { pattern: /(?:Count|Qty|Distance|FanSpeed|Phases|Torque|Position|Level)$/i, minimumDelta: 1, unit: '' },
+];
+
+  var TELEMETRY_MINIMUM_DELTA_FIELD_UNITS = {
+  "Location": "m",
+  "OriginLocation": "m",
+  "DestinationLocation": "m",
+  "Soc": "%",
+  "BatteryLevel": "%",
+  "ChargeLimitSoc": "%",
+  "ExpectedEnergyPercentAtTripArrival": "%",
+  "SoftwareUpdateDownloadPercentComplete": "%",
+  "SoftwareUpdateInstallationPercentComplete": "%",
+  "TonneauOpenPercent": "%"
+};
+
+  var TELEMETRY_MINIMUM_DELTA_EXCLUDED_FIELDS = {
+  "DCDCEnable": true,
+  "ChargeEnableRequest": true,
+  "FastChargerPresent": true,
+  "BatteryHeaterOn": true,
+  "NotEnoughPowerToHeat": true,
+  "SuperchargerSessionTripPlanner": true,
+  "ScheduledChargingPending": true,
+  "PreconditioningEnabled": true,
+  "ChargePortColdWeatherMode": true,
+  "DoorState": true,
+  "Locked": true,
+  "SentryMode": true,
+  "SpeedLimitMode": true,
+  "DriverSeatBelt": true,
+  "PassengerSeatBelt": true,
+  "DriverSeatOccupied": true,
+  "SemitruckTractorParkBrakeStatus": true,
+  "SemitruckTrailerParkBrakeStatus": true,
+  "GuestModeEnabled": true,
+  "PinToDriveEnabled": true,
+  "AutomaticBlindSpotCamera": true,
+  "BlindSpotCollisionWarningChime": true,
+  "SpeedLimitWarning": true,
+  "ForwardCollisionWarning": true,
+  "LaneDepartureAvoidance": true,
+  "EmergencyLaneDepartureAvoidance": true,
+  "AutomaticEmergencyBrakingOff": true,
+  "ServiceMode": true,
+  "CabinOverheatProtectionMode": true,
+  "ChargePortDoorOpen": true,
+  "ChargingCableType": true,
+  "ClimateKeeperMode": true,
+  "DefrostForPreconditioning": true,
+  "DefrostMode": true,
+  "FastChargerType": true,
+  "HomelinkNearby": true,
+  "HvacACEnabled": true,
+  "HvacAutoMode": true,
+  "HvacPower": true,
+  "HvacSteeringWheelHeatAuto": true,
+  "OffroadLightbarPresent": true,
+  "PowershareStatus": true,
+  "PowershareStopReason": true,
+  "PowershareType": true,
+  "RearDisplayHvacEnabled": true,
+  "RemoteStartEnabled": true,
+  "RightHandDrive": true,
+  "TonneauPosition": true,
+  "TonneauTentMode": true,
+  "ValetModeEnabled": true,
+  "WiperHeatEnabled": true,
+  "LocatedAtHome": true,
+  "LocatedAtWork": true,
+  "LocatedAtFavorite": true,
+  "LightsHazardsActive": true,
+  "LightsTurnSignal": true,
+  "LightsHighBeams": true,
+  "MediaPlaybackStatus": true,
+  "MediaPlaybackSource": true,
+  "SunroofInstalled": true,
+  "SeatVentEnabled": true,
+  "RearDefrostEnabled": true
+};
+
+  var TELEMETRY_MINIMUM_DELTA_EXCLUDED_PATTERNS = [
+  /(?:State|Status|Mode|Type|Name|Color|Version|Present|Pending|Enabled|Open|Locked|Gear)$/i,
+  /^Setting/i,
+  /(?:Time|ScheduledStart|StartTime)$/i,
+  /(?:Line|AtHome|AtWork|AtFavorite)$/i
+];
 
   var TELEMETRY_STATE_MAPPINGS = {
   "Soc": [
@@ -826,7 +936,31 @@
   }
 
   function getTelemetryDefaultMinimumDelta(fieldName) {
-    return TELEMETRY_DEFAULT_FIELD_MINIMUM_DELTAS[fieldName] || '';
+    if (TELEMETRY_DEFAULT_FIELD_MINIMUM_DELTAS[fieldName] !== undefined) {
+      return TELEMETRY_DEFAULT_FIELD_MINIMUM_DELTAS[fieldName];
+    }
+    if (TELEMETRY_MINIMUM_DELTA_EXCLUDED_FIELDS[fieldName]) {
+      return '';
+    }
+    if (TELEMETRY_MINIMUM_DELTA_EXCLUDED_PATTERNS.some(function (pattern) { return pattern.test(fieldName); })) {
+      return '';
+    }
+    var rule = TELEMETRY_MINIMUM_DELTA_RULES.find(function (entry) { return entry.pattern.test(fieldName); });
+    return rule ? rule.minimumDelta : '';
+  }
+
+  function getTelemetryMinimumDeltaUnit(fieldName) {
+    if (TELEMETRY_MINIMUM_DELTA_FIELD_UNITS[fieldName] !== undefined) {
+      return TELEMETRY_MINIMUM_DELTA_FIELD_UNITS[fieldName];
+    }
+    if (TELEMETRY_MINIMUM_DELTA_EXCLUDED_FIELDS[fieldName]) {
+      return '';
+    }
+    if (TELEMETRY_MINIMUM_DELTA_EXCLUDED_PATTERNS.some(function (pattern) { return pattern.test(fieldName); })) {
+      return '';
+    }
+    var rule = TELEMETRY_MINIMUM_DELTA_RULES.find(function (entry) { return entry.pattern.test(fieldName); });
+    return rule ? rule.unit : '';
   }
 
   function getTelemetryDefaultFieldEntry(fieldName) {
@@ -1009,8 +1143,21 @@
 
       var mapping = TELEMETRY_STATE_MAPPINGS[fieldName];
       var stateTarget = mapping ? mapping.join(', ') : translateTelemetry('telemetry_raw_state_target', { field: fieldName });
-      var scopeBadge = TELEMETRY_LOCATION_SCOPE_FIELDS.indexOf(fieldName) >= 0 ? '<span class="new badge amber darken-3" data-badge-caption="' + escapeHtml(translateTelemetry('telemetry_badge_location_scope')) + '"></span>' : '';
-      var defaultBadge = isDefault ? '<span class="new badge blue" data-badge-caption="' + escapeHtml(translateTelemetry('telemetry_badge_default')) + '"></span>' : '';
+      var badges = [];
+      if (isDefault) {
+        badges.push('<span class="telemetry-field-badge telemetry-field-badge-default">' + escapeHtml(translateTelemetry('telemetry_badge_default')) + '</span>');
+      }
+      if (TELEMETRY_LOCATION_SCOPE_FIELDS.indexOf(fieldName) >= 0) {
+        badges.push('<span class="telemetry-field-badge telemetry-field-badge-location">' + escapeHtml(translateTelemetry('telemetry_badge_location_scope')) + '</span>');
+      }
+      var badgesHtml = badges.length ? '<div class="telemetry-field-badges">' + badges.join('') + '</div>' : '';
+      var minimumDeltaUnit = getTelemetryMinimumDeltaUnit(fieldName);
+      var minimumDeltaPlaceholder = getTelemetryDefaultMinimumDelta(fieldName);
+      var minimumDeltaTitle = minimumDeltaPlaceholder !== ''
+        ? translateTelemetry('telemetry_minimum_delta_default_hint', {
+          value: minimumDeltaPlaceholder + (minimumDeltaUnit ? ' ' + minimumDeltaUnit : ''),
+        })
+        : '';
       var rowClass = state.enabled ? 'telemetry-field-row' : 'telemetry-field-row telemetry-field-row-disabled';
       var rowId = 'telemetryField_' + fieldName;
 
@@ -1032,9 +1179,9 @@
             '</label>' +
           '</td>' +
           '<td><span class="telemetry-field-label">' + escapeHtml(translateTelemetryFieldName(fieldName)) + '</span><br><code class="telemetry-field-id">' + escapeHtml(fieldName) + '</code></td>' +
-          '<td>' + escapeHtml(translateTelemetryCategory(category)) + '<br>' + defaultBadge + scopeBadge + '</td>' +
+          '<td>' + escapeHtml(translateTelemetryCategory(category)) + badgesHtml + '</td>' +
           '<td><input type="number" min="1" step="1" class="telemetry-field-interval" value="' + escapeHtml(state.interval || getTelemetryDefaultInterval(fieldName)) + '" /></td>' +
-          '<td><input type="number" min="0" step="any" class="telemetry-field-minimum-delta" value="' + escapeHtml(state.minimumDelta || '') + '" placeholder="' + escapeHtml(getTelemetryDefaultMinimumDelta(fieldName)) + '" /></td>' +
+          '<td><div class="telemetry-field-minimum-delta-wrapper"><input type="number" min="0" step="any" class="telemetry-field-minimum-delta" value="' + escapeHtml(state.minimumDelta || '') + '" placeholder="' + escapeHtml(minimumDeltaPlaceholder) + '" title="' + escapeHtml(minimumDeltaTitle) + '" /><span class="telemetry-field-minimum-delta-unit">' + escapeHtml(minimumDeltaUnit) + '</span></div></td>' +
           '<td class="telemetry-field-state-target">' + escapeHtml(stateTarget) + '</td>' +
         '</tr>'
       );

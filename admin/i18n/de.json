@@ -63,7 +63,7 @@
     "telemetry_action_result": "Ergebnis der Telemetry-Aktion",
     "telemetry_fields_title": "Fleet-Telemetry-Felder",
     "telemetry_fields_description": "Wähle aus, welche Fleet-Telemetry-Felder am Fahrzeug konfiguriert werden sollen, lege pro Feld das minimale Aktualisierungsintervall fest und setze optional ein Minimum-Delta. Tesla sendet Werte weiterhin nur dann, wenn sich der Wert geändert hat und das konfigurierte Intervall abgelaufen ist.",
-    "telemetry_fields_note": "Felder mit <b>Standard</b> gehören zum Adapter-Standardpreset. <b>Mindeständerung</b> unterdrückt kleinste Zahlenänderungen; bei <code>Location</code> interpretiert Tesla den Wert in Metern. Felder mit <b>vehicle_location</b> benötigen den OAuth-Scope <code>vehicle_location</code>. Nicht gemappte Felder werden als Rohwerte unter <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> gespeichert.",
+    "telemetry_fields_note": "Felder mit <b>Standard</b> gehören zum Adapter-Standardpreset. <b>Mindeständerung</b> unterdrückt kleine Zahlenänderungen; bleibt das Feld leer und ein Platzhalter ist sichtbar, verwendet der Adapter diesen Standardwert (z. B. <code>100 m</code> bei Standort). Standort-Felder benötigen den OAuth-Scope <code>vehicle_location</code>. Nicht gemappte Felder werden als Rohwerte unter <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> gespeichert.",
     "telemetry_search_field": "Feld suchen",
     "telemetry_category_label": "Kategorie",
     "telemetry_use_default_preset": "Adapter-Standardpreset verwenden",
@@ -86,7 +86,7 @@
     "telemetry_invalid_json_default": "Das Telemetry-Felder-JSON ist ungültig. Das Standardpreset wird verwendet.",
     "telemetry_selected_summary": "{selected} ausgewählte Felder / {total} verfügbare Felder",
     "telemetry_raw_state_target": "Rohwert: telemetry.fields.{field}",
-    "telemetry_badge_location_scope": "vehicle_location",
+    "telemetry_badge_location_scope": "Standort-Scope",
     "telemetry_badge_default": "Standard",
     "telemetry_all_categories": "Alle Kategorien",
     "telemetry_default_preset_filter": "Adapter-Standardpreset",
@@ -108,5 +108,6 @@
     "telemetry_filter_all_fields": "Alle Felder",
     "telemetry_filter_selected_fields": "Nur ausgewählte Felder",
     "telemetry_filter_unselected_fields": "Nur nicht ausgewählte Felder",
-    "telemetry_table_minimum_delta": "Mindeständerung"
+    "telemetry_table_minimum_delta": "Mindeständerung",
+    "telemetry_minimum_delta_default_hint": "Leer lassen, um den Standardwert {value} zu verwenden."
 }

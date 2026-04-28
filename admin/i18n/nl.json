@@ -63,7 +63,7 @@
     "telemetry_action_result": "Resultaat van Telemetry-actie",
     "telemetry_fields_title": "Fleet Telemetry-velden",
     "telemetry_fields_description": "Selecteer welke Fleet Telemetry-velden op het voertuig moeten worden geconfigureerd, stel per veld het minimale update-interval in en optioneel een minimum_delta. Tesla verzendt waarden alleen wanneer de waarde is gewijzigd en het ingestelde interval is verstreken.",
-    "telemetry_fields_note": "Velden met <b>standaard</b> horen bij de standaardpreset van de adapter. <b>Minimum delta</b> onderdrukt zeer kleine numerieke wijzigingen; voor <code>Location</code> interpreteert Tesla de waarde in meters. Velden met <b>vehicle_location</b> vereisen de OAuth-scope <code>vehicle_location</code>. Niet-gemapte velden worden opgeslagen onder <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "telemetry_fields_note": "Velden met <b>standaard</b> horen bij de standaardpreset van de adapter. <b>Minimale wijziging</b> onderdrukt kleine numerieke wijzigingen; als het veld leeg blijft en er een placeholder zichtbaar is, gebruikt de adapter die standaardwaarde (bijvoorbeeld <code>100 m</code> voor locatie). Locatievelden vereisen de OAuth-scope <code>vehicle_location</code>. Niet-gemapte velden worden opgeslagen onder <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
     "telemetry_search_field": "Veld zoeken",
     "telemetry_category_label": "Categorie",
     "telemetry_use_default_preset": "Standaardpreset van adapter gebruiken",
@@ -86,7 +86,7 @@
     "telemetry_invalid_json_default": "Telemetry-velden-JSON is ongeldig. De standaardpreset wordt gebruikt.",
     "telemetry_selected_summary": "{selected} geselecteerde velden / {total} beschikbare velden",
     "telemetry_raw_state_target": "Ruwe waarde: telemetry.fields.{field}",
-    "telemetry_badge_location_scope": "vehicle_location",
+    "telemetry_badge_location_scope": "Locatie-scope",
     "telemetry_badge_default": "standaard",
     "telemetry_all_categories": "Alle categorieën",
     "telemetry_default_preset_filter": "Standaardpreset van adapter",
@@ -108,5 +108,6 @@
     "telemetry_filter_all_fields": "Alle velden",
     "telemetry_filter_selected_fields": "Alleen geselecteerde velden",
     "telemetry_filter_unselected_fields": "Alleen niet-geselecteerde velden",
-    "telemetry_table_minimum_delta": "Minimale wijziging"
+    "telemetry_table_minimum_delta": "Minimale wijziging",
+    "telemetry_minimum_delta_default_hint": "Laat leeg om de standaardwaarde {value} te gebruiken."
 }

@@ -116,14 +116,18 @@ describe('Fleet Telemetry helper', () => {
     });
   });
 
-  it('keeps explicitly configured telemetry minimum_delta optional', () => {
+  it('applies default telemetry minimum_delta values when omitted', () => {
     const fields = parseTelemetryFieldsConfig({
       Soc: { interval_seconds: 60 },
+      EstBatteryRange: { interval_seconds: 300 },
+      DestinationLocation: { interval_seconds: 10 },
       Location: { interval_seconds: 10, minimum_delta: '' },
     });
 
     expect(fields).to.deep.equal({
-      Soc: { interval_seconds: 60 },
+      Soc: { interval_seconds: 60, minimum_delta: 1 },
+      EstBatteryRange: { interval_seconds: 300, minimum_delta: 1 },
+      DestinationLocation: { interval_seconds: 10, minimum_delta: 100 },
       Location: { interval_seconds: 10 },
     });
   });

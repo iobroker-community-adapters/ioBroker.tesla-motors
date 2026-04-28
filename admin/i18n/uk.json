@@ -63,7 +63,7 @@
     "telemetry_action_result": "Результат дії Telemetry",
     "telemetry_fields_title": "Поля Fleet Telemetry",
     "telemetry_fields_description": "Виберіть поля Fleet Telemetry для налаштування в автомобілі, задайте мінімальний інтервал оновлення для кожного поля та за потреби minimum_delta. Tesla надсилає значення лише тоді, коли значення змінилося і налаштований інтервал минув.",
-    "telemetry_fields_note": "Поля з позначкою <b>за замовчуванням</b> належать до стандартного пресету адаптера. <b>Minimum delta</b> пригнічує дуже малі числові зміни; для <code>Location</code> Tesla інтерпретує значення в метрах. Поля <b>vehicle_location</b> потребують OAuth-scope <code>vehicle_location</code>. Незіставлені поля зберігаються в <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "telemetry_fields_note": "Поля з позначкою <b>за замовчуванням</b> належать до пресету адаптера. <b>Мінімальна зміна</b> пригнічує невеликі числові зміни; якщо поле залишити порожнім і показано заповнювач, адаптер використає це значення за замовчуванням (наприклад <code>100 m</code> для місцезнаходження). Поля місцезнаходження потребують OAuth-scope <code>vehicle_location</code>. Незіставлені поля зберігаються в <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
     "telemetry_search_field": "Пошук поля",
     "telemetry_category_label": "Категорія",
     "telemetry_use_default_preset": "Використати стандартний пресет адаптера",
@@ -86,7 +86,7 @@
     "telemetry_invalid_json_default": "JSON полів Telemetry недійсний. Використовується стандартний пресет.",
     "telemetry_selected_summary": "{selected} вибраних полів / {total} доступних полів",
     "telemetry_raw_state_target": "Сире значення: telemetry.fields.{field}",
-    "telemetry_badge_location_scope": "vehicle_location",
+    "telemetry_badge_location_scope": "Scope місцезнаходження",
     "telemetry_badge_default": "за замовчуванням",
     "telemetry_all_categories": "Усі категорії",
     "telemetry_default_preset_filter": "Стандартний пресет адаптера",
@@ -108,5 +108,6 @@
     "telemetry_filter_all_fields": "Усі поля",
     "telemetry_filter_selected_fields": "Лише вибрані поля",
     "telemetry_filter_unselected_fields": "Лише невибрані поля",
-    "telemetry_table_minimum_delta": "Мінімальна зміна"
+    "telemetry_table_minimum_delta": "Мінімальна зміна",
+    "telemetry_minimum_delta_default_hint": "Залиште порожнім, щоб використати значення за замовчуванням {value}."
 }

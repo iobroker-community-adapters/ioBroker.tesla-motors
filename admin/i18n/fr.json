@@ -63,7 +63,7 @@
     "telemetry_action_result": "Résultat de l’action Telemetry",
     "telemetry_fields_title": "Champs Fleet Telemetry",
     "telemetry_fields_description": "Sélectionnez les champs Fleet Telemetry à configurer sur le véhicule, définissez l’intervalle minimal de mise à jour par champ et éventuellement un minimum_delta. Tesla n’envoie les valeurs que lorsqu’elles ont changé et que l’intervalle configuré est écoulé.",
-    "telemetry_fields_note": "Les champs marqués <b>par défaut</b> font partie du préréglage standard de l’adaptateur. <b>Minimum delta</b> supprime les très petites variations numériques ; pour <code>Location</code>, Tesla l’interprète en mètres. Les champs <b>vehicle_location</b> nécessitent le scope OAuth <code>vehicle_location</code>. Les champs non mappés sont enregistrés sous <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "telemetry_fields_note": "Les champs marqués <b>par défaut</b> font partie du préréglage de l’adaptateur. <b>Changement minimal</b> supprime les petites variations numériques ; si le champ reste vide et qu’un espace réservé est affiché, l’adaptateur utilise cette valeur par défaut (par exemple <code>100 m</code> pour la position). Les champs de position nécessitent le scope OAuth <code>vehicle_location</code>. Les champs non mappés sont enregistrés sous <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
     "telemetry_search_field": "Rechercher un champ",
     "telemetry_category_label": "Catégorie",
     "telemetry_use_default_preset": "Utiliser le préréglage standard de l’adaptateur",
@@ -86,7 +86,7 @@
     "telemetry_invalid_json_default": "Le JSON des champs Telemetry est invalide. Le préréglage par défaut est utilisé.",
     "telemetry_selected_summary": "{selected} champs sélectionnés / {total} champs disponibles",
     "telemetry_raw_state_target": "Valeur brute : telemetry.fields.{field}",
-    "telemetry_badge_location_scope": "vehicle_location",
+    "telemetry_badge_location_scope": "Scope position",
     "telemetry_badge_default": "par défaut",
     "telemetry_all_categories": "Toutes les catégories",
     "telemetry_default_preset_filter": "Préréglage standard de l’adaptateur",
@@ -108,5 +108,6 @@
     "telemetry_filter_all_fields": "Tous les champs",
     "telemetry_filter_selected_fields": "Champs sélectionnés uniquement",
     "telemetry_filter_unselected_fields": "Champs non sélectionnés uniquement",
-    "telemetry_table_minimum_delta": "Changement minimal"
+    "telemetry_table_minimum_delta": "Changement minimal",
+    "telemetry_minimum_delta_default_hint": "Laisser vide pour utiliser la valeur par défaut {value}."
 }

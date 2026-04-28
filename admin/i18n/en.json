@@ -63,7 +63,7 @@
     "telemetry_action_result": "Telemetry action result",
     "telemetry_fields_title": "Fleet Telemetry fields",
     "telemetry_fields_description": "Select exactly which Fleet Telemetry fields should be configured on the vehicle, define the minimum update interval per field and optionally set a minimum delta. Tesla still sends values only when the value changed and the configured interval has elapsed.",
-    "telemetry_fields_note": "Fields tagged with <b>default</b> are the adapter preset. <b>Minimum delta</b> suppresses tiny numeric changes; for <code>Location</code> Tesla interprets it in meters. Fields tagged with <b>vehicle_location</b> require the <code>vehicle_location</code> OAuth scope. Unmapped fields are stored under <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> as raw telemetry values.",
+    "telemetry_fields_note": "Fields tagged with <b>default</b> are the adapter preset. <b>Minimum change</b> suppresses small numeric changes; when the field is left empty and a placeholder is shown, the adapter uses that default value (for example <code>100 m</code> for location). Location fields require the <code>vehicle_location</code> OAuth scope. Unmapped fields are stored under <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> as raw telemetry values.",
     "telemetry_search_field": "Search field",
     "telemetry_category_label": "Category",
     "telemetry_use_default_preset": "Use adapter default preset",
@@ -86,7 +86,7 @@
     "telemetry_invalid_json_default": "Telemetry fields JSON is invalid. Using default preset.",
     "telemetry_selected_summary": "{selected} selected fields / {total} available fields",
     "telemetry_raw_state_target": "Raw value: telemetry.fields.{field}",
-    "telemetry_badge_location_scope": "vehicle_location",
+    "telemetry_badge_location_scope": "Location scope",
     "telemetry_badge_default": "default",
     "telemetry_all_categories": "All categories",
     "telemetry_default_preset_filter": "Adapter default preset",
@@ -108,5 +108,6 @@
     "telemetry_filter_all_fields": "All fields",
     "telemetry_filter_selected_fields": "Selected fields only",
     "telemetry_filter_unselected_fields": "Unselected fields only",
-    "telemetry_table_minimum_delta": "Minimum change"
+    "telemetry_table_minimum_delta": "Minimum change",
+    "telemetry_minimum_delta_default_hint": "Leave empty to use the default value {value}."
 }

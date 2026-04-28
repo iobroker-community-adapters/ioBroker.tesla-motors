@@ -228,6 +228,31 @@ class Teslamotors extends utils.Adapter {
       }, {});
     }
 
+    if (response.vehicle_info && typeof response.vehicle_info === 'object' && !Array.isArray(response.vehicle_info)) {
+      const keyPairedVins = new Set(response.key_paired_vins || response.keyPairedVins || []);
+      const unpairedVins = new Set(response.unpaired_vins || response.unpairedVins || []);
+
+      return Object.entries(response.vehicle_info).reduce((accumulator, [vin, entry]) => {
+        if (!vin) {
+          return accumulator;
+        }
+
+        const status = {
+          vin,
+          ...(entry && typeof entry === 'object' && !Array.isArray(entry) ? entry : {}),
+        };
+
+        if (keyPairedVins.has(vin)) {
+          status.key_paired = true;
+        } else if (unpairedVins.has(vin)) {
+          status.key_paired = false;
+        }
+
+        accumulator[vin] = status;
+        return accumulator;
+      }, {});
+    }
+
     if (typeof response === 'object') {
       const keys = Object.keys(response);
       const looksLikeVinMap = keys.every((key) => /^[A-HJ-NPR-Z0-9]{10,}$/.test(key));

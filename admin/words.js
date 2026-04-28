@@ -835,17 +835,30 @@ systemDictionary = {
     "zh-cn": "选择要在车辆上配置的 Fleet Telemetry 字段，为每个字段设置最小更新间隔，并可选设置 minimum_delta。Tesla 仅在数值发生变化且配置的间隔已到期时发送数据。"
   },
   "telemetry_fields_note": {
-    "en": "Fields tagged with <b>default</b> are the adapter preset. <b>Minimum delta</b> suppresses tiny numeric changes; for <code>Location</code> Tesla interprets it in meters. Fields tagged with <b>vehicle_location</b> require the <code>vehicle_location</code> OAuth scope. Unmapped fields are stored under <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> as raw telemetry values.",
-    "de": "Felder mit <b>Standard</b> gehören zum Adapter-Standardpreset. <b>Mindeständerung</b> unterdrückt kleinste Zahlenänderungen; bei <code>Location</code> interpretiert Tesla den Wert in Metern. Felder mit <b>vehicle_location</b> benötigen den OAuth-Scope <code>vehicle_location</code>. Nicht gemappte Felder werden als Rohwerte unter <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> gespeichert.",
-    "ru": "Поля с меткой <b>по умолчанию</b> входят в стандартный пресет адаптера. <b>Minimum delta</b> подавляет очень маленькие числовые изменения; для <code>Location</code> Tesla интерпретирует значение в метрах. Поля <b>vehicle_location</b> требуют OAuth-scope <code>vehicle_location</code>. Несопоставленные поля сохраняются в <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
-    "pt": "Campos com <b>predefinição</b> pertencem ao preset padrão do adaptador. <b>Minimum delta</b> suprime pequenas alterações numéricas; para <code>Location</code>, a Tesla interpreta o valor em metros. Campos com <b>vehicle_location</b> requerem o scope OAuth <code>vehicle_location</code>. Campos sem mapeamento são guardados em <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
-    "nl": "Velden met <b>standaard</b> horen bij de standaardpreset van de adapter. <b>Minimum delta</b> onderdrukt zeer kleine numerieke wijzigingen; voor <code>Location</code> interpreteert Tesla de waarde in meters. Velden met <b>vehicle_location</b> vereisen de OAuth-scope <code>vehicle_location</code>. Niet-gemapte velden worden opgeslagen onder <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
-    "fr": "Les champs marqués <b>par défaut</b> font partie du préréglage standard de l’adaptateur. <b>Minimum delta</b> supprime les très petites variations numériques ; pour <code>Location</code>, Tesla l’interprète en mètres. Les champs <b>vehicle_location</b> nécessitent le scope OAuth <code>vehicle_location</code>. Les champs non mappés sont enregistrés sous <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
-    "it": "I campi con <b>predefinito</b> fanno parte del preset standard dell’adattatore. <b>Minimum delta</b> sopprime piccole variazioni numeriche; per <code>Location</code> Tesla interpreta il valore in metri. I campi <b>vehicle_location</b> richiedono lo scope OAuth <code>vehicle_location</code>. I campi non mappati sono salvati in <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
-    "es": "Los campos marcados con <b>predeterminado</b> pertenecen al preset estándar del adaptador. <b>Minimum delta</b> suprime cambios numéricos muy pequeños; para <code>Location</code>, Tesla lo interpreta en metros. Los campos <b>vehicle_location</b> requieren el scope OAuth <code>vehicle_location</code>. Los campos sin mapeo se guardan en <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
-    "pl": "Pola oznaczone <b>domyślne</b> należą do standardowego presetu adaptera. <b>Minimum delta</b> tłumi bardzo małe zmiany liczbowe; dla <code>Location</code> Tesla interpretuje wartość w metrach. Pola <b>vehicle_location</b> wymagają scope OAuth <code>vehicle_location</code>. Niezmapowane pola są zapisywane w <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
-    "uk": "Поля з позначкою <b>за замовчуванням</b> належать до стандартного пресету адаптера. <b>Minimum delta</b> пригнічує дуже малі числові зміни; для <code>Location</code> Tesla інтерпретує значення в метрах. Поля <b>vehicle_location</b> потребують OAuth-scope <code>vehicle_location</code>. Незіставлені поля зберігаються в <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
-    "zh-cn": "带有 <b>默认</b> 标记的字段属于适配器默认预设。<b>Minimum delta</b> 可抑制很小的数值变化；对于 <code>Location</code>，Tesla 会按米解释该值。带有 <b>vehicle_location</b> 的字段需要 OAuth scope <code>vehicle_location</code>。未映射字段存储在 <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> 下。"
+    "en": "Fields tagged with <b>default</b> are the adapter preset. <b>Minimum change</b> suppresses small numeric changes; when the field is left empty and a placeholder is shown, the adapter uses that default value (for example <code>100 m</code> for location). Location fields require the <code>vehicle_location</code> OAuth scope. Unmapped fields are stored under <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> as raw telemetry values.",
+    "de": "Felder mit <b>Standard</b> gehören zum Adapter-Standardpreset. <b>Mindeständerung</b> unterdrückt kleine Zahlenänderungen; bleibt das Feld leer und ein Platzhalter ist sichtbar, verwendet der Adapter diesen Standardwert (z. B. <code>100 m</code> bei Standort). Standort-Felder benötigen den OAuth-Scope <code>vehicle_location</code>. Nicht gemappte Felder werden als Rohwerte unter <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> gespeichert.",
+    "ru": "Поля с меткой <b>по умолчанию</b> входят в пресет адаптера. <b>Минимальное изменение</b> подавляет небольшие числовые изменения; если поле оставить пустым и показан плейсхолдер, адаптер использует это значение по умолчанию (например <code>100 m</code> для местоположения). Поля местоположения требуют OAuth-scope <code>vehicle_location</code>. Несопоставленные поля сохраняются в <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "pt": "Campos com <b>predefinição</b> pertencem ao preset do adaptador. <b>Alteração mínima</b> suprime pequenas alterações numéricas; se o campo ficar vazio e houver um marcador, o adaptador usa esse valor predefinido (por exemplo <code>100 m</code> para localização). Campos de localização requerem o scope OAuth <code>vehicle_location</code>. Campos sem mapeamento são guardados em <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "nl": "Velden met <b>standaard</b> horen bij de standaardpreset van de adapter. <b>Minimale wijziging</b> onderdrukt kleine numerieke wijzigingen; als het veld leeg blijft en er een placeholder zichtbaar is, gebruikt de adapter die standaardwaarde (bijvoorbeeld <code>100 m</code> voor locatie). Locatievelden vereisen de OAuth-scope <code>vehicle_location</code>. Niet-gemapte velden worden opgeslagen onder <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "fr": "Les champs marqués <b>par défaut</b> font partie du préréglage de l’adaptateur. <b>Changement minimal</b> supprime les petites variations numériques ; si le champ reste vide et qu’un espace réservé est affiché, l’adaptateur utilise cette valeur par défaut (par exemple <code>100 m</code> pour la position). Les champs de position nécessitent le scope OAuth <code>vehicle_location</code>. Les champs non mappés sont enregistrés sous <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "it": "I campi con <b>predefinito</b> fanno parte del preset dell’adattatore. <b>Variazione minima</b> sopprime piccole variazioni numeriche; se il campo resta vuoto e viene mostrato un segnaposto, l’adattatore usa quel valore predefinito (ad esempio <code>100 m</code> per la posizione). I campi di posizione richiedono lo scope OAuth <code>vehicle_location</code>. I campi non mappati sono salvati in <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "es": "Los campos marcados como <b>predeterminado</b> pertenecen al preset del adaptador. <b>Cambio mínimo</b> suprime pequeños cambios numéricos; si el campo se deja vacío y se muestra un marcador, el adaptador usa ese valor predeterminado (por ejemplo <code>100 m</code> para ubicación). Los campos de ubicación requieren el scope OAuth <code>vehicle_location</code>. Los campos sin mapeo se guardan en <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "pl": "Pola oznaczone jako <b>domyślne</b> należą do presetu adaptera. <b>Minimalna zmiana</b> tłumi małe zmiany liczbowe; jeśli pole pozostanie puste i widoczny jest placeholder, adapter użyje tej wartości domyślnej (np. <code>100 m</code> dla lokalizacji). Pola lokalizacji wymagają scope OAuth <code>vehicle_location</code>. Niezmapowane pola są zapisywane w <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "uk": "Поля з позначкою <b>за замовчуванням</b> належать до пресету адаптера. <b>Мінімальна зміна</b> пригнічує невеликі числові зміни; якщо поле залишити порожнім і показано заповнювач, адаптер використає це значення за замовчуванням (наприклад <code>100 m</code> для місцезнаходження). Поля місцезнаходження потребують OAuth-scope <code>vehicle_location</code>. Незіставлені поля зберігаються в <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>.",
+    "zh-cn": "带有 <b>默认</b> 标记的字段属于适配器预设。<b>最小变化</b> 可抑制较小的数值变化；如果字段留空且显示占位值，适配器会使用该默认值（例如位置字段为 <code>100 m</code>）。位置字段需要 OAuth scope <code>vehicle_location</code>。未映射字段存储在 <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code> 下。"
+  },
+  "telemetry_minimum_delta_default_hint": {
+    "en": "Leave empty to use the default value {value}.",
+    "de": "Leer lassen, um den Standardwert {value} zu verwenden.",
+    "ru": "Оставьте пустым, чтобы использовать значение по умолчанию {value}.",
+    "pt": "Deixe em branco para usar o valor predefinido {value}.",
+    "nl": "Laat leeg om de standaardwaarde {value} te gebruiken.",
+    "fr": "Laisser vide pour utiliser la valeur par défaut {value}.",
+    "it": "Lasciare vuoto per usare il valore predefinito {value}.",
+    "es": "Dejar vacío para usar el valor predeterminado {value}.",
+    "pl": "Pozostaw puste, aby użyć wartości domyślnej {value}.",
+    "uk": "Залиште порожнім, щоб використати значення за замовчуванням {value}.",
+    "zh-cn": "留空以使用默认值 {value}。"
   },
   "telemetry_search_field": {
     "en": "Search field",
@@ -1199,17 +1212,17 @@ systemDictionary = {
     "zh-cn": "原始值：telemetry.fields.{field}"
   },
   "telemetry_badge_location_scope": {
-    "en": "vehicle_location",
-    "de": "vehicle_location",
-    "ru": "vehicle_location",
-    "pt": "vehicle_location",
-    "nl": "vehicle_location",
-    "fr": "vehicle_location",
-    "it": "vehicle_location",
-    "es": "vehicle_location",
-    "pl": "vehicle_location",
-    "uk": "vehicle_location",
-    "zh-cn": "vehicle_location"
+    "en": "Location scope",
+    "de": "Standort-Scope",
+    "ru": "Scope местоположения",
+    "pt": "Scope localização",
+    "nl": "Locatie-scope",
+    "fr": "Scope position",
+    "it": "Scope posizione",
+    "es": "Scope de ubicación",
+    "pl": "Scope lokalizacji",
+    "uk": "Scope місцезнаходження",
+    "zh-cn": "位置 scope"
   },
   "telemetry_badge_default": {
     "en": "default",

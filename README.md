@@ -170,11 +170,15 @@ the default topic base `tesla-telemetry`, the expected topics are:
 The admin UI contains a dedicated **Fleet Telemetry fields** tab. There you can
 enable/disable individual Tesla telemetry fields, filter by selection/category
 and set the update interval in seconds per field. Optional `minimum_delta`
-values can be configured for fields where Tesla supports them. For `Location`,
-Tesla interprets `minimum_delta` in meters, so the default `100` roughly matches
-`0.001°` latitude/longitude and avoids tiny GPS jitter updates. Fields that are
-already mapped by the adapter are written back into the existing Tesla state
-tree. Other selected fields are stored as raw values under
+values can be configured for numeric fields where Tesla supports them. If the
+field is left empty and the admin UI shows a placeholder, the adapter uses that
+default when building the vehicle configuration. For `Location`,
+`OriginLocation` and `DestinationLocation`, Tesla interprets `minimum_delta` in
+meters, so the default `100 m` roughly matches `0.001°` latitude/longitude and
+avoids tiny GPS jitter updates. Other useful defaults are provided for common
+percentage, range, speed, temperature, current, voltage, power and energy
+fields. Fields that are already mapped by the adapter are written back into the
+existing Tesla state tree. Other selected fields are stored as raw values under
 `<VIN>.telemetry.fields.<FieldName>` so scripts can still use them.
 
 Mapped fields currently include the most commonly used charging, battery,
@@ -215,11 +219,11 @@ field options:
 
 Fleet Telemetry is change-based: a field is only emitted after its
 `interval_seconds` elapsed **and** the value changed. Where configured,
-`minimum_delta` additionally suppresses smaller value changes before they are
-sent. The default preset therefore uses `Soc` with `interval_seconds=1` and
-`minimum_delta=1`, so battery level updates are reported quickly but only after
-at least one percentage point changed. Setting a field to `false` omits it from
-the vehicle configuration.
+`minimum_delta` additionally suppresses smaller numeric value changes before
+they are sent. The default preset therefore uses `Soc` with
+`interval_seconds=1` and `minimum_delta=1`, so battery level updates are
+reported quickly but only after at least one percentage point changed. Setting a
+field to `false` omits it from the vehicle configuration.
 
 When telemetry mode is enabled, regular vehicle polling is reduced for covered
 vehicle data. The polling fallback still keeps unsupported endpoints such as
