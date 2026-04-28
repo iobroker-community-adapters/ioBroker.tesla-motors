@@ -236,18 +236,18 @@ systemDictionary = {
     "uk": "Оновити налаштування",
     "zh-cn": "更新设置"
   },
-  "Update interval in seconds (minimum 10)": {
-    "en": "Update interval in seconds (minimum 10)",
-    "de": "Update Intervall in Sekunden (Minimum 10)",
-    "ru": "Интервал обновления в секундах (минимум 10)",
-    "pt": "Intervalo de atualização em segundos (mínimo 10)",
-    "nl": "Update-interval in seconden (minimaal 10)",
-    "fr": "Intervalle de mise à jour en secondes (minimum 10)",
-    "it": "Intervallo di aggiornamento in secondi (minimo 10)",
-    "es": "Intervalo de actualización en segundos (mínimo 10)",
-    "pl": "Interwał aktualizacji w sekundach (minimum 10)",
-    "uk": "Інтервал оновлення в секундах (мінімум 10)",
-    "zh-cn": "更新间隔（以秒为单位）（最小 10）"
+  "Update interval in seconds (0 = disabled, minimum 10)": {
+    "en": "Update interval in seconds (0 = disabled, minimum 10)",
+    "de": "Update Intervall in Sekunden (0 = deaktiviert, Minimum 10)",
+    "ru": "Интервал обновления в секундах (0 = отключено, минимум 10)",
+    "pt": "Intervalo de atualização em segundos (0 = desativado, mínimo 10)",
+    "nl": "Update-interval in seconden (0 = uitgeschakeld, minimaal 10)",
+    "fr": "Intervalle de mise à jour en secondes (0 = désactivé, minimum 10)",
+    "it": "Intervallo di aggiornamento in secondi (0 = disabilitato, minimo 10)",
+    "es": "Intervalo de actualización en segundos (0 = deshabilitado, mínimo 10)",
+    "pl": "Interwał aktualizacji w sekundach (0 = wyłączone, minimum 10)",
+    "uk": "Інтервал оновлення в секундах (0 = вимкнено, мінімум 10)",
+    "zh-cn": "更新间隔（以秒为单位）（0 = 禁用，最小 10）"
   },
   "Update interval while driving in seconds (0 = disabled)": {
     "en": "Update interval while driving in seconds (0 = disabled)",
@@ -562,17 +562,17 @@ systemDictionary = {
     "zh-cn": "Fleet Telemetry（MQTT 桥接）"
   },
   "telemetry_bridge_description": {
-    "en": "Configure a local vehicle-command proxy plus an MQTT-fed Fleet Telemetry server. The adapter will then update the existing Tesla states from MQTT instead of using regular <code>vehicle_data</code> polling.",
-    "de": "Konfiguriert einen lokalen vehicle-command-Proxy und einen MQTT-basierten Fleet-Telemetry-Server. Der Adapter aktualisiert danach die vorhandenen Tesla-Zustände per MQTT statt über reguläres <code>vehicle_data</code>-Polling.",
-    "ru": "Настройте локальный прокси vehicle-command и сервер Fleet Telemetry, передающий данные в MQTT. Затем адаптер будет обновлять существующие состояния Tesla из MQTT вместо регулярного опроса <code>vehicle_data</code>.",
-    "pt": "Configure um proxy vehicle-command local e um servidor Fleet Telemetry alimentado por MQTT. O adaptador atualizará os estados Tesla existentes via MQTT em vez de usar a sondagem regular de <code>vehicle_data</code>.",
-    "nl": "Configureer een lokale vehicle-command-proxy en een Fleet Telemetry-server die via MQTT publiceert. De adapter werkt daarna de bestaande Tesla-statussen bij vanuit MQTT in plaats van via reguliere <code>vehicle_data</code>-polling.",
-    "fr": "Configurez un proxy vehicle-command local ainsi qu’un serveur Fleet Telemetry alimenté par MQTT. L’adaptateur mettra ensuite à jour les états Tesla existants depuis MQTT au lieu d’utiliser l’interrogation régulière <code>vehicle_data</code>.",
-    "it": "Configura un proxy vehicle-command locale e un server Fleet Telemetry alimentato da MQTT. L’adattatore aggiornerà quindi gli stati Tesla esistenti tramite MQTT invece di usare il polling regolare di <code>vehicle_data</code>.",
-    "es": "Configure un proxy vehicle-command local y un servidor Fleet Telemetry alimentado por MQTT. El adaptador actualizará entonces los estados Tesla existentes desde MQTT en lugar de usar el sondeo regular de <code>vehicle_data</code>.",
-    "pl": "Skonfiguruj lokalny proxy vehicle-command oraz serwer Fleet Telemetry publikujący do MQTT. Adapter będzie następnie aktualizował istniejące stany Tesla z MQTT zamiast używać regularnego odpytywania <code>vehicle_data</code>.",
-    "uk": "Налаштуйте локальний проксі vehicle-command і сервер Fleet Telemetry, що надсилає дані через MQTT. Після цього адаптер оновлюватиме наявні стани Tesla з MQTT замість регулярного опитування <code>vehicle_data</code>.",
-    "zh-cn": "配置本地 vehicle-command 代理和基于 MQTT 的 Fleet Telemetry 服务器。随后适配器将从 MQTT 更新现有 Tesla 状态，而不是定期轮询 <code>vehicle_data</code>。"
+    "en": "Configure a local vehicle-command proxy plus an MQTT-fed Fleet Telemetry server. The adapter updates live Tesla states from MQTT and can periodically synchronize Fleet API data not covered by telemetry.",
+    "de": "Konfiguriert einen lokalen vehicle-command-Proxy und einen MQTT-basierten Fleet-Telemetry-Server. Der Adapter aktualisiert Live-Tesla-Zustände per MQTT und kann nicht per Telemetry abgedeckte Daten regelmäßig über die Fleet API synchronisieren.",
+    "ru": "Настройте локальный прокси vehicle-command и сервер Fleet Telemetry, передающий данные в MQTT. Адаптер обновляет текущие состояния Tesla из MQTT и может периодически синхронизировать через Fleet API данные, не покрытые телеметрией.",
+    "pt": "Configure um proxy vehicle-command local e um servidor Fleet Telemetry alimentado por MQTT. O adaptador atualiza estados Tesla em tempo real via MQTT e pode sincronizar periodicamente via Fleet API dados não cobertos pela telemetria.",
+    "nl": "Configureer een lokale vehicle-command-proxy en een Fleet Telemetry-server die via MQTT publiceert. De adapter werkt live Tesla-statussen bij via MQTT en kan gegevens die niet door telemetrie worden gedekt periodiek via de Fleet API synchroniseren.",
+    "fr": "Configurez un proxy vehicle-command local ainsi qu’un serveur Fleet Telemetry alimenté par MQTT. L’adaptateur met à jour les états Tesla en direct via MQTT et peut synchroniser périodiquement via la Fleet API les données non couvertes par la télémétrie.",
+    "it": "Configura un proxy vehicle-command locale e un server Fleet Telemetry alimentato da MQTT. L’adattatore aggiorna gli stati Tesla live tramite MQTT e può sincronizzare periodicamente tramite Fleet API i dati non coperti dalla telemetria.",
+    "es": "Configure un proxy vehicle-command local y un servidor Fleet Telemetry alimentado por MQTT. El adaptador actualiza estados Tesla en vivo mediante MQTT y puede sincronizar periódicamente mediante Fleet API los datos no cubiertos por telemetría.",
+    "pl": "Skonfiguruj lokalny proxy vehicle-command oraz serwer Fleet Telemetry publikujący do MQTT. Adapter aktualizuje stany Tesla na żywo przez MQTT i może okresowo synchronizować przez Fleet API dane nieobjęte telemetrią.",
+    "uk": "Налаштуйте локальний проксі vehicle-command і сервер Fleet Telemetry, що надсилає дані через MQTT. Адаптер оновлює поточні стани Tesla через MQTT і може періодично синхронізувати через Fleet API дані, не охоплені телеметрією.",
+    "zh-cn": "配置本地 vehicle-command 代理和基于 MQTT 的 Fleet Telemetry 服务器。适配器通过 MQTT 更新实时 Tesla 状态，并可通过 Fleet API 定期同步遥测未覆盖的数据。"
   },
   "telemetry_enabled": {
     "en": "Enable Fleet Telemetry mode",
@@ -640,17 +640,30 @@ systemDictionary = {
     "zh-cn": "Telemetry 服务器端口"
   },
   "telemetry_fallback_poll": {
-    "en": "Keep polling fallback for unsupported endpoints",
-    "de": "Polling-Fallback für nicht unterstützte Endpunkte beibehalten",
-    "ru": "Оставить резервный опрос для неподдерживаемых конечных точек",
-    "pt": "Manter fallback de sondagem para endpoints não suportados",
-    "nl": "Polling-fallback behouden voor niet-ondersteunde endpoints",
-    "fr": "Conserver le repli par interrogation pour les points de terminaison non pris en charge",
-    "it": "Mantieni fallback di polling per endpoint non supportati",
-    "es": "Mantener sondeo de respaldo para endpoints no compatibles",
-    "pl": "Zachowaj awaryjne odpytywanie dla nieobsługiwanych endpointów",
-    "uk": "Залишити резервне опитування для непідтримуваних кінцевих точок",
-    "zh-cn": "为不支持的端点保留轮询回退"
+    "en": "Enable periodic Fleet API synchronization",
+    "de": "Periodische Fleet-API-Synchronisierung aktivieren",
+    "ru": "Включить периодическую синхронизацию Fleet API",
+    "pt": "Ativar sincronização periódica da Fleet API",
+    "nl": "Periodieke Fleet API-synchronisatie inschakelen",
+    "fr": "Activer la synchronisation périodique Fleet API",
+    "it": "Abilita sincronizzazione periodica Fleet API",
+    "es": "Activar sincronización periódica de Fleet API",
+    "pl": "Włącz okresową synchronizację Fleet API",
+    "uk": "Увімкнути періодичну синхронізацію Fleet API",
+    "zh-cn": "启用定期 Fleet API 同步"
+  },
+  "telemetry_fallback_poll_hint": {
+    "en": "Uses the normal update interval to periodically refresh Fleet API data. Set the update interval to 0 to disable scheduled API synchronization.",
+    "de": "Verwendet das normale Update-Intervall, um Fleet-API-Daten regelmäßig abzugleichen. Setze das Update-Intervall auf 0, um die geplante API-Synchronisierung zu deaktivieren.",
+    "ru": "Использует обычный интервал обновления для периодического обновления данных Fleet API. Установите интервал обновления в 0, чтобы отключить плановую API-синхронизацию.",
+    "pt": "Usa o intervalo normal de atualização para atualizar periodicamente dados da Fleet API. Defina o intervalo de atualização como 0 para desativar a sincronização agendada da API.",
+    "nl": "Gebruikt het normale update-interval om Fleet API-gegevens periodiek te verversen. Zet het update-interval op 0 om geplande API-synchronisatie uit te schakelen.",
+    "fr": "Utilise l’intervalle de mise à jour normal pour actualiser périodiquement les données Fleet API. Réglez l’intervalle sur 0 pour désactiver la synchronisation API planifiée.",
+    "it": "Usa il normale intervallo di aggiornamento per aggiornare periodicamente i dati Fleet API. Imposta l’intervallo su 0 per disattivare la sincronizzazione API pianificata.",
+    "es": "Usa el intervalo normal de actualización para refrescar periódicamente los datos de Fleet API. Establezca el intervalo en 0 para desactivar la sincronización API programada.",
+    "pl": "Używa normalnego interwału aktualizacji do okresowego odświeżania danych Fleet API. Ustaw interwał aktualizacji na 0, aby wyłączyć zaplanowaną synchronizację API.",
+    "uk": "Використовує звичайний інтервал оновлення для періодичного оновлення даних Fleet API. Встановіть інтервал оновлення 0, щоб вимкнути заплановану API-синхронізацію.",
+    "zh-cn": "使用正常更新间隔定期刷新 Fleet API 数据。将更新间隔设为 0 可禁用计划的 API 同步。"
   },
   "telemetry_server_ca": {
     "en": "Telemetry server CA / full chain PEM",
@@ -1433,16 +1446,15 @@ systemDictionary = {
     "zh-cn": "其他"
   },
   "excludeElementList_examples": {
-    "en": "Example: charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "de": "Beispiel: charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "ru": "Пример: charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "pt": "Exemplo: charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "nl": "Voorbeeld: charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "fr": "Exemple : charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "it": "Esempio: charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "es": "Ejemplo: charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "pl": "Przykład: charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "uk": "Приклад: charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
-    "zh-cn": "示例：charge_history、live_status、backup_history、energy_history、self_consumption_history、self_consumption_history_lifetime、energy_history_lifetime"
-  }
-};
+    "en": "Example: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "de": "Beispiel: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "ru": "Пример: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "pt": "Exemplo: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "nl": "Voorbeeld: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "fr": "Exemple : charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "it": "Esempio: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "es": "Ejemplo: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "pl": "Przykład: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "uk": "Приклад: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data, charge_history, live_status, backup_history, energy_history, self_consumption_history, self_consumption_history_lifetime, energy_history_lifetime",
+    "zh-cn": "示例：charge_state、climate_state、drive_state、vehicle_state、vehicle_config、location_data、charge_history、live_status、backup_history、energy_history、self_consumption_history、self_consumption_history_lifetime、energy_history_lifetime"
+  }};

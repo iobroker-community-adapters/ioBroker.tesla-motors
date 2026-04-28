@@ -384,7 +384,7 @@
       <div class="row">
         <div class="col s6 input-field">
           <input type="number" class="value" id="intervalNormal" />
-          <label for="intervalNormal" class="translate">Update interval in seconds (minimum 10)</label>
+          <label for="intervalNormal" class="translate">Update interval in seconds (0 = disabled, minimum 10)</label>
         </div>
       </div>
       <div class="row">
@@ -429,7 +429,8 @@
           <input type="text" class="value" id="excludeElementList" />
           <label for="excludeElementList" class="translate">Exclude objects for update (comma separated)</label>
           <div class="translate" data-lang="excludeElementList_examples">
-            Example: charge_history, live_status, backup_history, energy_history, self_consumption_history,
+            Example: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data,
+            charge_history, live_status, backup_history, energy_history, self_consumption_history,
             self_consumption_history_lifetime, energy_history_lifetime
           </div>
         </div>
@@ -443,8 +444,8 @@
           <h5 data-telemetry-i18n="telemetry_bridge_title" data-lang="telemetry_bridge_title" class="translate">Fleet Telemetry (MQTT Bridge)</h5>
           <p data-telemetry-i18n="telemetry_bridge_description" data-lang="telemetry_bridge_description" class="translate">
             Configure a local vehicle-command proxy plus an MQTT-fed Fleet Telemetry server.
-            The adapter will then update the existing Tesla states from MQTT instead of using
-            regular <code>vehicle_data</code> polling.
+            The adapter updates live Tesla states from MQTT and can periodically synchronize
+            Fleet API data not covered by telemetry.
           </p>
         </div>
       </div>
@@ -475,7 +476,10 @@
         </div>
         <div class="col s6 m3 input-field">
           <input type="checkbox" class="value" id="telemetryFallbackPollEnabled" />
-          <label for="telemetryFallbackPollEnabled" data-telemetry-i18n="telemetry_fallback_poll" data-lang="telemetry_fallback_poll" class="translate">Keep polling fallback for unsupported endpoints</label>
+          <label for="telemetryFallbackPollEnabled" data-telemetry-i18n="telemetry_fallback_poll" data-lang="telemetry_fallback_poll" class="translate">Enable periodic Fleet API synchronization</label>
+          <span class="helper-text translate" data-lang="telemetry_fallback_poll_hint">
+            Uses the normal update interval to periodically refresh Fleet API data. Set the update interval to 0 to disable scheduled API synchronization.
+          </span>
         </div>
       </div>
       <div class="row">

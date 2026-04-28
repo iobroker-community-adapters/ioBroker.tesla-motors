@@ -134,7 +134,7 @@ Additional adapter settings are available for:
 - MQTT broker, topic base and credentials
 - the Fleet Telemetry field selection and per-field `interval_seconds` /
   optional `minimum_delta`
-- an optional polling fallback for endpoints that are not covered by telemetry
+- an optional periodic Fleet API sync for data that is not covered by telemetry
 
 #### Adapter setup
 
@@ -225,10 +225,15 @@ they are sent. The default preset therefore uses `Soc` with
 reported quickly but only after at least one percentage point changed. Setting a
 field to `false` omits it from the vehicle configuration.
 
-When telemetry mode is enabled, regular vehicle polling is reduced for covered
-vehicle data. The polling fallback still keeps unsupported endpoints such as
-charge history available. If **Keep polling fallback for unsupported endpoints**
-is disabled, the adapter skips those fallback calls too.
+When telemetry mode is enabled, Fleet Telemetry is used as the primary live
+source. The optional periodic Fleet API sync still polls the normal `vehicle_data`
+endpoints in the configured **normal update interval** so states that are not
+covered by the selected telemetry fields continue to be refreshed. Set the
+normal update interval to `0` to disable this scheduled Fleet API sync
+entirely. The comma-separated exclude list also applies to periodic API sync polling and
+can contain `vehicle_data` endpoints such as `charge_state`, `climate_state`,
+`drive_state`, `vehicle_state`, `vehicle_config`, `location_data` and dedicated
+endpoints such as `charge_history`.
 
 Diagnostic states are available under `tesla-motors.0.info.*`:
 
@@ -237,6 +242,9 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 - `telemetrySynced`
 - `telemetryLastMessage`
 - `telemetryLastError`
+- `telemetryLastApiSync`
+- `telemetryLastVehicleDataSync`
+- `telemetryLastChargeHistorySync`
 
 ### Questions and Discussions
 
@@ -253,6 +261,8 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 
 - (ChrMaass) Add optional Fleet Telemetry MQTT bridge with configurable fields
   and intervals.
+- (ChrMaass) Keep configurable periodic Fleet API sync in telemetry mode and
+  allow disabling scheduled polling with update interval `0`.
 
 ### 2.0.2 (2026-04-17)
 

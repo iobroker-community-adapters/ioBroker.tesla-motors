@@ -325,6 +325,45 @@
         "def": ""
       },
       "native": {}
+    },
+    {
+      "_id": "info.telemetryLastApiSync",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "Last periodic Fleet API sync run",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.telemetryLastVehicleDataSync",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "Last vehicle_data API sync run",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.telemetryLastChargeHistorySync",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "Last charge history API sync run",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
     }
   ]
 }
