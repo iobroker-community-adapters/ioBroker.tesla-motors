@@ -95,8 +95,11 @@ Supported commands include:
 
 Starting with the Fleet API migration, the adapter can also be used together
 with Tesla's **Fleet Telemetry** service to reduce `vehicle_data` polling costs.
+Fleet Telemetry is optional. If it is disabled, the adapter keeps the existing
+polling behavior unchanged.
 
-The first implementation uses an **MQTT bridge**:
+The first implementation uses an **MQTT bridge** and deliberately keeps the
+Fleet Telemetry receiver outside of the adapter:
 
 1. Tesla vehicles stream telemetry to a self-hosted
    [fleet-telemetry](https://github.com/teslamotors/fleet-telemetry) server.
@@ -107,6 +110,22 @@ The first implementation uses an **MQTT bridge**:
 This keeps current scripts and aliases working while reducing regular
 `vehicle_data` requests.
 
+#### Requirements
+
+- A reachable Tesla Fleet Telemetry server with
+  `transmit_decoded_records=true`.
+- An MQTT broker that is reachable by the ioBroker host.
+- A local
+  [vehicle-command](https://github.com/teslamotors/vehicle-command) proxy for
+  Fleet Telemetry configuration calls.
+- A server certificate / CA chain for the public Fleet Telemetry endpoint.
+- A vehicle with Fleet Telemetry support and a paired virtual key.
+
+The Fleet Telemetry server must be reachable by the vehicle on the configured
+public host and port. In many installations this requires TCP passthrough
+instead of a normal HTTPS reverse proxy because Tesla connects directly to the
+Fleet Telemetry server.
+
 Additional adapter settings are available for:
 
 - enabling telemetry mode
@@ -116,11 +135,63 @@ Additional adapter settings are available for:
 - the Fleet Telemetry field selection and per-field `interval_seconds`
 - an optional polling fallback for endpoints that are not covered by telemetry
 
+#### Adapter setup
+
+1. Run and expose the Fleet Telemetry server.
+2. Configure its MQTT datastore to publish decoded records to your MQTT broker.
+3. Run the `vehicle-command` proxy in the same trusted network as ioBroker.
+4. Configure the adapter settings:
+   - enable **Fleet Telemetry mode**
+   - enter the `vehicle-command` proxy URL
+   - enter the public Fleet Telemetry hostname, port and CA/fullchain PEM
+   - enter MQTT broker, optional credentials and topic base
+5. Select the desired fields and intervals on the **Fleet Telemetry fields**
+   tab.
+6. Use the admin action **Check Fleet Status** first.
+7. Use **Configure Fleet Telemetry** to send the configuration to the vehicle.
+8. Use **Read Fleet Config** to verify that the vehicle reports the
+   configuration as synced.
+
+The admin actions surface common error reasons such as missing virtual keys,
+unsupported firmware, disabled streaming or reached Fleet Telemetry config
+limits.
+
+#### MQTT topic format
+
+The adapter subscribes to the MQTT topic base configured in the admin UI. With
+the default topic base `tesla-telemetry`, the expected topics are:
+
+- `tesla-telemetry/<VIN>/v/<FieldName>` for telemetry values
+- `tesla-telemetry/<VIN>/connectivity` for connectivity events
+- `tesla-telemetry/<VIN>/errors/<Type>` for telemetry errors
+- `tesla-telemetry/<VIN>/alerts/<Type>/current` for current alerts
+
 The admin UI contains a dedicated **Fleet Telemetry fields** tab. There you can
 enable/disable individual Tesla telemetry fields and set the update interval in
 seconds per field. Fields that are already mapped by the adapter are written
 back into the existing Tesla state tree. Other selected fields are stored as raw
 values under `<VIN>.telemetry.fields.<FieldName>` so scripts can still use them.
+
+Mapped fields currently include the most commonly used charging, battery,
+position and lock states:
+
+- `Soc` -> `charge_state.battery_level`
+- `ChargeState` -> `charge_state.charging_state`
+- `DetailedChargeState` -> `charge_state.detailed_charge_state`
+- `ChargeLimitSoc` -> `charge_state.charge_limit_soc`
+- `ChargeAmps` -> `charge_state.charge_amps` and
+  `charge_state.charger_actual_current`
+- `ChargeCurrentRequest` -> `charge_state.charge_current_request`
+- `ChargeCurrentRequestMax` -> `charge_state.charge_current_request_max`
+- `ChargingCableType` -> `charge_state.conn_charge_cable`
+- `ChargePortDoorOpen` -> `charge_state.charge_port_door_open`
+- `EstBatteryRange` -> `charge_state.est_battery_range`
+- `VehicleSpeed` -> `drive_state.speed`
+- `Gear` -> `drive_state.shift_state`
+- `Location` -> `drive_state.latitude` and `drive_state.longitude`
+- `Locked` -> `vehicle_state.locked`
+- `Odometer` -> `vehicle_state.odometer`
+- `VehicleName` -> `vehicle_state.vehicle_name`
 
 Internally, the selection is stored as JSON for backwards compatibility with
 older admin versions. Manual JSON values may be plain seconds or full Tesla
@@ -141,6 +212,19 @@ Fleet Telemetry is change-based: a field is only emitted after its
 `interval_seconds` elapsed **and** the value changed. Setting a field to
 `false` omits it from the vehicle configuration.
 
+When telemetry mode is enabled, regular vehicle polling is reduced for covered
+vehicle data. The polling fallback still keeps unsupported endpoints such as
+charge history available. If **Keep polling fallback for unsupported endpoints**
+is disabled, the adapter skips those fallback calls too.
+
+Diagnostic states are available under `tesla-motors.0.info.*`:
+
+- `telemetryConnected`
+- `telemetryConfigured`
+- `telemetrySynced`
+- `telemetryLastMessage`
+- `telemetryLastError`
+
 ### Questions and Discussions
 
 <https://forum.iobroker.net/topic/47203/test-tesla-motors-v1-0-0>
@@ -151,6 +235,12 @@ Fleet Telemetry is change-based: a field is only emitted after its
 -->
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+
+- (ChrMaass) Add optional Fleet Telemetry MQTT bridge with configurable fields
+  and intervals.
+
 ### 2.0.2 (2026-04-17)
 
 - (TA2k) Migrate to Tesla Fleet API with OAuth2
