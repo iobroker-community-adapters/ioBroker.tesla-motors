@@ -260,13 +260,20 @@
   "ChargingCableType": 1,
   "ChargePortDoorOpen": 1,
   "EstBatteryRange": 60,
-  "Soc": 60,
+  "Soc": 1,
   "VehicleSpeed": 10,
   "Gear": 1,
   "Location": 10,
   "Locked": 1,
   "Odometer": 60,
   "VehicleName": 60
+};
+
+  var TELEMETRY_DEFAULT_FIELD_MINIMUM_DELTAS = {
+  "Soc": 1,
+  // Tesla expects Location minimum_delta in meters. 100m is approximately
+  // equivalent to 0.001° latitude/longitude and filters GPS jitter well.
+  "Location": 100
 };
 
   var TELEMETRY_STATE_MAPPINGS = {
@@ -818,26 +825,39 @@
     return 300;
   }
 
+  function getTelemetryDefaultMinimumDelta(fieldName) {
+    return TELEMETRY_DEFAULT_FIELD_MINIMUM_DELTAS[fieldName] || '';
+  }
+
+  function getTelemetryDefaultFieldEntry(fieldName) {
+    var entry = { interval_seconds: TELEMETRY_DEFAULT_FIELD_INTERVALS[fieldName] };
+    var minimumDelta = getTelemetryDefaultMinimumDelta(fieldName);
+    if (minimumDelta !== '') {
+      entry.minimum_delta = minimumDelta;
+    }
+    return entry;
+  }
+
   function cloneTelemetryDefaultFields() {
     var result = {};
     Object.keys(TELEMETRY_DEFAULT_FIELD_INTERVALS).forEach(function (fieldName) {
-      result[fieldName] = { interval_seconds: TELEMETRY_DEFAULT_FIELD_INTERVALS[fieldName] };
+      result[fieldName] = getTelemetryDefaultFieldEntry(fieldName);
     });
     return result;
   }
 
   function normalizeTelemetryFieldOption(fieldName, rawValue) {
     if (rawValue === false || rawValue === null) {
-      return { enabled: false, interval: getTelemetryDefaultInterval(fieldName), extraOptions: {} };
+      return { enabled: false, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
     }
     if (rawValue === true || rawValue === undefined) {
-      return { enabled: true, interval: getTelemetryDefaultInterval(fieldName), extraOptions: {} };
+      return { enabled: true, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
     }
     if (typeof rawValue === 'number' || typeof rawValue === 'string') {
-      return { enabled: true, interval: Number(rawValue) || getTelemetryDefaultInterval(fieldName), extraOptions: {} };
+      return { enabled: true, interval: Number(rawValue) || getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
     }
     if (typeof rawValue !== 'object' || Array.isArray(rawValue)) {
-      return { enabled: false, interval: getTelemetryDefaultInterval(fieldName), extraOptions: {} };
+      return { enabled: false, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
     }
 
     var extraOptions = $.extend(true, {}, rawValue);
@@ -846,9 +866,15 @@
     delete extraOptions.disabled;
     var interval = Number(extraOptions.interval_seconds);
     delete extraOptions.interval_seconds;
+    var minimumDelta = '';
+    if (extraOptions.minimum_delta !== undefined && extraOptions.minimum_delta !== '' && extraOptions.minimum_delta !== null && extraOptions.minimum_delta !== false) {
+      minimumDelta = Number(extraOptions.minimum_delta);
+    }
+    delete extraOptions.minimum_delta;
     return {
       enabled: enabled,
       interval: interval > 0 ? Math.round(interval) : getTelemetryDefaultInterval(fieldName),
+      minimumDelta: minimumDelta > 0 ? minimumDelta : '',
       extraOptions: extraOptions,
     };
   }
@@ -910,6 +936,7 @@
         telemetryFieldState[fieldName] = {
           enabled: false,
           interval: getTelemetryDefaultInterval(fieldName),
+          minimumDelta: getTelemetryDefaultMinimumDelta(fieldName),
           extraOptions: {},
         };
       }
@@ -926,6 +953,8 @@
       state.enabled = $row.find('.telemetry-field-enabled').prop('checked');
       var interval = Number($row.find('.telemetry-field-interval').val());
       state.interval = interval > 0 ? Math.round(interval) : getTelemetryDefaultInterval(fieldName);
+      var minimumDelta = Number($row.find('.telemetry-field-minimum-delta').val());
+      state.minimumDelta = minimumDelta > 0 ? minimumDelta : '';
       telemetryFieldState[fieldName] = state;
     });
 
@@ -934,6 +963,9 @@
       if (!state || !state.enabled) return;
       var entry = $.extend(true, {}, state.extraOptions || {});
       entry.interval_seconds = state.interval > 0 ? Math.round(state.interval) : getTelemetryDefaultInterval(fieldName);
+      if (Number(state.minimumDelta) > 0) {
+        entry.minimum_delta = Number(state.minimumDelta);
+      }
       selected[fieldName] = entry;
     });
 
@@ -954,24 +986,42 @@
   function renderTelemetryFieldRows() {
     var search = String($('#telemetryFieldSearch').val() || '').toLowerCase();
     var categoryFilter = $('#telemetryFieldCategory').val() || '';
+    var selectionFilter = $('#telemetryFieldSelectionFilter').val() || 'all';
     var $tbody = $('#telemetryFieldRows');
+    var lastRenderedCategory = null;
     $tbody.empty();
 
     getAllTelemetryFieldNames().forEach(function (fieldName) {
       var category = getTelemetryFieldCategory(fieldName);
       var isDefault = !!TELEMETRY_DEFAULT_FIELD_INTERVALS[fieldName];
       var haystack = (fieldName + ' ' + humanizeTelemetryFieldName(fieldName) + ' ' + category + ' ' + translateTelemetryCategory(category)).toLowerCase();
+      var state = telemetryFieldState[fieldName] || {
+        enabled: false,
+        interval: getTelemetryDefaultInterval(fieldName),
+        minimumDelta: getTelemetryDefaultMinimumDelta(fieldName),
+        extraOptions: {},
+      };
       if (search && haystack.indexOf(search) === -1) return;
       if (categoryFilter === '__default' && !isDefault) return;
       if (categoryFilter && categoryFilter !== '__default' && category !== categoryFilter) return;
+      if (selectionFilter === 'selected' && !state.enabled) return;
+      if (selectionFilter === 'unselected' && state.enabled) return;
 
-      var state = telemetryFieldState[fieldName] || { enabled: false, interval: getTelemetryDefaultInterval(fieldName), extraOptions: {} };
       var mapping = TELEMETRY_STATE_MAPPINGS[fieldName];
       var stateTarget = mapping ? mapping.join(', ') : translateTelemetry('telemetry_raw_state_target', { field: fieldName });
       var scopeBadge = TELEMETRY_LOCATION_SCOPE_FIELDS.indexOf(fieldName) >= 0 ? '<span class="new badge amber darken-3" data-badge-caption="' + escapeHtml(translateTelemetry('telemetry_badge_location_scope')) + '"></span>' : '';
       var defaultBadge = isDefault ? '<span class="new badge blue" data-badge-caption="' + escapeHtml(translateTelemetry('telemetry_badge_default')) + '"></span>' : '';
       var rowClass = state.enabled ? 'telemetry-field-row' : 'telemetry-field-row telemetry-field-row-disabled';
       var rowId = 'telemetryField_' + fieldName;
+
+      if (lastRenderedCategory !== category) {
+        lastRenderedCategory = category;
+        $tbody.append(
+          '<tr class="telemetry-field-category-row">' +
+            '<td colspan="6">' + escapeHtml(translateTelemetryCategory(category)) + '</td>' +
+          '</tr>'
+        );
+      }
 
       $tbody.append(
         '<tr class="' + rowClass + '" data-field="' + escapeHtml(fieldName) + '">' +
@@ -984,6 +1034,7 @@
           '<td><span class="telemetry-field-label">' + escapeHtml(translateTelemetryFieldName(fieldName)) + '</span><br><code class="telemetry-field-id">' + escapeHtml(fieldName) + '</code></td>' +
           '<td>' + escapeHtml(translateTelemetryCategory(category)) + '<br>' + defaultBadge + scopeBadge + '</td>' +
           '<td><input type="number" min="1" step="1" class="telemetry-field-interval" value="' + escapeHtml(state.interval || getTelemetryDefaultInterval(fieldName)) + '" /></td>' +
+          '<td><input type="number" min="0" step="any" class="telemetry-field-minimum-delta" value="' + escapeHtml(state.minimumDelta || '') + '" placeholder="' + escapeHtml(getTelemetryDefaultMinimumDelta(fieldName)) + '" /></td>' +
           '<td class="telemetry-field-state-target">' + escapeHtml(stateTarget) + '</td>' +
         '</tr>'
       );
@@ -992,19 +1043,30 @@
     $tbody.find('.telemetry-field-enabled').on('change', function () {
       var $row = $(this).closest('.telemetry-field-row');
       var fieldName = $row.attr('data-field');
-      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { interval: getTelemetryDefaultInterval(fieldName), extraOptions: {} };
+      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
       telemetryFieldState[fieldName].enabled = $(this).prop('checked');
       $row.toggleClass('telemetry-field-row-disabled', !telemetryFieldState[fieldName].enabled);
       syncTelemetryFieldsJsonFromEditor();
       if (window._onChange) window._onChange();
+      if (($('#telemetryFieldSelectionFilter').val() || 'all') !== 'all') renderTelemetryFieldRows();
     });
 
     $tbody.find('.telemetry-field-interval').on('change keyup', function () {
       var $row = $(this).closest('.telemetry-field-row');
       var fieldName = $row.attr('data-field');
-      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: false, extraOptions: {} };
+      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: false, minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
       var interval = Number($(this).val());
       telemetryFieldState[fieldName].interval = interval > 0 ? Math.round(interval) : getTelemetryDefaultInterval(fieldName);
+      syncTelemetryFieldsJsonFromEditor();
+      if (window._onChange) window._onChange();
+    });
+
+    $tbody.find('.telemetry-field-minimum-delta').on('change keyup', function () {
+      var $row = $(this).closest('.telemetry-field-row');
+      var fieldName = $row.attr('data-field');
+      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: false, interval: getTelemetryDefaultInterval(fieldName), extraOptions: {} };
+      var minimumDelta = Number($(this).val());
+      telemetryFieldState[fieldName].minimumDelta = minimumDelta > 0 ? minimumDelta : '';
       syncTelemetryFieldsJsonFromEditor();
       if (window._onChange) window._onChange();
     });
@@ -1023,6 +1085,15 @@
     if (typeof $.fn.formSelect === 'function') $('#telemetryFieldCategory').formSelect();
   }
 
+  function renderTelemetrySelectionFilterOptions() {
+    var options =
+      '<option value="all">' + escapeHtml(translateTelemetry('telemetry_filter_all_fields')) + '</option>' +
+      '<option value="selected">' + escapeHtml(translateTelemetry('telemetry_filter_selected_fields')) + '</option>' +
+      '<option value="unselected">' + escapeHtml(translateTelemetry('telemetry_filter_unselected_fields')) + '</option>';
+    $('#telemetryFieldSelectionFilter').html(options);
+    if (typeof $.fn.formSelect === 'function') $('#telemetryFieldSelectionFilter').formSelect();
+  }
+
   function setTelemetryDefaultPreset() {
     setTelemetryFieldStateFromConfig(cloneTelemetryDefaultFields());
     renderTelemetryFieldRows();
@@ -1033,12 +1104,13 @@
   function updateVisibleTelemetryFields(enabled) {
     $('.telemetry-field-row:visible').each(function () {
       var fieldName = $(this).attr('data-field');
-      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { interval: getTelemetryDefaultInterval(fieldName), extraOptions: {} };
+      telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
       telemetryFieldState[fieldName].enabled = enabled;
       $(this).find('.telemetry-field-enabled').prop('checked', enabled);
       $(this).toggleClass('telemetry-field-row-disabled', !enabled);
     });
     syncTelemetryFieldsJsonFromEditor();
+    renderTelemetryFieldRows();
     if (window._onChange) window._onChange();
   }
 
@@ -1046,9 +1118,12 @@
     $('.telemetry-field-row:visible').each(function () {
       var fieldName = $(this).attr('data-field');
       var interval = getTelemetryDefaultInterval(fieldName);
+      var minimumDelta = getTelemetryDefaultMinimumDelta(fieldName);
       telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: false, extraOptions: {} };
       telemetryFieldState[fieldName].interval = interval;
+      telemetryFieldState[fieldName].minimumDelta = minimumDelta;
       $(this).find('.telemetry-field-interval').val(interval);
+      $(this).find('.telemetry-field-minimum-delta').val(minimumDelta);
     });
     syncTelemetryFieldsJsonFromEditor();
     if (window._onChange) window._onChange();
@@ -1064,7 +1139,7 @@
     if (TELEMETRY_AVAILABLE_FIELDS.indexOf(fieldName) < 0 && telemetryCustomFields.indexOf(fieldName) < 0) {
       telemetryCustomFields.push(fieldName);
     }
-    telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: true, interval: getTelemetryDefaultInterval(fieldName), extraOptions: {} };
+    telemetryFieldState[fieldName] = telemetryFieldState[fieldName] || { enabled: true, interval: getTelemetryDefaultInterval(fieldName), minimumDelta: getTelemetryDefaultMinimumDelta(fieldName), extraOptions: {} };
     telemetryFieldState[fieldName].enabled = true;
     $('#telemetryCustomFieldName').val('');
     renderTelemetryFieldRows();
@@ -1078,11 +1153,13 @@
     var fieldsConfig = parseTelemetryFieldsJson(settings && settings.telemetryFieldsJson);
     setTelemetryFieldStateFromConfig(fieldsConfig);
     renderTelemetryCategoryOptions();
+    renderTelemetrySelectionFilterOptions();
     renderTelemetryFieldRows();
     syncTelemetryFieldsJsonFromEditor();
 
     $('#telemetryFieldSearch').off('keyup change').on('keyup change', renderTelemetryFieldRows);
     $('#telemetryFieldCategory').off('change').on('change', renderTelemetryFieldRows);
+    $('#telemetryFieldSelectionFilter').off('change').on('change', renderTelemetryFieldRows);
     $('#telemetryPresetDefault').off('click').on('click', setTelemetryDefaultPreset);
     $('#telemetryEnableVisible').off('click').on('click', function () { updateVisibleTelemetryFields(true); });
     $('#telemetryDisableVisible').off('click').on('click', function () { updateVisibleTelemetryFields(false); });

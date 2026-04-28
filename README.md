@@ -132,7 +132,8 @@ Additional adapter settings are available for:
 - the local `vehicle-command` proxy URL used to configure telemetry on the car
 - the telemetry server hostname / port / certificate chain
 - MQTT broker, topic base and credentials
-- the Fleet Telemetry field selection and per-field `interval_seconds`
+- the Fleet Telemetry field selection and per-field `interval_seconds` /
+  optional `minimum_delta`
 - an optional polling fallback for endpoints that are not covered by telemetry
 
 #### Adapter setup
@@ -145,8 +146,8 @@ Additional adapter settings are available for:
    - enter the `vehicle-command` proxy URL
    - enter the public Fleet Telemetry hostname, port and CA/fullchain PEM
    - enter MQTT broker, optional credentials and topic base
-5. Select the desired fields and intervals on the **Fleet Telemetry fields**
-   tab.
+5. Select the desired fields, intervals and optional minimum deltas on the
+   **Fleet Telemetry fields** tab.
 6. Use the admin action **Check Fleet Status** first.
 7. Use **Configure Fleet Telemetry** to send the configuration to the vehicle.
 8. Use **Read Fleet Config** to verify that the vehicle reports the
@@ -167,10 +168,14 @@ the default topic base `tesla-telemetry`, the expected topics are:
 - `tesla-telemetry/<VIN>/alerts/<Type>/current` for current alerts
 
 The admin UI contains a dedicated **Fleet Telemetry fields** tab. There you can
-enable/disable individual Tesla telemetry fields and set the update interval in
-seconds per field. Fields that are already mapped by the adapter are written
-back into the existing Tesla state tree. Other selected fields are stored as raw
-values under `<VIN>.telemetry.fields.<FieldName>` so scripts can still use them.
+enable/disable individual Tesla telemetry fields, filter by selection/category
+and set the update interval in seconds per field. Optional `minimum_delta`
+values can be configured for fields where Tesla supports them. For `Location`,
+Tesla interprets `minimum_delta` in meters, so the default `100` roughly matches
+`0.001°` latitude/longitude and avoids tiny GPS jitter updates. Fields that are
+already mapped by the adapter are written back into the existing Tesla state
+tree. Other selected fields are stored as raw values under
+`<VIN>.telemetry.fields.<FieldName>` so scripts can still use them.
 
 Mapped fields currently include the most commonly used charging, battery,
 position and lock states:
@@ -199,18 +204,22 @@ field options:
 
 ```json
 {
-  "Soc": 60,
+  "Soc": { "interval_seconds": 1, "minimum_delta": 1 },
   "ChargeState": 1,
   "DetailedChargeState": 1,
   "ChargeAmps": 1,
-  "Location": { "interval_seconds": 10 },
+  "Location": { "interval_seconds": 10, "minimum_delta": 100 },
   "Locked": 1
 }
 ```
 
 Fleet Telemetry is change-based: a field is only emitted after its
-`interval_seconds` elapsed **and** the value changed. Setting a field to
-`false` omits it from the vehicle configuration.
+`interval_seconds` elapsed **and** the value changed. Where configured,
+`minimum_delta` additionally suppresses smaller value changes before they are
+sent. The default preset therefore uses `Soc` with `interval_seconds=1` and
+`minimum_delta=1`, so battery level updates are reported quickly but only after
+at least one percentage point changed. Setting a field to `false` omits it from
+the vehicle configuration.
 
 When telemetry mode is enabled, regular vehicle polling is reduced for covered
 vehicle data. The polling fallback still keeps unsupported endpoints such as

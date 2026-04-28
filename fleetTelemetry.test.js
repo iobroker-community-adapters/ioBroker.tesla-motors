@@ -95,7 +95,8 @@ describe('Fleet Telemetry helper', () => {
     expect(payload.config.port).to.equal(4443);
     expect(payload.config.ca).to.equal('-----BEGIN CERTIFICATE-----');
     expect(payload.config.delivery_policy).to.equal('latest');
-    expect(payload.config.fields).to.have.property('Soc');
+    expect(payload.config.fields).to.have.property('Soc').that.deep.equals({ interval_seconds: 1, minimum_delta: 1 });
+    expect(payload.config.fields).to.have.property('Location').that.deep.equals({ interval_seconds: 10, minimum_delta: 100 });
   });
 
   it('parses custom telemetry field intervals from JSON', () => {
@@ -109,9 +110,21 @@ describe('Fleet Telemetry helper', () => {
     );
 
     expect(fields).to.deep.equal({
-      Soc: { interval_seconds: 300 },
+      Soc: { interval_seconds: 300, minimum_delta: 1 },
       Locked: { interval_seconds: 2 },
       Location: { interval_seconds: 10, minimum_delta: 25 },
+    });
+  });
+
+  it('keeps explicitly configured telemetry minimum_delta optional', () => {
+    const fields = parseTelemetryFieldsConfig({
+      Soc: { interval_seconds: 60 },
+      Location: { interval_seconds: 10, minimum_delta: '' },
+    });
+
+    expect(fields).to.deep.equal({
+      Soc: { interval_seconds: 60 },
+      Location: { interval_seconds: 10 },
     });
   });
 
@@ -119,7 +132,7 @@ describe('Fleet Telemetry helper', () => {
     const fields = parseTelemetryFieldsConfig(['Soc', 'Locked', 'UnknownFutureField']);
 
     expect(fields).to.deep.equal({
-      Soc: { interval_seconds: 60 },
+      Soc: { interval_seconds: 1, minimum_delta: 1 },
       Locked: { interval_seconds: 1 },
       UnknownFutureField: { interval_seconds: 60 },
     });
@@ -127,6 +140,7 @@ describe('Fleet Telemetry helper', () => {
 
   it('rejects invalid telemetry field intervals', () => {
     expect(() => parseTelemetryFieldsConfig({ Soc: 0 })).to.throw(/greater than 0/);
+    expect(() => parseTelemetryFieldsConfig({ Soc: { interval_seconds: 60, minimum_delta: 0 } })).to.throw(/minimum_delta greater than 0/);
     expect(() => parseTelemetryFieldsConfig('{')).to.throw(/Invalid telemetry fields JSON/);
   });
 });

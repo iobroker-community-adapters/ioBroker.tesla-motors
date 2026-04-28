@@ -33,7 +33,8 @@
       .telemetry-field-state-target { font-size: 0.9em; word-break: break-word; }
       .telemetry-field-label { font-weight: 600; }
       .telemetry-field-id { font-family: monospace; font-size: 0.88em; opacity: 0.72; }
-      .telemetry-field-table tbody tr:hover { background-color: rgba(38, 166, 154, 0.08) !important; }
+      .telemetry-field-category-row td { font-weight: 600; padding-top: 18px; padding-bottom: 6px; opacity: 0.85; }
+      .telemetry-field-table tbody tr.telemetry-field-row:hover { background-color: rgba(38, 166, 154, 0.08) !important; }
       #telemetryFieldsJson { display: none; }
       #telemetryFieldsJsonPreview { min-height: 180px; font-family: monospace; font-size: 12px; }
     </style>
@@ -546,15 +547,19 @@
         </div>
 
         <div class="row">
-          <div class="col s12 m5 input-field">
+          <div class="col s12 m4 input-field">
             <input type="text" id="telemetryFieldSearch" />
             <label for="telemetryFieldSearch" data-telemetry-i18n="telemetry_search_field" data-lang="telemetry_search_field" class="translate">Search field</label>
           </div>
-          <div class="col s12 m4 input-field">
+          <div class="col s12 m3 input-field">
             <select id="telemetryFieldCategory"></select>
             <label for="telemetryFieldCategory" data-telemetry-i18n="telemetry_category_label" data-lang="telemetry_category_label" class="translate">Category</label>
           </div>
-          <div class="col s12 m3">
+          <div class="col s12 m3 input-field">
+            <select id="telemetryFieldSelectionFilter"></select>
+            <label for="telemetryFieldSelectionFilter" data-telemetry-i18n="telemetry_selection_filter_label" data-lang="telemetry_selection_filter_label" class="translate">Selection</label>
+          </div>
+          <div class="col s12 m2">
             <p id="telemetryFieldSummary" class="step-note" style="margin-top:22px"></p>
           </div>
         </div>
@@ -587,6 +592,7 @@
                   <th data-telemetry-i18n="telemetry_table_field" data-lang="telemetry_table_field" class="translate">Field</th>
                   <th data-telemetry-i18n="telemetry_table_category" data-lang="telemetry_table_category" class="translate">Category</th>
                   <th data-telemetry-i18n="telemetry_table_interval" data-lang="telemetry_table_interval" class="translate">Interval (seconds)</th>
+                  <th data-telemetry-i18n="telemetry_table_minimum_delta" data-lang="telemetry_table_minimum_delta" class="translate">Minimum delta</th>
                   <th data-telemetry-i18n="telemetry_table_target" data-lang="telemetry_table_target" class="translate">ioBroker target</th>
                 </tr>
               </thead>
