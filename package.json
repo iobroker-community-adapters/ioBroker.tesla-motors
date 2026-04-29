@@ -17,7 +17,7 @@
     "url": "https://github.com/iobroker-community-adapters/ioBroker.tesla-motors"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
     "@eiannone/tesla-cmd-api": "github:eiannone/tesla-cmd-api",
