@@ -45,7 +45,7 @@ describe('Fleet Telemetry helper', () => {
     ]);
 
     expect(getTelemetryStateUpdates('VIN123', 'ChargeState', 'ChargeStateCharging')).to.deep.equal([
-      { id: 'VIN123.charge_state.charging_state', value: 'Charging' },
+      { id: 'VIN123.charge_state.telemetry_charge_state', value: 'Charging' },
     ]);
 
     expect(getTelemetryStateUpdates('VIN123', 'ChargingCableType', 'CableTypeIEC')).to.deep.equal([
@@ -62,6 +62,7 @@ describe('Fleet Telemetry helper', () => {
     ]);
 
     expect(getTelemetryStateUpdates('VIN123', 'DetailedChargeState', 'DetailedChargeStateCharging')).to.deep.equal([
+      { id: 'VIN123.charge_state.charging_state', value: 'Charging' },
       { id: 'VIN123.charge_state.detailed_charge_state', value: 'Charging' },
     ]);
   });

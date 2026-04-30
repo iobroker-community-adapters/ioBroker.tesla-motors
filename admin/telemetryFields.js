@@ -391,9 +391,10 @@
     "charge_state.battery_level"
   ],
   "ChargeState": [
-    "charge_state.charging_state"
+    "charge_state.telemetry_charge_state"
   ],
   "DetailedChargeState": [
+    "charge_state.charging_state",
     "charge_state.detailed_charge_state"
   ],
   "ChargeLimitSoc": [
@@ -554,8 +555,8 @@
 
   var TELEMETRY_FIELD_LABELS_DE = {
     Soc: 'Ladezustand',
-    ChargeState: 'Ladestatus',
-    DetailedChargeState: 'Detaillierter Ladestatus',
+    ChargeState: 'Ladehardware-Status',
+    DetailedChargeState: 'Ladestatus',
     ChargeLimitSoc: 'Ladelimit',
     ChargingCableType: 'Ladekabeltyp',
     ChargeAmps: 'Ladestrom',
