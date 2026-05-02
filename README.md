@@ -101,6 +101,9 @@ Supported commands include:
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+- (copilot) Adapter requires node.js >= 22 now
+
 ### 2.0.2 (2026-04-17)
 
 - (TA2k) Migrate to Tesla Fleet API with OAuth2
