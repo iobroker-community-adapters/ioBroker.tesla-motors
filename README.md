@@ -128,6 +128,8 @@ Supported commands include:
 
 - fix for too many state in the powerwall energy history
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 
 MIT License
