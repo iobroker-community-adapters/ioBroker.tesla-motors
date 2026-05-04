@@ -2,6 +2,7 @@
 
 const { expect } = require('chai');
 const {
+  FleetTelemetryManager,
   buildFleetTelemetryProxyPayload,
   getTelemetryRawStateUpdate,
   getTelemetryStateUpdates,
@@ -69,6 +70,49 @@ describe('Fleet Telemetry helper', () => {
 
   it('ignores invalid telemetry datums', () => {
     expect(getTelemetryStateUpdates('VIN123', 'Soc', { invalid: true })).to.deep.equal([]);
+  });
+
+  it('skips unchanged telemetry state writes', async () => {
+    const writes = [];
+    const adapter = {
+      getStateAsync: async () => ({ val: 'Stopped' }),
+      setStateAsync: async (id, value, ack) => writes.push({ id, value, ack }),
+      log: { debug: () => {} },
+    };
+    const manager = new FleetTelemetryManager(adapter);
+
+    const changed = await manager.setStateIfChanged('VIN123.charge_state.charging_state', 'Stopped');
+
+    expect(changed).to.equal(false);
+    expect(writes).to.deep.equal([]);
+  });
+
+  it('deduplicates concurrent telemetry writes for the same value', async () => {
+    const writes = [];
+    const states = new Map([['VIN123.charge_state.charging_state', { val: 'Charging' }]]);
+    const adapter = {
+      getStateAsync: async (id) => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        return states.get(id);
+      },
+      setStateAsync: async (id, value, ack) => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        writes.push({ id, value, ack });
+        states.set(id, { val: value });
+      },
+      log: { debug: () => {} },
+    };
+    const manager = new FleetTelemetryManager(adapter);
+
+    const results = await Promise.all([
+      manager.setStateIfChanged('VIN123.charge_state.charging_state', 'Stopped'),
+      manager.setStateIfChanged('VIN123.charge_state.charging_state', 'Stopped'),
+    ]);
+
+    expect(results.filter(Boolean)).to.have.length(1);
+    expect(writes).to.deep.equal([
+      { id: 'VIN123.charge_state.charging_state', value: 'Stopped', ack: true },
+    ]);
   });
 
   it('creates raw states for telemetry fields without an explicit adapter mapping', () => {
