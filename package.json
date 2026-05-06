@@ -17,12 +17,12 @@
     "url": "https://github.com/iobroker-community-adapters/ioBroker.tesla-motors"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
     "@eiannone/tesla-cmd-api": "github:eiannone/tesla-cmd-api",
     "@iobroker/adapter-core": "^3.3.2",
-    "axios": "^1.15.1",
+    "axios": "^1.15.2",
     "elliptic": "^6.6.1",
     "json-bigint": "^1.0.0",
     "mqtt": "^5.15.1",

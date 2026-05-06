@@ -21,7 +21,7 @@ Vehicle commands (lock, unlock, climate, charging, etc.) are supported for all m
 ### Requirements
 
 - Tesla account with vehicles or energy products
-- Node.js >= 20
+- Node.js >= 22
 - A registered Tesla Fleet API application (Client ID + Client Secret) from [developer.tesla.com](https://developer.tesla.com)
 - A Fleet Key domain (for virtual key installation on the vehicle)
 
@@ -256,13 +256,15 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 -->
 
 ## Changelog
-
 ### **WORK IN PROGRESS**
 
+- (copilot) Adapter requires node.js >= 22 now
 - (ChrMaass) Add optional Fleet Telemetry MQTT bridge with configurable fields
   and intervals.
 - (ChrMaass) Keep configurable periodic Fleet API sync in telemetry mode and
   allow disabling scheduled polling with update interval `0`.
+- (ChrMaass) Deduplicate unchanged Fleet Telemetry state writes to avoid SQL
+  history duplicate-key errors on retained MQTT values.
 
 ### 2.0.2 (2026-04-17)
 
@@ -290,6 +292,8 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 ### 1.4.3 (2024-04-10)
 
 - fix for too many state in the powerwall energy history
+
+[Older changelogs can be found there](CHANGELOG_OLD.md)
 
 ## License
 
