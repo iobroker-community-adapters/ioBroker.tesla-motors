@@ -14,6 +14,7 @@
     <!-- Load our own files -->
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="words.js"></script>
+    <script type="text/javascript" src="telemetryFields.js"></script>
 
     <style>
       .step-instructions { padding-left: 20px; margin-top: 8px; margin-bottom: 8px; }
@@ -22,6 +23,26 @@
       .step-warning { color: #d32f2f; font-weight: bold; }
       .qr-container { margin-top: 12px; }
       .qr-container img { border: 1px solid #ddd; padding: 8px; background: #fff; }
+      .admin-tabs { margin-top: 18px; margin-bottom: 18px; }
+      .telemetry-field-toolbar .btn,
+      .telemetry-field-toolbar .btn-flat { margin-right: 8px; margin-bottom: 8px; }
+      .telemetry-field-table input[type="number"] { max-width: 110px; margin-bottom: 0; }
+      .telemetry-field-table td { vertical-align: top; }
+      .telemetry-field-enabled-cell { width: 58px; }
+      .telemetry-field-row-disabled { opacity: 0.78; }
+      .telemetry-field-state-target { font-size: 0.9em; word-break: break-word; }
+      .telemetry-field-label { font-weight: 600; }
+      .telemetry-field-id { font-family: monospace; font-size: 0.88em; opacity: 0.72; }
+      .telemetry-field-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+      .telemetry-field-badge { display: inline-flex; align-items: center; border: 1px solid #d0d7de; border-radius: 10px; padding: 1px 7px; background: #f6f8fa; color: #546e7a; font-size: 11px; font-weight: 500; line-height: 16px; }
+      .telemetry-field-badge-default { border-color: #90caf9; background: #e3f2fd; color: #0d47a1; }
+      .telemetry-field-badge-location { border-color: #ffcc80; background: #fff4df; color: #8a4b00; }
+      .telemetry-field-category-row td { font-weight: 600; padding-top: 18px; padding-bottom: 6px; opacity: 0.85; }
+      .telemetry-field-minimum-delta-wrapper { display: flex; align-items: center; gap: 6px; max-width: 150px; }
+      .telemetry-field-minimum-delta-unit { min-width: 24px; color: #666; font-size: 0.9em; }
+      .telemetry-field-table tbody tr.telemetry-field-row:hover { background-color: rgba(38, 166, 154, 0.08) !important; }
+      #telemetryFieldsJson { display: none; }
+      #telemetryFieldsJsonPreview { min-height: 180px; font-family: monospace; font-size: 12px; }
     </style>
 
     <script type="text/javascript">
@@ -50,7 +71,10 @@
         if (typeof $.fn.formSelect === 'function') {
           $('select').formSelect();
         }
-        $('select').on('change', () => onChange());
+        if (typeof $.fn.tabs === 'function') {
+          $('.tabs').tabs();
+        }
+        $('select.value').on('change', () => onChange());
 
         // Show existing public key if present
         if (settings.publicKey) {
@@ -64,6 +88,12 @@
           updateVirtualKeyUrl();
         });
         updateVirtualKeyUrl();
+        if (typeof translateTelemetryAdmin === 'function') {
+          translateTelemetryAdmin();
+        }
+        if (typeof initTelemetryFieldEditor === 'function') {
+          initTelemetryFieldEditor(settings);
+        }
 
         onChange(false);
         if (M) M.updateTextFields();
@@ -149,8 +179,32 @@
         }
       }
 
+      function showTelemetryActionResult(title, result, isError) {
+        var text = title + '\n\n' + JSON.stringify(result, null, 2);
+        $('#telemetryActionResult').val(text);
+        if (typeof M !== 'undefined' && M.updateTextFields) M.updateTextFields();
+        if (typeof M !== 'undefined' && M.toast) {
+          M.toast({ html: isError ? translateTelemetryText('telemetry_action_failed') : translateTelemetryText('telemetry_action_finished') });
+        }
+      }
+
+      function runTelemetryAction(command) {
+        var namespace = 'tesla-motors.' + instance;
+        $('#telemetryActionResult').val(translateTelemetryText('telemetry_action_running', { command: command }));
+        sendTo(namespace, command, {}, function (result) {
+          if (!result) {
+            showTelemetryActionResult(command, { ok: false, error: translateTelemetryText('telemetry_action_no_response') }, true);
+            return;
+          }
+          showTelemetryActionResult(command, result, !result.ok);
+        });
+      }
+
       // This will be called by the admin adapter when the user presses the save button
       function save(callback) {
+        if (typeof syncTelemetryFieldsJsonFromEditor === 'function') {
+          syncTelemetryFieldsJsonFromEditor();
+        }
         var obj = {};
         $('.value').each(function () {
           var $this = $(this);
@@ -174,6 +228,17 @@
           <img src="tesla-motors.png" class="logo" />
         </div>
       </div>
+
+      <div class="row admin-tabs">
+        <div class="col s12">
+          <ul class="tabs">
+            <li class="tab col s6"><a class="active translate" href="#tab-general" data-telemetry-i18n="telemetry_tab_general" data-lang="telemetry_tab_general">Adapter / Fleet API</a></li>
+            <li class="tab col s6"><a href="#tab-telemetry-fields" data-telemetry-i18n="telemetry_tab_fields" data-lang="telemetry_tab_fields" class="translate">Fleet Telemetry fields</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="tab-general">
 
       <!-- ============================================================ -->
       <!-- Step 1: Key Pair Generation -->
@@ -319,7 +384,7 @@
       <div class="row">
         <div class="col s6 input-field">
           <input type="number" class="value" id="intervalNormal" />
-          <label for="intervalNormal" class="translate">Update interval in seconds (minimum 10)</label>
+          <label for="intervalNormal" class="translate">Update interval in seconds (0 = disabled, minimum 10)</label>
         </div>
       </div>
       <div class="row">
@@ -363,9 +428,197 @@
         <div class="col s6 input-field">
           <input type="text" class="value" id="excludeElementList" />
           <label for="excludeElementList" class="translate">Exclude objects for update (comma separated)</label>
-          <div>
-            Example: charge_history, live_status, backup_history, energy_history, self_consumption_history,
+          <div class="translate" data-lang="excludeElementList_examples">
+            Example: charge_state, climate_state, drive_state, vehicle_state, vehicle_config, location_data,
+            charge_history, live_status, backup_history, energy_history, self_consumption_history,
             self_consumption_history_lifetime, energy_history_lifetime
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- Fleet Telemetry / MQTT Bridge -->
+      <!-- ============================================================ -->
+      <div class="row">
+        <div class="col s12">
+          <h5 data-telemetry-i18n="telemetry_bridge_title" data-lang="telemetry_bridge_title" class="translate">Fleet Telemetry (MQTT Bridge)</h5>
+          <p data-telemetry-i18n="telemetry_bridge_description" data-lang="telemetry_bridge_description" class="translate">
+            Configure a local vehicle-command proxy plus an MQTT-fed Fleet Telemetry server.
+            The adapter updates live Tesla states from MQTT and can periodically synchronize
+            Fleet API data not covered by telemetry.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s6 input-field">
+          <input type="checkbox" class="value" id="telemetryEnabled" />
+          <label for="telemetryEnabled" data-telemetry-i18n="telemetry_enabled" data-lang="telemetry_enabled" class="translate">Enable Fleet Telemetry mode</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m8 input-field">
+          <input type="text" class="value" id="telemetryProxyUrl" placeholder="https://192.168.1.10:4443" />
+          <label for="telemetryProxyUrl" data-telemetry-i18n="telemetry_proxy_url" data-lang="telemetry_proxy_url" class="translate">Vehicle-command proxy URL</label>
+        </div>
+        <div class="col s6 m4 input-field">
+          <input type="checkbox" class="value" id="telemetryProxyAllowInsecure" />
+          <label for="telemetryProxyAllowInsecure" data-telemetry-i18n="telemetry_proxy_allow_insecure" data-lang="telemetry_proxy_allow_insecure" class="translate">Allow self-signed proxy TLS certificate</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m6 input-field">
+          <input type="text" class="value" id="telemetryServerHost" placeholder="tesla-telemetry.example.com" />
+          <label for="telemetryServerHost" data-telemetry-i18n="telemetry_server_host" data-lang="telemetry_server_host" class="translate">Telemetry server hostname</label>
+        </div>
+        <div class="col s6 m3 input-field">
+          <input type="number" class="value" id="telemetryServerPort" />
+          <label for="telemetryServerPort" data-telemetry-i18n="telemetry_server_port" data-lang="telemetry_server_port" class="translate">Telemetry server port</label>
+        </div>
+        <div class="col s6 m3 input-field">
+          <input type="checkbox" class="value" id="telemetryFallbackPollEnabled" />
+          <label for="telemetryFallbackPollEnabled" data-telemetry-i18n="telemetry_fallback_poll" data-lang="telemetry_fallback_poll" class="translate">Enable periodic Fleet API synchronization</label>
+          <span class="helper-text translate" data-lang="telemetry_fallback_poll_hint">
+            Uses the normal update interval to periodically refresh Fleet API data. Set the update interval to 0 to disable scheduled API synchronization.
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 input-field">
+          <textarea id="telemetryServerCaPem" class="value materialize-textarea" style="font-family:monospace; min-height:180px"></textarea>
+          <label for="telemetryServerCaPem" class="active translate" data-telemetry-i18n="telemetry_server_ca" data-lang="telemetry_server_ca">Telemetry server CA / full chain PEM</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m6 input-field">
+          <input type="text" class="value" id="telemetryMqttBroker" placeholder="mqtt://192.168.1.10:1883" />
+          <label for="telemetryMqttBroker" data-telemetry-i18n="telemetry_mqtt_broker" data-lang="telemetry_mqtt_broker" class="translate">MQTT broker</label>
+        </div>
+        <div class="col s12 m6 input-field">
+          <input type="text" class="value" id="telemetryMqttTopicBase" />
+          <label for="telemetryMqttTopicBase" data-telemetry-i18n="telemetry_mqtt_topic_base" data-lang="telemetry_mqtt_topic_base" class="translate">MQTT topic base</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m6 input-field">
+          <input type="text" class="value" id="telemetryMqttUsername" />
+          <label for="telemetryMqttUsername" data-telemetry-i18n="telemetry_mqtt_username" data-lang="telemetry_mqtt_username" class="translate">MQTT username</label>
+        </div>
+        <div class="col s12 m6 input-field">
+          <input type="password" class="value" id="telemetryMqttPassword" />
+          <label for="telemetryMqttPassword" data-telemetry-i18n="telemetry_mqtt_password" data-lang="telemetry_mqtt_password" class="translate">MQTT password</label>
+        </div>
+      </div>
+      <input type="hidden" class="value" id="telemetryFieldsJson" />
+      <div class="row">
+        <div class="col s12">
+          <p class="step-note translate" data-telemetry-i18n="telemetry_fields_tab_hint" data-lang="telemetry_fields_tab_hint">
+            The Fleet Telemetry field selection is configured on the
+            <b>Fleet Telemetry fields</b> tab. The adapter stores that selection
+            internally as JSON for compatibility with older versions.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s12">
+          <h5 data-telemetry-i18n="telemetry_actions_title" data-lang="telemetry_actions_title" class="translate">Fleet Telemetry actions</h5>
+          <a onclick="runTelemetryAction('checkFleetStatus')" class="btn waves-effect waves-light translate" data-telemetry-i18n="telemetry_action_check_status" data-lang="telemetry_action_check_status">Check Fleet Status</a>
+          <a onclick="runTelemetryAction('configureFleetTelemetry')" class="btn waves-effect waves-light translate" style="margin-left:10px" data-telemetry-i18n="telemetry_action_configure" data-lang="telemetry_action_configure">Configure Fleet Telemetry</a>
+          <a onclick="runTelemetryAction('getFleetTelemetryConfig')" class="btn waves-effect waves-light translate" style="margin-left:10px" data-telemetry-i18n="telemetry_action_read_config" data-lang="telemetry_action_read_config">Read Fleet Config</a>
+          <a onclick="runTelemetryAction('deleteFleetTelemetryConfig')" class="btn red waves-effect waves-light translate" style="margin-left:10px" data-telemetry-i18n="telemetry_action_delete_config" data-lang="telemetry_action_delete_config">Delete Fleet Config</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 input-field">
+          <textarea id="telemetryActionResult" class="materialize-textarea" readonly style="font-family:monospace; min-height:220px"></textarea>
+          <label for="telemetryActionResult" class="active translate" data-telemetry-i18n="telemetry_action_result" data-lang="telemetry_action_result">Telemetry action result</label>
+        </div>
+      </div>
+      </div>
+
+      <div id="tab-telemetry-fields">
+        <div class="row">
+          <div class="col s12">
+            <h5 data-telemetry-i18n="telemetry_fields_title" data-lang="telemetry_fields_title" class="translate">Fleet Telemetry fields</h5>
+            <p data-telemetry-i18n="telemetry_fields_description" data-lang="telemetry_fields_description" class="translate">
+              Select exactly which Fleet Telemetry fields should be configured
+              on the vehicle and define the minimum update interval per field.
+              Tesla still sends values only when the value changed and the
+              configured interval has elapsed.
+            </p>
+            <p class="step-note translate" data-telemetry-i18n="telemetry_fields_note" data-lang="telemetry_fields_note">
+              Fields tagged with <b>default</b> are the adapter preset. Fields
+              tagged with <b>vehicle_location</b> require the
+              <code>vehicle_location</code> OAuth scope. Unmapped fields are
+              stored under <code>&lt;VIN&gt;.telemetry.fields.&lt;FieldName&gt;</code>
+              as raw telemetry values.
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 m4 input-field">
+            <input type="text" id="telemetryFieldSearch" />
+            <label for="telemetryFieldSearch" data-telemetry-i18n="telemetry_search_field" data-lang="telemetry_search_field" class="translate">Search field</label>
+          </div>
+          <div class="col s12 m3 input-field">
+            <select id="telemetryFieldCategory"></select>
+            <label for="telemetryFieldCategory" data-telemetry-i18n="telemetry_category_label" data-lang="telemetry_category_label" class="translate">Category</label>
+          </div>
+          <div class="col s12 m3 input-field">
+            <select id="telemetryFieldSelectionFilter"></select>
+            <label for="telemetryFieldSelectionFilter" data-telemetry-i18n="telemetry_selection_filter_label" data-lang="telemetry_selection_filter_label" class="translate">Selection</label>
+          </div>
+          <div class="col s12 m2">
+            <p id="telemetryFieldSummary" class="step-note" style="margin-top:22px"></p>
+          </div>
+        </div>
+
+        <div class="row telemetry-field-toolbar">
+          <div class="col s12">
+            <a id="telemetryPresetDefault" class="btn waves-effect waves-light translate" data-telemetry-i18n="telemetry_use_default_preset" data-lang="telemetry_use_default_preset">Use adapter default preset</a>
+            <a id="telemetryEnableVisible" class="btn-flat waves-effect translate" data-telemetry-i18n="telemetry_enable_visible" data-lang="telemetry_enable_visible">Enable visible</a>
+            <a id="telemetryDisableVisible" class="btn-flat waves-effect translate" data-telemetry-i18n="telemetry_disable_visible" data-lang="telemetry_disable_visible">Disable visible</a>
+            <a id="telemetryResetVisibleIntervals" class="btn-flat waves-effect translate" data-telemetry-i18n="telemetry_reset_visible_intervals" data-lang="telemetry_reset_visible_intervals">Reset visible intervals</a>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 m5 input-field">
+            <input type="text" id="telemetryCustomFieldName" placeholder="FutureTeslaFieldName" />
+            <label for="telemetryCustomFieldName" data-telemetry-i18n="telemetry_custom_field" data-lang="telemetry_custom_field" class="translate">Custom / future field name</label>
+          </div>
+          <div class="col s12 m4">
+            <a id="telemetryAddCustomField" class="btn-flat waves-effect translate" style="margin-top:18px" data-telemetry-i18n="telemetry_add_custom_field" data-lang="telemetry_add_custom_field">Add custom field</a>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12">
+            <table class="striped telemetry-field-table">
+              <thead>
+                <tr>
+                  <th data-telemetry-i18n="telemetry_table_use" data-lang="telemetry_table_use" class="translate">Use</th>
+                  <th data-telemetry-i18n="telemetry_table_field" data-lang="telemetry_table_field" class="translate">Field</th>
+                  <th data-telemetry-i18n="telemetry_table_category" data-lang="telemetry_table_category" class="translate">Category</th>
+                  <th data-telemetry-i18n="telemetry_table_interval" data-lang="telemetry_table_interval" class="translate">Interval (seconds)</th>
+                  <th data-telemetry-i18n="telemetry_table_minimum_delta" data-lang="telemetry_table_minimum_delta" class="translate">Minimum delta</th>
+                  <th data-telemetry-i18n="telemetry_table_target" data-lang="telemetry_table_target" class="translate">ioBroker target</th>
+                </tr>
+              </thead>
+              <tbody id="telemetryFieldRows"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12 input-field">
+            <textarea id="telemetryFieldsJsonPreview" class="materialize-textarea" readonly></textarea>
+            <label for="telemetryFieldsJsonPreview" class="active translate" data-telemetry-i18n="telemetry_config_preview" data-lang="telemetry_config_preview">Generated Fleet Telemetry config preview</label>
+            <div class="step-note translate" data-telemetry-i18n="telemetry_config_preview_note" data-lang="telemetry_config_preview_note">
+              This preview is saved into <code>telemetryFieldsJson</code> and sent to
+              the <code>vehicle-command</code> proxy when configuring Fleet Telemetry.
+            </div>
           </div>
         </div>
       </div>
