@@ -32,8 +32,8 @@ The adapter admin UI guides you through 4 steps:
 #### Step 1: Generate Key Pair
 
 1. Click **Generate Key Pair** in the adapter settings to create an EC key pair (prime256v1)
-2. Click **Copy Public Key** and go to [fleetkey.net](https://fleetkey.net) - create an account and get your subdomain (e.g. `abc123.fleetkey.net`)
-3. Upload the Public Key to your FleetKey.net account. Tesla will download the key from there during registration.
+2. Click **Copy Public Key** and go to [fleetkey.net](https://fleetkey.net) - paste it under "Host Public Key" and create a subdomain (e.g. `abc123.fleetkey.net`)
+3. After saving, FleetKey.net hosts your Public Key. Tesla will download the key from there during registration.
 
 #### Step 2: Tesla Developer App
 
