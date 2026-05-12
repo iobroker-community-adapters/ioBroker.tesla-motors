@@ -101,7 +101,8 @@ Supported commands include:
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 2.0.3 (2026-05-12)
+- instruction text improved
 - (copilot) Adapter requires node.js >= 22 now
 
 ### 2.0.2 (2026-04-17)
@@ -127,13 +128,7 @@ Supported commands include:
 
 - improve energy history data
 
-### 1.4.3 (2024-04-10)
-
-- fix for too many state in the powerwall energy history
-
-[Older changelogs can be found there](CHANGELOG_OLD.md)
-
-## License
+[Older changelogs can be found there](CHANGELOG_OLD.md)## License
 
 MIT License
 
