@@ -121,7 +121,7 @@
       }
 
       function onCopyPublicKey() {
-        var text = $('#publicKeyDisplay').val();
+        var text = ($('#publicKeyDisplay').val() || '').trim();
         if (navigator.clipboard) {
           navigator.clipboard.writeText(text).then(function () {
             if (typeof M !== 'undefined' && M.toast) M.toast({ html: 'Public Key copied!' });

@@ -1,4 +1,8 @@
 # Older changes
+## 1.4.3 (2024-04-10)
+
+- fix for too many state in the powerwall energy history
+
 ## 1.4.2 (2023-11-17)
 
 - fix km states are not refreshed
