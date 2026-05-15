@@ -12,6 +12,12 @@ const {
   parseTelemetryFieldsConfig,
   parseTelemetryTopic,
 } = require('./lib/fleetTelemetry');
+const {
+  FleetTelemetryConfigurationManager,
+  getVirtualKeyStatus,
+  isTelemetryFirmwareSupported,
+  normalizeFleetStatusResponse,
+} = require('./lib/fleetTelemetryConfig');
 
 describe('Fleet Telemetry helper', () => {
   it('normalizes a bare MQTT host to mqtt://', () => {
@@ -191,5 +197,52 @@ describe('Fleet Telemetry helper', () => {
     expect(() => parseTelemetryFieldsConfig({ Soc: 0 })).to.throw(/greater than 0/);
     expect(() => parseTelemetryFieldsConfig({ Soc: { interval_seconds: 60, minimum_delta: 0 } })).to.throw(/minimum_delta greater than 0/);
     expect(() => parseTelemetryFieldsConfig('{')).to.throw(/Invalid telemetry fields JSON/);
+  });
+
+  it('normalizes fleet_status variants used by telemetry configuration checks', () => {
+    const normalized = normalizeFleetStatusResponse({
+      response: {
+        vehicle_info: {
+          LRWTESTVIN1234567: { firmware_version: '2025.2.6' },
+          LRWTESTVIN7654321: { firmware_version: '2024.20.1' },
+        },
+        key_paired_vins: ['LRWTESTVIN1234567'],
+        unpaired_vins: ['LRWTESTVIN7654321'],
+      },
+    });
+
+    expect(normalized.LRWTESTVIN1234567.key_paired).to.equal(true);
+    expect(normalized.LRWTESTVIN7654321.key_paired).to.equal(false);
+    expect(isTelemetryFirmwareSupported(normalized.LRWTESTVIN1234567.firmware_version)).to.equal(true);
+    expect(isTelemetryFirmwareSupported(normalized.LRWTESTVIN7654321.firmware_version)).to.equal(false);
+    expect(getVirtualKeyStatus(normalized.LRWTESTVIN1234567)).to.equal(true);
+    expect(getVirtualKeyStatus(normalized.LRWTESTVIN7654321)).to.equal(false);
+  });
+
+  it('keeps location-scoped telemetry fields out of config payloads without vehicle_location scope', () => {
+    const logMessages = [];
+    const manager = new FleetTelemetryConfigurationManager({
+      config: {
+        telemetryServerHost: 'telemetry.example.com',
+        telemetryServerPort: 443,
+        telemetryServerCaPem: 'CA',
+        telemetryFieldsJson: JSON.stringify({
+          Soc: { interval_seconds: 60 },
+          Location: { interval_seconds: 10 },
+          DestinationLocation: { interval_seconds: 10 },
+          Locked: { interval_seconds: 1 },
+        }),
+      },
+      scopes: [],
+      log: { info: (message) => logMessages.push(message) },
+    });
+
+    const payload = manager.buildConfigPayload(['VIN123']);
+
+    expect(payload.config.fields).to.deep.equal({
+      Soc: { interval_seconds: 60, minimum_delta: 1 },
+      Locked: { interval_seconds: 1 },
+    });
+    expect(logMessages[0]).to.include('vehicle_location scope missing');
   });
 });
