@@ -110,6 +110,10 @@ Fleet Telemetry receiver outside of the adapter:
 This keeps current scripts and aliases working while reducing regular
 `vehicle_data` requests.
 
+For a practical, beginner-friendly setup walkthrough with Docker Compose,
+certificates, TCP passthrough, adapter settings and troubleshooting, see
+[docs/fleet-telemetry-setup.md](docs/fleet-telemetry-setup.md).
+
 #### Requirements
 
 - A reachable Tesla Fleet Telemetry server with
@@ -185,8 +189,9 @@ Mapped fields currently include the most commonly used charging, battery,
 position and lock states:
 
 - `Soc` -> `charge_state.battery_level`
-- `ChargeState` -> `charge_state.charging_state`
-- `DetailedChargeState` -> `charge_state.detailed_charge_state`
+- `ChargeState` -> `charge_state.telemetry_charge_state`
+- `DetailedChargeState` -> `charge_state.charging_state` and
+  `charge_state.detailed_charge_state`
 - `ChargeLimitSoc` -> `charge_state.charge_limit_soc`
 - `ChargeAmps` -> `charge_state.charge_amps` and
   `charge_state.charger_actual_current`
@@ -264,6 +269,8 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
   allow disabling scheduled polling with update interval `0`.
 - (ChrMaass) Deduplicate unchanged Fleet Telemetry state writes to avoid SQL
   history duplicate-key errors on retained MQTT values.
+- (ChrMaass) Add a step-by-step Fleet Telemetry setup guide for self-hosted
+  Docker/MQTT installations.
 
 ### 2.0.3 (2026-05-12)
 
