@@ -101,10 +101,10 @@ describe('Fleet Telemetry helper', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
         return states.get(id);
       },
-      setStateAsync: async (id, value, ack) => {
+      setStateAsync: async (id, state) => {
         await new Promise((resolve) => setTimeout(resolve, 0));
-        writes.push({ id, value, ack });
-        states.set(id, { val: value });
+        writes.push({ id, state });
+        states.set(id, { val: state.val });
       },
       log: { debug: () => {} },
     };
@@ -116,8 +116,39 @@ describe('Fleet Telemetry helper', () => {
     ]);
 
     expect(results.filter(Boolean)).to.have.length(1);
-    expect(writes).to.deep.equal([
-      { id: 'VIN123.charge_state.charging_state', value: 'Stopped', ack: true },
+    expect(writes).to.have.length(1);
+    expect(writes[0].id).to.equal('VIN123.charge_state.charging_state');
+    expect(writes[0].state).to.include({ val: 'Stopped', ack: true });
+    expect(writes[0].state.ts).to.be.a('number');
+  });
+
+  it('uses monotonic timestamps for rapid changed telemetry writes', async () => {
+    const originalNow = Date.now;
+    const writes = [];
+    const states = new Map([['VIN123.charge_state.charger_actual_current', { val: 0 }]]);
+    const adapter = {
+      getStateAsync: async (id) => states.get(id),
+      setStateAsync: async (id, state) => {
+        writes.push({ id, state });
+        states.set(id, { val: state.val });
+      },
+      log: { debug: () => {} },
+    };
+    const manager = new FleetTelemetryManager(adapter);
+
+    Date.now = () => 1779033473482;
+    try {
+      await manager.setStateIfChanged('VIN123.charge_state.charger_actual_current', 1);
+      await manager.setStateIfChanged('VIN123.charge_state.charger_actual_current', 2);
+      await manager.setStateIfChanged('VIN123.charge_state.charger_actual_current', 3);
+    } finally {
+      Date.now = originalNow;
+    }
+
+    expect(writes.map((write) => write.state)).to.deep.equal([
+      { val: 1, ack: true, ts: 1779033473482 },
+      { val: 2, ack: true, ts: 1779033473483 },
+      { val: 3, ack: true, ts: 1779033473484 },
     ]);
   });
 
