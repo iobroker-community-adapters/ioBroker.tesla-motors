@@ -145,7 +145,6 @@
     "messagebox": true,
     "connectionType": "cloud",
     "dataSource": "poll",
-    "materialize": true,
     "plugins": {
       "sentry": {
         "dsn": "https://b67b9228ae424e36ba2ab0cf38d94699@sentry.iobroker.net/149"
@@ -202,7 +201,10 @@
       {
         "admin": ">=7.7.22"
       }
-    ]
+    ],
+    "adminUI": {
+      "config": "materialize"
+    }
   },
   "encryptedNative": [
     "clientSecret",
