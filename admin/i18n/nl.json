@@ -1,6 +1,7 @@
 {
     "Client ID": "Klant-ID",
     "Client Secret": "Klantgeheim",
+    "Code URL": "Code URL",
     "Copy Public Key": "Kopieer de publieke sleutel",
     "Exclude device IDs (comma separated)": "Apparaat-ID's uitsluiten (door komma's gescheiden)",
     "Exclude objects for update (comma separated)": "Objecten uitsluiten voor update (door komma's gescheiden)",
@@ -20,6 +21,7 @@
     "Update interval in seconds (minimum 10)": "Update-interval in seconden (minimaal 10)",
     "Update interval while driving in seconds (0 = disabled)": "Update-interval tijdens het rijden in seconden (0 = uitgeschakeld)",
     "Wake up vehicle for each update (prevents sleep to save battery)": "Maak het voertuig wakker voor elke update (voorkomt slaap om de batterij te sparen)",
+    "https://developer.tesla.com/request": "https://developer.tesla.com/request",
     "step1_instruction1": "Klik hieronder op \"Sleutelpaar genereren\" om een ​​EC-sleutelpaar aan te maken (prime256v1)",
     "step1_instruction2": "Kopieer de openbare sleutel en ga naar <a href=\"https://fleetkey.net\" target=\"_blank\">fleetkey.net</a> - plak deze onder \"Host Public Key\" en maak een subdomein aan (bijvoorbeeld abc123.fleetkey.net)",
     "step1_instruction3": "Na het opslaan host FleetKey.net uw openbare sleutel. Tesla zal de sleutel daar downloaden tijdens de registratie.",

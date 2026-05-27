@@ -203,7 +203,7 @@
       }
     ],
     "adminUI": {
-      "config": "materialize"
+      "config": "json"
     }
   },
   "encryptedNative": [

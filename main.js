@@ -1325,7 +1325,15 @@ class Teslamotors extends utils.Adapter {
           publicKeyEncoding: { type: 'spki', format: 'pem' },
           privateKeyEncoding: { type: 'sec1', format: 'pem' },
         });
-        this.sendTo(obj.from, obj.command, { publicKey, privateKey }, obj.callback);
+        this.sendTo(obj.from, obj.command, {
+          publicKey,
+          privateKey,
+          native: {
+            publicKey,
+            privateKey,
+          },
+          saveConfig: true,
+        }, obj.callback);
       } catch (/** @type {any} */ e) {
         this.sendTo(obj.from, obj.command, { error: e.message }, obj.callback);
       }

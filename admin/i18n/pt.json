@@ -1,6 +1,7 @@
 {
     "Client ID": "ID do cliente",
     "Client Secret": "Segredo do cliente",
+    "Code URL": "Code URL",
     "Copy Public Key": "Copiar chave pública",
     "Exclude device IDs (comma separated)": "Excluir IDs de dispositivos (separados por vírgula)",
     "Exclude objects for update (comma separated)": "Excluir objetos para atualização (separados por vírgula)",
@@ -20,6 +21,7 @@
     "Update interval in seconds (minimum 10)": "Intervalo de atualização em segundos (mínimo 10)",
     "Update interval while driving in seconds (0 = disabled)": "Intervalo de atualização durante a condução em segundos (0 = desativado)",
     "Wake up vehicle for each update (prevents sleep to save battery)": "Acorde o veículo para cada atualização (evita o sono para economizar bateria)",
+    "https://developer.tesla.com/request": "https://developer.tesla.com/request",
     "step1_instruction1": "Clique em \"Gerar par de chaves\" abaixo para criar um par de chaves EC (prime256v1)",
     "step1_instruction2": "Copie a chave pública e acesse <a href=\"https://fleetkey.net\" target=\"_blank\">fleetkey.net</a> - cole em \"Host Public Key\" e crie um subdomínio (por exemplo, abc123.fleetkey.net)",
     "step1_instruction3": "Após salvar, o FleetKey.net hospeda sua chave pública. A Tesla fará o download da chave durante o registro.",
