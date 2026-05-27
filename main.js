@@ -1328,10 +1328,12 @@ class Teslamotors extends utils.Adapter {
         this.sendTo(obj.from, obj.command, {
           publicKey,
           privateKey,
+          // Allow jsonConfig sendTo to merge the generated keys into native config.
           native: {
             publicKey,
             privateKey,
           },
+          // Keep the generated keys as pending changes until the user saves the config.
           saveConfig: true,
         }, obj.callback);
       } catch (/** @type {any} */ e) {

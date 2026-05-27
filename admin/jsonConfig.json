@@ -81,6 +81,7 @@
     },
     "privateKey": {
       "type": "password",
+      "label": "Private Key (internal)",
       "hidden": true,
       "xs": 12,
       "sm": 12,
@@ -196,6 +197,7 @@
     "fleetkeyDomain": {
       "type": "text",
       "label": "FleetKey Domain",
+      "help": "Your FleetKey subdomain (e.g. abc123.fleetkey.net)",
       "xs": 12,
       "sm": 12,
       "md": 6,
@@ -278,6 +280,7 @@
       "newLine": true,
       "type": "text",
       "label": "Code URL",
+      "help": "Paste the complete callback URL from your browser after Tesla authentication",
       "minRows": 2,
       "maxRows": 4,
       "xs": 12,

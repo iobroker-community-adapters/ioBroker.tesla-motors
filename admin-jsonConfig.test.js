@@ -4,6 +4,13 @@ const fs = require('fs');
 const path = require('path');
 const { expect } = require('chai');
 
+/**
+ * Collects translation keys referenced by jsonConfig string properties.
+ *
+ * @param {unknown} node Current jsonConfig node to inspect.
+ * @param {Set<string>} [keys] Accumulator for discovered translation keys.
+ * @returns {Set<string>} The collected translation keys.
+ */
 function collectTranslationKeys(node, keys = new Set()) {
   if (!node || typeof node !== 'object') {
     return keys;
@@ -14,11 +21,16 @@ function collectTranslationKeys(node, keys = new Set()) {
   }
 
   for (const [key, value] of Object.entries(node)) {
-    if ((key === 'label' || key === 'text' || key === 'help' || key === 'tooltip') && typeof value === 'string') {
+    if (
+      (key === 'label' || key === 'text' || key === 'help' || key === 'tooltip') &&
+      typeof value === 'string' &&
+      !/^https?:\/\//.test(value)
+    ) {
       keys.add(value);
       continue;
     }
 
+    // Select option labels are defined inline and not expected in the adapter i18n files.
     if (key !== 'options') {
       collectTranslationKeys(value, keys);
     }
