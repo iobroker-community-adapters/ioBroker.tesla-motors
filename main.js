@@ -10,6 +10,7 @@ const {
   FleetTelemetryConfigurationManager,
   isFleetTelemetryAdminCommand,
 } = require('./lib/fleetTelemetryConfig');
+const { removeVehicleTokens } = require('./lib/teslaResponse');
 
 // Fleet API regional endpoints (like HA const.py:17-18)
 const FLEET_API_REGIONS = {
@@ -443,6 +444,7 @@ class Teslamotors extends utils.Adapter {
       headers: this.getFleetHeaders(),
     })
       .then(async (res) => {
+        removeVehicleTokens(res.data && res.data.response);
         this.log.debug(JSON.stringify(res.data));
 
         this.idArray = [];
@@ -660,7 +662,10 @@ class Teslamotors extends utils.Adapter {
           this.delObjectAsync(
             this.name + '.' + this.instance + '.' + id + '.remote.set_scheduled_departure-scheduled_departure',
           );
-          this.delObject(id + '.tokens', { recursive: true });
+          // Clean up the legacy token object once, but never recreate it from
+          // the current Fleet API response. Otherwise js-controller reports
+          // "State ...tokens has no existing object" on later updates.
+          await this.delObjectAsync(id + '.tokens', { recursive: true }).catch(() => {});
         }
       })
       .catch(async (error) => {
@@ -921,6 +926,7 @@ class Teslamotors extends utils.Adapter {
       const url = this.getFleetApiBaseUrl() + '/api/1/vehicles/' + vin + '/charge_history';
       const res = await this.requestClient({ method: 'post', url: url, headers: this.getFleetHeaders() });
       if (res.data && res.data.response) {
+        removeVehicleTokens(res.data.response);
         const data = res.data.response;
         if (data.charging_history_graph) {
           delete data.charging_history_graph.y_labels;
@@ -966,9 +972,7 @@ class Teslamotors extends utils.Adapter {
         url: fleetBase + '/api/1/vehicles/' + vin,
         headers: headers,
       });
-      if (stateRes.data.response && stateRes.data.response.tokens) {
-        delete stateRes.data.response.tokens;
-      }
+      removeVehicleTokens(stateRes.data && stateRes.data.response);
       this.json2iob.parse(vin, stateRes.data.response, { preferedArrayName: 'timestamp' });
       state = stateRes.data.response.state;
       this.log.debug(vin + ' state check response keys: ' + Object.keys(stateRes.data.response || {}).join(', '));
@@ -1107,7 +1111,7 @@ class Teslamotors extends utils.Adapter {
         });
         return;
       }
-      if (res.data.response.tokens) delete res.data.response.tokens;
+      removeVehicleTokens(res.data && res.data.response);
 
       const data = res.data.response;
       const dataKeys = Object.keys(data);
@@ -1242,9 +1246,9 @@ class Teslamotors extends utils.Adapter {
         headers: headers,
       })
         .then((res) => {
+          removeVehicleTokens(res.data && res.data.response);
           this.log.debug(JSON.stringify(res.data));
           if (!res.data) return;
-          if (res.data.response && res.data.response.tokens) delete res.data.response.tokens;
 
           const data = res.data.response;
           const preferedArrayName = 'timestamp';
@@ -1328,7 +1332,7 @@ class Teslamotors extends utils.Adapter {
         headers: this.getFleetHeaders(),
       });
       if (!res.data) return;
-      if (res.data.response && res.data.response.tokens) delete res.data.response.tokens;
+      removeVehicleTokens(res.data && res.data.response);
       this.json2iob.parse(vin, res.data.response);
     } catch (error) {
       if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
@@ -1502,8 +1506,8 @@ class Teslamotors extends utils.Adapter {
       this.log.debug(JSON.stringify(data));
       return await this.requestClient({ method: 'post', url: url, headers: headers, data: data })
         .then((res) => {
+          removeVehicleTokens(res.data && res.data.response);
           this.log.info(JSON.stringify(res.data));
-          if (res.data.response && res.data.response.tokens) delete res.data.response.tokens;
           return res.data.response;
         })
         .catch((error) => {
@@ -1527,8 +1531,8 @@ class Teslamotors extends utils.Adapter {
       this.log.debug(url);
       return await this.requestClient({ method: 'post', url: url, headers: headers })
         .then((res) => {
+          removeVehicleTokens(res.data && res.data.response);
           this.log.info(JSON.stringify(res.data));
-          if (res.data.response && res.data.response.tokens) delete res.data.response.tokens;
           return res.data.response;
         })
         .catch((error) => {
