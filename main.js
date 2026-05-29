@@ -5,6 +5,11 @@ const axios = require('axios').default;
 const qs = require('qs');
 const Json2iob = require('./lib/json2iob');
 const { loadProtos, TeslaCommandSigner, parseECKeyFromPem } = require('./lib/teslaSign');
+const { FleetTelemetryManager } = require('./lib/fleetTelemetry');
+const {
+  FleetTelemetryConfigurationManager,
+  isFleetTelemetryAdminCommand,
+} = require('./lib/fleetTelemetryConfig');
 
 // Fleet API regional endpoints (like HA const.py:17-18)
 const FLEET_API_REGIONS = {
@@ -35,6 +40,7 @@ class Teslamotors extends utils.Adapter {
     this.sleepTimes = {};
     this.lastStates = {};
     this.lastActive = {};
+    this.lastChargeHistory = {};
     this.updateIntervalDrive = {};
     this.idArray = [];
 
@@ -48,6 +54,8 @@ class Teslamotors extends utils.Adapter {
     this.scopes = [];
 
     this.requestClient = axios.create();
+    this.telemetryManager = null;
+    this.telemetryConfigurationManager = new FleetTelemetryConfigurationManager(this);
   }
 
   /**
@@ -68,6 +76,146 @@ class Teslamotors extends utils.Adapter {
       Authorization: 'Bearer ' + this.session.access_token,
     };
   }
+
+  /**
+   * Returns true when vehicle telemetry should replace regular vehicle_data polling.
+   */
+  isTelemetryEnabled() {
+    return !!this.config.telemetryEnabled;
+  }
+
+  /**
+   * Returns true when telemetry mode should run its periodic Fleet API
+   * synchronization in addition to MQTT updates.
+   *
+   * `telemetryFallbackPollEnabled` is kept as a backwards-compatible alias for
+   * instances that already stored the earlier setting name.
+   *
+   * @returns {boolean}
+   */
+  isTelemetryApiSyncEnabled() {
+    if (this.config.telemetryApiSyncEnabled !== undefined) {
+      return !!this.config.telemetryApiSyncEnabled;
+    }
+    return this.config.telemetryFallbackPollEnabled !== false;
+  }
+
+  /**
+   * Normal update interval in seconds.
+   *
+   * ioBroker stores native config values as strings in some situations. This
+   * helper normalizes the value and treats 0 as an explicit opt-out for
+   * scheduled API polling. Positive values below 10 seconds are raised to 10
+   * seconds to prevent accidental API floods.
+   *
+   * @returns {number}
+   */
+  getNormalUpdateIntervalSeconds() {
+    const configuredInterval = Number(this.config.intervalNormal);
+    if (!Number.isFinite(configuredInterval)) {
+      return 60;
+    }
+    if (configuredInterval <= 0) {
+      return 0;
+    }
+    return Math.max(10, Math.round(configuredInterval));
+  }
+
+  /**
+   * Returns true when regular/scheduled API polling is enabled.
+   *
+   * @returns {boolean}
+   */
+  isRegularPollingEnabled() {
+    return this.getNormalUpdateIntervalSeconds() > 0;
+  }
+
+  /**
+   * Normalizes an update element path used in the comma-separated exclude list.
+   *
+   * @param {string} path
+   * @returns {string}
+   */
+  normalizeUpdateElementPath(path) {
+    return String(path || '').trim().replace(/^\./, '').toLowerCase();
+  }
+
+  /**
+   * Parses the comma-separated update exclude list.
+   *
+   * @returns {string[]}
+   */
+  getUpdateExcludeList() {
+    return String(this.config.excludeElementList || '')
+      .split(',')
+      .map((entry) => this.normalizeUpdateElementPath(entry))
+      .filter(Boolean);
+  }
+
+  /**
+   * Returns true when a Fleet/API endpoint or update object should be skipped.
+   *
+   * Supported values include vehicle_data endpoints such as `charge_state`,
+   * `climate_state`, `drive_state`, `vehicle_state`, `vehicle_config`,
+   * `location_data`, plus dedicated endpoints such as `charge_history`.
+   *
+   * @param {string} path
+   * @returns {boolean}
+   */
+  isUpdateElementExcluded(path) {
+    return this.getUpdateExcludeList().includes(this.normalizeUpdateElementPath(path));
+  }
+
+  /**
+   * Writes a JSON diagnostic payload to a telemetry info state.
+   *
+   * @param {string} id
+   * @param {Record<string, any>} payload
+   */
+  async setTelemetryDiagnosticState(id, payload) {
+    if (!this.isTelemetryEnabled()) {
+      return;
+    }
+    await this.setStateAsync(
+      id,
+      JSON.stringify({
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      }),
+      true,
+    );
+  }
+
+
+
+
+
+  /**
+   * Builds a user-facing error message and appends Tesla/Fleet API details when
+   * they are present in an Axios error response.
+   *
+   * @param {any} error
+   * @returns {string}
+   */
+  extractErrorMessage(error) {
+    if (!error) {
+      return 'Unknown error';
+    }
+
+    let message = error.message || String(error);
+    const responseData = error.response && error.response.data;
+    const responseError =
+      (responseData && responseData.error) ||
+      (responseData && responseData.error_description) ||
+      (responseData && responseData.response && responseData.response.reason);
+
+    if (responseError && !message.includes(responseError)) {
+      message += `: ${responseError}`;
+    }
+
+    return message;
+  }
+
 
   /**
    * Decode JWT token without signature verification (like HA __init__.py:81).
@@ -104,6 +252,8 @@ class Teslamotors extends utils.Adapter {
 
   async onReady() {
     this.setState('info.connection', false, true);
+    await this.telemetryConfigurationManager.createInfoStates();
+    await this.telemetryConfigurationManager.resetInfoStates();
 
     // Load protobuf definitions for command signing
     try {
@@ -113,10 +263,7 @@ class Teslamotors extends utils.Adapter {
       this.log.error('Failed to load protobuf definitions: ' + e.message);
     }
 
-    if (this.config.intervalNormal < 1) {
-      this.log.info('Set interval to minimum 1');
-      this.config.intervalNormal = 1;
-    }
+    const normalUpdateInterval = this.getNormalUpdateIntervalSeconds();
     this.adapterConfig = 'system.adapter.' + this.name + '.' + this.instance;
 
     // Create state for fleet session storage (avoids adapter restart on save)
@@ -178,20 +325,40 @@ class Teslamotors extends utils.Adapter {
 
       this.log.info('Receive device list');
       await this.getDeviceList();
-      this.log.info('Device list received, ' + this.idArray.length + ' devices found. Starting first update (forceUpdate=true)');
-      await this.updateDevices(true);
-      this.updateInterval = setInterval(async () => {
-        await this.updateDevices();
-      }, this.config.intervalNormal * 1000);
-      this.log.info('Update interval set to ' + this.config.intervalNormal + 's');
-      if (this.config.locationInterval > 10 && this.config.locationInterval < this.config.intervalNormal) {
+
+      if (this.isTelemetryEnabled()) {
+        this.telemetryManager = new FleetTelemetryManager(this);
+        await this.telemetryManager.start();
+        try {
+          await this.telemetryConfigurationManager.refreshConfigurationStates();
+        } catch (error) {
+          this.log.warn('Could not refresh Fleet Telemetry configuration state: ' + error.message);
+          await this.setStateAsync('info.telemetryLastError', error.message, true);
+        }
+      }
+
+      if (normalUpdateInterval > 0) {
+        this.log.info('Device list received, ' + this.idArray.length + ' devices found. Starting first update (forceUpdate=true)');
+        await this.updateDevices(true);
+        this.updateInterval = setInterval(async () => {
+          await this.updateDevices();
+        }, normalUpdateInterval * 1000);
+        this.log.info('Update interval set to ' + normalUpdateInterval + 's');
+      } else {
+        this.log.info('Device list received, ' + this.idArray.length + ' devices found. Regular update polling is disabled (intervalNormal=0)');
+      }
+      if (this.isTelemetryEnabled()) {
+        this.log.info('Telemetry mode enabled, skip dedicated location polling');
+      } else if (normalUpdateInterval === 0) {
+        this.log.info('Location interval skipped because regular update polling is disabled (intervalNormal=0)');
+      } else if (this.config.locationInterval > 10 && this.config.locationInterval < normalUpdateInterval) {
         this.updateDevices(false, true);
         this.locationInterval = setInterval(async () => {
           await this.updateDevices(false, true);
         }, this.config.locationInterval * 1000);
         this.log.info('Location interval set to ' + this.config.locationInterval + 's (faster than normal interval)');
-      } else if (this.config.locationInterval >= this.config.intervalNormal) {
-        this.log.info('Location interval (' + this.config.locationInterval + 's) >= normal interval (' + this.config.intervalNormal + 's), location_data included in normal poll');
+      } else if (this.config.locationInterval >= normalUpdateInterval) {
+        this.log.info('Location interval (' + this.config.locationInterval + 's) >= normal interval (' + normalUpdateInterval + 's), location_data included in normal poll');
       } else {
         this.log.info('Location interval is less than 10s. Skip location update');
       }
@@ -266,8 +433,10 @@ class Teslamotors extends utils.Adapter {
   /**
    * Load device list via Fleet API /products endpoint (like HA __init__.py:109).
    * Returns vehicles (by VIN) and energy sites (by energy_site_id).
+   *
+   * @param {{ throwOnError?: boolean }} [options]
    */
-  async getDeviceList() {
+  async getDeviceList(options = {}) {
     await this.requestClient({
       method: 'get',
       url: this.getFleetApiBaseUrl() + '/api/1/products',
@@ -500,7 +669,7 @@ class Teslamotors extends utils.Adapter {
           const registered = await this.registerPartnerAccount();
           if (registered) {
             this.log.info('Partner registration successful. Retrying device list...');
-            return this.getDeviceList();
+            return this.getDeviceList(options);
           }
         }
         // 421 = wrong region, extract correct region from error and retry
@@ -510,11 +679,14 @@ class Teslamotors extends utils.Adapter {
           if (match && match[1] && FLEET_API_REGIONS[match[1]] && match[1] !== this.region) {
             this.log.info(`Region mismatch: switching from ${this.region} to ${match[1]}`);
             this.region = match[1];
-            return this.getDeviceList();
+            return this.getDeviceList(options);
           }
         }
         this.log.error(error);
         error.response && this.log.error(JSON.stringify(error.response.data));
+        if (options.throwOnError) {
+          throw error;
+        }
       });
   }
 
@@ -567,6 +739,17 @@ class Teslamotors extends utils.Adapter {
     }
     return anySuccess;
   }
+
+
+
+
+
+
+
+
+
+
+
 
   /**
    * Update all devices via Fleet API.
@@ -627,7 +810,11 @@ class Teslamotors extends utils.Adapter {
     for (const product of this.idArray) {
       try {
         if (product.type === 'vehicle') {
-          await this.updateVehicle(product, forceUpdate, location);
+          if (this.isTelemetryEnabled()) {
+            await this.updateTelemetryVehicle(product, forceUpdate, location);
+          } else {
+            await this.updateVehicle(product, forceUpdate, location);
+          }
         } else {
           const currentArray = product.type === 'wall_connector' ? wallboxArray : energySiteArray;
           await this.updateEnergyDevice(product, currentArray);
@@ -639,10 +826,132 @@ class Teslamotors extends utils.Adapter {
   }
 
   /**
+   * Telemetry mode keeps MQTT as the primary live data source. The regular
+   * periodic Fleet API sync still polls the non-live data on the configured
+   * normal update interval, unless API sync is disabled or the interval is set
+   * to 0.
+   *
+   * @param {{ vin: string }} product
+   * @param {boolean} forceUpdate
+   * @param {boolean} location
+   */
+  async updateTelemetryVehicle(product, forceUpdate = false, location = false) {
+    const vin = product.vin;
+
+    if (location) {
+      return;
+    }
+
+    if (!this.isTelemetryApiSyncEnabled()) {
+      await this.setTelemetryDiagnosticState('info.telemetryLastApiSync', {
+        vin,
+        status: 'skipped',
+        reason: 'api_sync_disabled',
+      });
+      return;
+    }
+
+    const normalUpdateInterval = this.getNormalUpdateIntervalSeconds();
+    if (normalUpdateInterval <= 0) {
+      await this.setTelemetryDiagnosticState('info.telemetryLastApiSync', {
+        vin,
+        status: 'skipped',
+        reason: 'intervalNormal=0',
+      });
+      return;
+    }
+
+    await this.setTelemetryDiagnosticState('info.telemetryLastApiSync', {
+      vin,
+      status: 'started',
+      interval_seconds: normalUpdateInterval,
+      forceUpdate: !!forceUpdate,
+    });
+
+    // In telemetry mode the periodic API sync must not wake a sleeping vehicle just
+    // because the adapter was restarted. The explicit `wakeup` setting remains
+    // honored inside updateVehicle when a user really wants that behavior.
+    await this.updateVehicle(product, false, false, { telemetryApiSync: true, adapterForceUpdate: !!forceUpdate });
+
+    // charge_history is not part of vehicle_data and does not require the car
+    // to be online. Run it independently so it keeps updating even when
+    // vehicle_data was skipped because the car is asleep/offline.
+    await this.updateVehicleChargeHistory(vin);
+
+    await this.setTelemetryDiagnosticState('info.telemetryLastApiSync', {
+      vin,
+      status: 'completed',
+      interval_seconds: normalUpdateInterval,
+      forceUpdate: !!forceUpdate,
+    });
+  }
+
+  /**
+   * Charge history is still retrieved via the Fleet API because Fleet Telemetry
+   * does not provide a compatible replacement for that endpoint.
+   *
+   * @param {string} vin
+   */
+  async updateVehicleChargeHistory(vin) {
+    if (this.isUpdateElementExcluded('charge_history')) {
+      await this.setTelemetryDiagnosticState('info.telemetryLastChargeHistorySync', {
+        vin,
+        endpoint: 'charge_history',
+        status: 'skipped',
+        reason: 'excluded',
+      });
+      return;
+    }
+
+    const diff = 60 * 60 * 1000;
+    const lastChargeHistory = this.lastChargeHistory[vin] || 0;
+    if (lastChargeHistory && Date.now() - lastChargeHistory <= diff) {
+      await this.setTelemetryDiagnosticState('info.telemetryLastChargeHistorySync', {
+        vin,
+        endpoint: 'charge_history',
+        status: 'skipped',
+        reason: 'rate_limited',
+        nextAfter: new Date(lastChargeHistory + diff).toISOString(),
+      });
+      return;
+    }
+
+    this.lastChargeHistory[vin] = Date.now();
+    try {
+      const url = this.getFleetApiBaseUrl() + '/api/1/vehicles/' + vin + '/charge_history';
+      const res = await this.requestClient({ method: 'post', url: url, headers: this.getFleetHeaders() });
+      if (res.data && res.data.response) {
+        const data = res.data.response;
+        if (data.charging_history_graph) {
+          delete data.charging_history_graph.y_labels;
+          delete data.charging_history_graph.x_labels;
+        }
+        if (data.gas_savings) delete data.gas_savings.card;
+        if (data.energy_cost_breakdown) delete data.energy_cost_breakdown.card;
+        if (data.charging_tips) delete data.charging_tips;
+        this.json2iob.parse(vin + '.charge_history', data, { preferedArrayName: 'title', forceIndex: true });
+        await this.setTelemetryDiagnosticState('info.telemetryLastChargeHistorySync', {
+          vin,
+          endpoint: 'charge_history',
+          status: 'success',
+        });
+      }
+    } catch (/** @type {any} */ error) {
+      await this.setTelemetryDiagnosticState('info.telemetryLastChargeHistorySync', {
+        vin,
+        endpoint: 'charge_history',
+        status: 'failed',
+        error: error.response ? error.response.status : error.message,
+      });
+      this.log.debug('Charge history failed for ' + vin + ': ' + (error.response ? error.response.status : error.message));
+    }
+  }
+
+  /**
    * Update a single vehicle via Fleet API.
    * Uses free API call to check state before expensive vehicle_data (like HA coordinator.py:101-107).
    */
-  async updateVehicle(product, forceUpdate, location) {
+  async updateVehicle(product, forceUpdate, location, options = {}) {
     const vin = product.vin;
     const fleetBase = this.getFleetApiBaseUrl();
     const headers = this.getFleetHeaders();
@@ -666,15 +975,37 @@ class Teslamotors extends utils.Adapter {
     } catch (/** @type {any} */ error) {
       if (error.response && error.response.status === 429) {
         this.log.warn(vin + ' rate limited on state check, skip this refresh');
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'skipped',
+          reason: 'state_check_rate_limited',
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
         return;
       }
       if (error.response && error.response.status === 401) {
         this.log.info(vin + ' 401 on state check, scheduling token refresh');
         this.scheduleTokenRefresh();
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'skipped',
+          reason: 'state_check_unauthorized',
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
         return;
       }
       if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
         this.log.info(vin + ' server error on state check: ' + error.response.status);
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'skipped',
+          reason: 'state_check_server_error',
+          httpStatus: error.response.status,
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
         return;
       }
       this.log.error('Vehicle state check failed for ' + vin);
@@ -694,6 +1025,14 @@ class Teslamotors extends utils.Adapter {
       } else {
         this.log.info(vin + ' is ' + state + ', skip vehicle_data call (wakeup=' + this.config.wakeup + ')');
         this.lastStates[vin] = state;
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'skipped',
+          reason: 'vehicle_not_online',
+          vehicleState: state,
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
         return;
       }
     }
@@ -711,6 +1050,13 @@ class Teslamotors extends utils.Adapter {
           this.sleepTimes[vin] = null;
         } else {
           this.log.debug(vin + ' skip update, waiting for sleep (' + Math.round((Date.now() - this.sleepTimes[vin]) / 1000) + 's)');
+          await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+            vin,
+            endpoint: 'vehicle_data',
+            status: 'skipped',
+            reason: 'waiting_for_sleep',
+            telemetryApiSync: !!options.telemetryApiSync,
+          });
           return;
         }
       }
@@ -719,16 +1065,28 @@ class Teslamotors extends utils.Adapter {
     // Build endpoints with scope check (like HA coordinator.py:92-96)
     let endpoints;
     if (location) {
-      endpoints = this.scopes.includes('vehicle_location') ? ['location_data'] : [];
+      endpoints = this.scopes.includes('vehicle_location') && !this.isUpdateElementExcluded('location_data') ? ['location_data'] : [];
       if (endpoints.length === 0) {
         this.log.debug(vin + ' no vehicle_location scope, skip location update');
         return;
       }
     } else {
-      endpoints = [...VEHICLE_ENDPOINTS];
-      if (this.scopes.includes('vehicle_location')) {
+      endpoints = VEHICLE_ENDPOINTS.filter((endpoint) => !this.isUpdateElementExcluded(endpoint));
+      if (this.scopes.includes('vehicle_location') && !this.isUpdateElementExcluded('location_data')) {
         endpoints.push('location_data');
       }
+    }
+
+    if (endpoints.length === 0) {
+      this.log.info(vin + ' no vehicle_data endpoints enabled after exclude list, skip vehicle_data call');
+      await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+        vin,
+        endpoint: 'vehicle_data',
+        status: 'skipped',
+        reason: 'all_endpoints_excluded',
+        telemetryApiSync: !!options.telemetryApiSync,
+      });
+      return;
     }
 
     // Vehicle data call (quota-consuming)
@@ -740,6 +1098,13 @@ class Teslamotors extends utils.Adapter {
       if (!res.data || !res.data.response) {
         this.log.info(vin + ' vehicle_data response is empty or malformed');
         this.log.debug(vin + ' raw response: ' + JSON.stringify(res.data));
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'empty',
+          requestedEndpoints: endpoints,
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
         return;
       }
       if (res.data.response.tokens) delete res.data.response.tokens;
@@ -761,6 +1126,14 @@ class Teslamotors extends utils.Adapter {
 
       this.json2iob.parse(vin, data);
       this.log.debug(vin + ' vehicle_data parsed to ioBroker objects');
+      await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+        vin,
+        endpoint: 'vehicle_data',
+        status: 'success',
+        requestedEndpoints: endpoints,
+        returnedKeys: dataKeys,
+        telemetryApiSync: !!options.telemetryApiSync,
+      });
 
       // Drive state interval management
       if (data.drive_state) {
@@ -792,45 +1165,58 @@ class Teslamotors extends utils.Adapter {
     } catch (/** @type {any} */ error) {
       if (error.response && error.response.status === 429) {
         this.log.warn(vin + ' rate limited on vehicle_data, skip this refresh');
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'failed',
+          error: 'rate_limited',
+          requestedEndpoints: endpoints,
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
         return;
       }
       if (error.response && error.response.status === 401) {
         this.log.info(vin + ' 401 on vehicle_data, scheduling token refresh');
         this.scheduleTokenRefresh();
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'failed',
+          error: 'unauthorized',
+          requestedEndpoints: endpoints,
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
         return;
       }
       if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
         this.log.info(vin + ' server error on vehicle_data: ' + error.response.status);
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'failed',
+          error: 'server_error',
+          httpStatus: error.response.status,
+          requestedEndpoints: endpoints,
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
         return;
       }
       this.log.error('Vehicle data failed for ' + vin);
       this.log.error(error);
       error.response && this.log.error(JSON.stringify(error.response.data));
+      await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+        vin,
+        endpoint: 'vehicle_data',
+        status: 'failed',
+        error: error.response ? error.response.status : error.message,
+        requestedEndpoints: endpoints,
+        telemetryApiSync: !!options.telemetryApiSync,
+      });
     }
 
     // Charge history (max once per hour)
-    if (!location) {
-      const diff = 60 * 60 * 1000;
-      if (!this.lastChargeHistory || Date.now() - this.lastChargeHistory > diff) {
-        this.lastChargeHistory = Date.now();
-        try {
-          const url = fleetBase + '/api/1/vehicles/' + vin + '/charge_history';
-          const res = await this.requestClient({ method: 'post', url: url, headers: headers });
-          if (res.data && res.data.response) {
-            const data = res.data.response;
-            if (data.charging_history_graph) {
-              delete data.charging_history_graph.y_labels;
-              delete data.charging_history_graph.x_labels;
-            }
-            if (data.gas_savings) delete data.gas_savings.card;
-            if (data.energy_cost_breakdown) delete data.energy_cost_breakdown.card;
-            if (data.charging_tips) delete data.charging_tips;
-            this.json2iob.parse(vin + '.charge_history', data, { preferedArrayName: 'title', forceIndex: true });
-          }
-        } catch (error) {
-          this.log.debug('Charge history failed for ' + vin + ': ' + (error.response ? error.response.status : error.message));
-        }
-      }
+    if (!location && !options.telemetryApiSync) {
+      await this.updateVehicleChargeHistory(vin);
     }
   }
 
@@ -843,8 +1229,7 @@ class Teslamotors extends utils.Adapter {
     const headers = this.getFleetHeaders();
 
     for (const element of statusArray) {
-      const excludeList = this.config.excludeElementList.replace(/\s/g, '').split(',');
-      if (element.path && excludeList.includes(element.path.replace('.', ''))) {
+      if (element.path && this.isUpdateElementExcluded(element.path)) {
         this.log.info('Skip path ' + element.path);
         continue;
       }
@@ -1316,6 +1701,10 @@ class Teslamotors extends utils.Adapter {
    * @param {ioBroker.Message} obj
    */
   async onMessage(obj) {
+    if (!obj || !obj.command) {
+      return;
+    }
+
     if (obj.command === 'generateKeyPair') {
       try {
         // @ts-ignore - TS confuses Node.js crypto with browser global
@@ -1328,6 +1717,18 @@ class Teslamotors extends utils.Adapter {
         this.sendTo(obj.from, obj.command, { publicKey, privateKey }, obj.callback);
       } catch (/** @type {any} */ e) {
         this.sendTo(obj.from, obj.command, { error: e.message }, obj.callback);
+      }
+      return;
+    }
+
+    if (isFleetTelemetryAdminCommand(obj.command)) {
+      try {
+        const result = await this.telemetryConfigurationManager.handleAdminCommand(obj.command, obj.message || {});
+        this.sendTo(obj.from, obj.command, { ok: true, result }, obj.callback);
+      } catch (/** @type {any} */ error) {
+        const errorMessage = this.extractErrorMessage(error);
+        await this.setStateAsync('info.telemetryLastError', errorMessage, true);
+        this.sendTo(obj.from, obj.command, { ok: false, error: errorMessage }, obj.callback);
       }
     }
   }
@@ -1347,6 +1748,10 @@ class Teslamotors extends utils.Adapter {
       this.refreshTokenTimeout && clearTimeout(this.refreshTokenTimeout);
       this.locationInterval && clearInterval(this.locationInterval);
       this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
+      if (this.telemetryManager) {
+        await this.telemetryManager.stop();
+      }
+      await this.setStateAsync('info.telemetryConnected', false, true);
       this.log.info('Save login session');
       await this.saveSession();
       this.log.debug('Session saved');
