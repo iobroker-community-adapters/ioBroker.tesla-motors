@@ -1,5 +1,6 @@
 // Root tsconfig to set the settings and power editor support for all TS files
 {
+    "extends": "@tsconfig/node22/tsconfig.json",
     "compileOnSave": true,
     "compilerOptions": {
         // do not compile anything, this file is just to configure type checking
@@ -9,8 +10,10 @@
         "allowJs": true,
         "checkJs": true,
 
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "module": "node16",
+        "moduleResolution": "node16",
+        "target": "es2022",
+        "lib": ["es2022", "dom"],
         "esModuleInterop": true,
         // this is necessary for the automatic typing of the adapter config
         "resolveJsonModule": true,
@@ -21,12 +24,11 @@
         // "strictNullChecks": true,
         // "strictPropertyInitialization": true,
         // "strictBindCallApply": true,
+        "strictNullChecks": false,
+        "useUnknownInCatchVariables": false,
         "noImplicitAny": false,
         // "noUnusedLocals": true,
         // "noUnusedParameters": true,
-
-        // Consider targetting es2019 or higher if you only support Node.js 12+
-        "target": "es2018",
 
     },
     "include": [
