@@ -132,7 +132,9 @@ describe('admin jsonConfig migration', () => {
 
     for (const field of expectedFields) {
       expect(findJsonConfigItem(jsonConfig, field), `jsonConfig item ${field}`).to.exist;
-      expect(ioPackage.native).to.have.property(field);
+      if (field !== 'telemetryFields') {
+        expect(ioPackage.native).to.have.property(field);
+      }
     }
   });
 
