@@ -171,12 +171,13 @@ the default topic base `tesla-telemetry`, the expected topics are:
 - `tesla-telemetry/<VIN>/errors/<Type>` for telemetry errors
 - `tesla-telemetry/<VIN>/alerts/<Type>/current` for current alerts
 
-The admin UI contains a dedicated **Fleet Telemetry fields** tab. There you can
-enable/disable individual Tesla telemetry fields, filter by selection/category
-and set the update interval in seconds per field. Optional `minimum_delta`
-values can be configured for numeric fields where Tesla supports them. If the
-field is left empty and the admin UI shows a placeholder, the adapter uses that
-default when building the vehicle configuration. For `Location`,
+The admin UI contains a dedicated **Fleet Telemetry fields** tab. The Tesla
+field catalogue is split into collapsible category groups so the admin page only
+has to render/open smaller sections at a time. There you can enable/disable individual Tesla
+telemetry fields and set the update interval in seconds per field. Optional
+`minimum_delta` values can be configured for numeric fields where Tesla supports
+them. If the field is left empty and the admin UI shows a placeholder, the
+adapter uses that default when building the vehicle configuration. For `Location`,
 `OriginLocation` and `DestinationLocation`, Tesla interprets `minimum_delta` in
 meters, so the default `100 m` roughly matches `0.001°` latitude/longitude and
 avoids tiny GPS jitter updates. Other useful defaults are provided for common

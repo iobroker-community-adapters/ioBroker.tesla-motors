@@ -121,11 +121,13 @@
     "telemetry_mqtt_title": "Bridge MQTT",
     "telemetry_fields_json_label": "Campi Fleet Telemetry (JSON)",
     "telemetry_fields_json_help": "Lascia vuoto per usare il preset predefinito dell’adattatore. In alternativa inserisci un oggetto JSON come {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} o un wrapper {\"fields\":{...}}.",
-    "telemetry_fields_table_help": "Abilita i campi che Tesla deve inviare tramite Fleet Telemetry. <b>Intervallo</b> è il tempo minimo tra due modifiche inviate. <b>Variazione minima</b> può restare vuota; in tal caso l’adattatore usa il valore predefinito mostrato, ad esempio <code>1 %</code> per lo stato di carica o <code>100 m</code> per la posizione. Tesla invia comunque dati solo quando il valore cambia e l’intervallo è trascorso. Usa i filtri della tabella per cercare, filtrare per categoria o mostrare i campi attivi.",
+    "telemetry_fields_table_help": "Abilita i campi che Tesla deve inviare tramite Fleet Telemetry. <b>Intervallo</b> è il tempo minimo tra due modifiche inviate. <b>Variazione minima</b> può restare vuota; in tal caso l’adapter usa il valore predefinito mostrato, ad esempio <code>1 %</code> per lo stato di carica o <code>100 m</code> per la posizione. Tesla invia comunque i dati solo quando il valore è cambiato e l’intervallo è trascorso. Passa tra le schede di categoria e usa i filtri della tabella per cercare o mostrare i campi abilitati.",
     "telemetry_fields_table_help_short": "Le righe abilitate vengono incluse nella configurazione Fleet Telemetry. Una variazione minima vuota usa il valore predefinito mostrato.",
     "telemetry_fields_expert_title": "Fallback esperto",
     "telemetry_fields_json_expert_help": "Campo legacy/esperto. Serve solo se non è ancora stata salvata una tabella campi o per futuri campi Tesla non presenti nella tabella.",
     "telemetry_table_field_id": "Campo Tesla",
     "telemetry_table_default_minimum_delta": "Variazione minima predefinita",
-    "telemetry_table_minimum_delta_unit": "Unità"
+    "telemetry_table_minimum_delta_unit": "Unità",
+    "telemetry_fields_grouped_help": "Il catalogo dei campi Tesla è suddiviso in categorie richiudibili. Espandi solo la categoria da modificare, così la pagina resta reattiva anche con tutti i campi Fleet Telemetry.",
+    "telemetry_fields_category_help": "Abilita i campi da inviare in questa categoria. I valori vuoti della variazione minima usano il valore predefinito mostrato dell’adapter, se disponibile."
 }

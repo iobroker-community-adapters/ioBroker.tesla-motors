@@ -96,6 +96,20 @@ describe('admin jsonConfig migration', () => {
   const rootDir = __dirname;
   const ioPackage = JSON.parse(fs.readFileSync(path.join(rootDir, 'io-package.json'), 'utf8'));
   const jsonConfig = JSON.parse(fs.readFileSync(path.join(rootDir, 'admin', 'jsonConfig.json'), 'utf8'));
+  const telemetryFieldGroupKeys = [
+    'telemetryFieldsCharging',
+    'telemetryFieldsDriving',
+    'telemetryFieldsLocation',
+    'telemetryFieldsVehicleState',
+    'telemetryFieldsVehicleConfiguration',
+    'telemetryFieldsSafety',
+    'telemetryFieldsClimate',
+    'telemetryFieldsMedia',
+    'telemetryFieldsPowertrain',
+    'telemetryFieldsService',
+    'telemetryFieldsUserPreference',
+    'telemetryFieldsOther',
+  ];
 
   it('uses json admin config and keeps existing configurable native keys', () => {
     expect(ioPackage.common.adminUI).to.deep.equal({ config: 'json' });
@@ -125,16 +139,20 @@ describe('admin jsonConfig migration', () => {
       'telemetryMqttUsername',
       'telemetryMqttPassword',
       'telemetryMqttTopicBase',
-      'telemetryFields',
+      ...telemetryFieldGroupKeys,
       'telemetryFieldsJson',
       'telemetryFallbackPollEnabled',
     ];
 
     for (const field of expectedFields) {
       expect(findJsonConfigItem(jsonConfig, field), `jsonConfig item ${field}`).to.exist;
-      if (field !== 'telemetryFields') {
+      if (!telemetryFieldGroupKeys.includes(field)) {
         expect(ioPackage.native).to.have.property(field);
       }
+    }
+
+    for (const field of telemetryFieldGroupKeys) {
+      expect(ioPackage.native, `${field} must stay undefined so jsonConfig defaults are visible before first save`).not.to.have.property(field);
     }
   });
 
@@ -152,21 +170,29 @@ describe('admin jsonConfig migration', () => {
 
   it('preserves Fleet Telemetry compatible polling semantics', () => {
     const intervalNormal = findJsonConfigItem(jsonConfig, 'intervalNormal');
-    const telemetryFields = findJsonConfigItem(jsonConfig, 'telemetryFields');
+    const telemetryFieldsCharging = findJsonConfigItem(jsonConfig, 'telemetryFieldsCharging');
+    const telemetryFieldsLocation = findJsonConfigItem(jsonConfig, 'telemetryFieldsLocation');
 
     expect(intervalNormal).to.include({ type: 'number', min: 0 });
-    expect(telemetryFields).to.include({ type: 'table', noDelete: true });
-    expect(telemetryFields.default).to.be.an('array').that.is.not.empty;
-    expect(telemetryFields.default.find((row) => row.field === 'Soc')).to.include({
+    expect(findJsonConfigItem(jsonConfig, 'telemetryFieldCategoryTabs')).not.to.exist;
+    const collapsablePanels = Object.values(jsonConfig.items.telemetryFieldsTab.items).filter(
+      (item) => item && item.type === 'panel' && item.collapsable === true,
+    );
+    expect(collapsablePanels).to.have.length(telemetryFieldGroupKeys.length);
+
+    expect(telemetryFieldsCharging).to.include({ type: 'table', noDelete: true });
+    expect(telemetryFieldsCharging.default.find((row) => row.field === 'Soc')).to.include({
       enabled: true,
       interval_seconds: 1,
       defaultMinimumDelta: '1 %',
     });
-    expect(telemetryFields.default.find((row) => row.field === 'Location')).to.include({
+    expect(telemetryFieldsLocation).to.include({ type: 'table', noDelete: true });
+    expect(telemetryFieldsLocation.default.find((row) => row.field === 'Location')).to.include({
       enabled: true,
       interval_seconds: 10,
       defaultMinimumDelta: '100 m',
     });
+    expect(Math.max(...telemetryFieldGroupKeys.map((key) => findJsonConfigItem(jsonConfig, key).default.length))).to.be.lessThan(60);
 
     const telemetryFieldsJson = findJsonConfigItem(jsonConfig, 'telemetryFieldsJson');
     expect(telemetryFieldsJson).to.include({ type: 'jsonEditor', expertMode: true });

@@ -11,6 +11,7 @@ const {
   normalizeMqttBrokerUrl,
   parseTelemetryFieldsConfig,
   parseTelemetryFieldsFromAdapterConfig,
+  parseTelemetryFieldsGroupedTableConfig,
   parseTelemetryFieldsTableConfig,
   parseTelemetryTopic,
 } = require('./lib/fleetTelemetry');
@@ -249,6 +250,35 @@ describe('Fleet Telemetry helper', () => {
 
     expect(fields).to.deep.equal({
       VehicleSpeed: { interval_seconds: 15, minimum_delta: 1 },
+    });
+  });
+
+  it('parses grouped jsonConfig telemetry field tables', () => {
+    const fields = parseTelemetryFieldsGroupedTableConfig({
+      telemetryFieldsCharging: [
+        { enabled: true, field: 'Soc', interval_seconds: 30, minimum_delta: '' },
+        { enabled: false, field: 'ChargeState', interval_seconds: 1 },
+      ],
+      telemetryFieldsLocation: [
+        { enabled: true, field: 'Location', interval_seconds: 10, minimum_delta: 250 },
+      ],
+    });
+
+    expect(fields).to.deep.equal({
+      Soc: { interval_seconds: 30, minimum_delta: 1 },
+      Location: { interval_seconds: 10, minimum_delta: 250 },
+    });
+  });
+
+  it('prefers grouped jsonConfig tables over old table and legacy JSON when saved', () => {
+    const fields = parseTelemetryFieldsFromAdapterConfig({
+      telemetryFieldsJson: JSON.stringify({ Locked: { interval_seconds: 1 } }),
+      telemetryFields: [{ enabled: true, field: 'VehicleSpeed', interval_seconds: 15 }],
+      telemetryFieldsCharging: [{ enabled: true, field: 'Soc', interval_seconds: 60 }],
+    });
+
+    expect(fields).to.deep.equal({
+      Soc: { interval_seconds: 60, minimum_delta: 1 },
     });
   });
 

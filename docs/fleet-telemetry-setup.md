@@ -351,7 +351,8 @@ Set:
 ### Fleet Telemetry fields tab
 
 Start with the default preset. It is optimized for common charging and vehicle
-state use cases.
+state use cases. The fields are split into collapsible category groups in the admin UI so only
+the category you are editing needs to be open.
 
 Useful defaults:
 

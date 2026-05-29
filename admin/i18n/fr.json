@@ -121,11 +121,13 @@
     "telemetry_mqtt_title": "Passerelle MQTT",
     "telemetry_fields_json_label": "Champs Fleet Telemetry (JSON)",
     "telemetry_fields_json_help": "Laissez vide pour utiliser le préréglage par défaut de l’adaptateur. Vous pouvez aussi saisir un objet JSON comme {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} ou une enveloppe {\"fields\":{...}}.",
-    "telemetry_fields_table_help": "Activez les champs que Tesla doit envoyer via Fleet Telemetry. <b>Intervalle</b> est le délai minimal entre deux changements envoyés. <b>Changement minimal</b> peut rester vide ; l’adaptateur utilise alors la valeur par défaut affichée, par exemple <code>1 %</code> pour l’état de charge ou <code>100 m</code> pour la position. Tesla n’envoie toujours des données que lorsque la valeur change et que l’intervalle est écoulé. Utilisez les filtres du tableau pour rechercher, filtrer par catégorie ou afficher les champs actifs.",
+    "telemetry_fields_table_help": "Activez les champs que Tesla doit envoyer via Fleet Telemetry. <b>Intervalle</b> est le temps minimal entre deux changements émis. <b>Variation minimale</b> peut rester vide ; l’adaptateur utilise alors la valeur par défaut affichée, par exemple <code>1 %</code> pour l’état de charge ou <code>100 m</code> pour la position. Tesla n’envoie toujours les données que si la valeur a changé et que l’intervalle est écoulé. Passez d’un onglet de catégorie à l’autre et utilisez les filtres du tableau pour rechercher ou afficher les champs activés.",
     "telemetry_fields_table_help_short": "Les lignes activées sont incluses dans la configuration Fleet Telemetry. Un changement minimal vide utilise la valeur par défaut affichée.",
     "telemetry_fields_expert_title": "Fallback expert",
     "telemetry_fields_json_expert_help": "Champ hérité/expert. Nécessaire uniquement si aucun tableau de champs n’est encore enregistré ou pour de futurs champs Tesla absents du tableau.",
     "telemetry_table_field_id": "Champ Tesla",
     "telemetry_table_default_minimum_delta": "Changement minimal par défaut",
-    "telemetry_table_minimum_delta_unit": "Unité"
+    "telemetry_table_minimum_delta_unit": "Unité",
+    "telemetry_fields_grouped_help": "Le catalogue des champs Tesla est divisé en groupes de catégories repliables. Dépliez uniquement la catégorie à modifier afin que la page reste réactive même avec tous les champs Fleet Telemetry.",
+    "telemetry_fields_category_help": "Activez les champs à envoyer dans cette catégorie. Les valeurs de variation minimale vides utilisent la valeur par défaut affichée de l’adaptateur lorsqu’elle existe."
 }
