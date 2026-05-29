@@ -120,5 +120,12 @@
     "telemetry_server_ca_help": "Paste the CA or full certificate chain in PEM format that should be embedded into the Tesla vehicle configuration.",
     "telemetry_mqtt_title": "MQTT bridge",
     "telemetry_fields_json_label": "Fleet Telemetry fields (JSON)",
-    "telemetry_fields_json_help": "Leave empty to use the adapter default preset. Alternatively enter a JSON object such as {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} or a {\"fields\":{...}} wrapper."
+    "telemetry_fields_json_help": "Leave empty to use the adapter default preset. Alternatively enter a JSON object such as {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} or a {\"fields\":{...}} wrapper.",
+    "telemetry_fields_table_help": "Enable the fields Tesla should send via Fleet Telemetry. <b>Interval</b> is the minimum time between two emitted changes. <b>Minimum change</b> may stay empty; then the adapter uses the displayed default value, for example <code>1 %</code> for state of charge or <code>100 m</code> for location. Tesla still sends data only when the value changed and the interval has elapsed. Use the table filters to search, filter by category or show enabled fields.",
+    "telemetry_fields_table_help_short": "Enabled rows are included in the Fleet Telemetry configuration. Empty minimum change uses the displayed default value.",
+    "telemetry_fields_expert_title": "Expert fallback",
+    "telemetry_fields_json_expert_help": "Legacy/expert field. Only needed when no field table is saved yet or for future Tesla fields not included in the table.",
+    "telemetry_table_field_id": "Tesla field",
+    "telemetry_table_default_minimum_delta": "Default minimum change",
+    "telemetry_table_minimum_delta_unit": "Unit"
 }

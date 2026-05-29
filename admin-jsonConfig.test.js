@@ -22,7 +22,7 @@ function collectTranslationKeys(node, keys = new Set()) {
 
   for (const [key, value] of Object.entries(node)) {
     if (
-      (key === 'label' || key === 'text' || key === 'help' || key === 'tooltip') &&
+      (key === 'label' || key === 'text' || key === 'help' || key === 'tooltip' || key === 'title') &&
       typeof value === 'string' &&
       !/^https?:\/\//.test(value)
     ) {
@@ -125,6 +125,7 @@ describe('admin jsonConfig migration', () => {
       'telemetryMqttUsername',
       'telemetryMqttPassword',
       'telemetryMqttTopicBase',
+      'telemetryFields',
       'telemetryFieldsJson',
       'telemetryFallbackPollEnabled',
     ];
@@ -149,14 +150,24 @@ describe('admin jsonConfig migration', () => {
 
   it('preserves Fleet Telemetry compatible polling semantics', () => {
     const intervalNormal = findJsonConfigItem(jsonConfig, 'intervalNormal');
-    const telemetryFields = findJsonConfigItem(jsonConfig, 'telemetryFieldsJson');
+    const telemetryFields = findJsonConfigItem(jsonConfig, 'telemetryFields');
 
     expect(intervalNormal).to.include({ type: 'number', min: 0 });
-    expect(telemetryFields).to.include({
-      type: 'jsonEditor',
-      allowEmpty: true,
-      doNotApplyWithError: true,
+    expect(telemetryFields).to.include({ type: 'table', noDelete: true });
+    expect(telemetryFields.default).to.be.an('array').that.is.not.empty;
+    expect(telemetryFields.default.find((row) => row.field === 'Soc')).to.include({
+      enabled: true,
+      interval_seconds: 1,
+      defaultMinimumDelta: '1 %',
     });
+    expect(telemetryFields.default.find((row) => row.field === 'Location')).to.include({
+      enabled: true,
+      interval_seconds: 10,
+      defaultMinimumDelta: '100 m',
+    });
+
+    const telemetryFieldsJson = findJsonConfigItem(jsonConfig, 'telemetryFieldsJson');
+    expect(telemetryFieldsJson).to.include({ type: 'jsonEditor', expertMode: true });
   });
 
   it('keeps translations available for all jsonConfig texts', () => {

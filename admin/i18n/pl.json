@@ -120,5 +120,12 @@
     "telemetry_server_ca_help": "Wklej CA lub pełny łańcuch certyfikatów w formacie PEM, który ma zostać osadzony w konfiguracji pojazdu Tesla.",
     "telemetry_mqtt_title": "Most MQTT",
     "telemetry_fields_json_label": "Pola Fleet Telemetry (JSON)",
-    "telemetry_fields_json_help": "Pozostaw puste, aby użyć domyślnego presetu adaptera. Możesz też wprowadzić obiekt JSON, np. {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}}, albo wrapper {\"fields\":{...}}."
+    "telemetry_fields_json_help": "Pozostaw puste, aby użyć domyślnego presetu adaptera. Możesz też wprowadzić obiekt JSON, np. {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}}, albo wrapper {\"fields\":{...}}.",
+    "telemetry_fields_table_help": "Włącz pola, które Tesla ma wysyłać przez Fleet Telemetry. <b>Interwał</b> to minimalny czas między dwiema wysłanymi zmianami. <b>Minimalna zmiana</b> może pozostać pusta; wtedy adapter użyje pokazanej wartości domyślnej, np. <code>1 %</code> dla poziomu naładowania lub <code>100 m</code> dla lokalizacji. Tesla nadal wysyła dane tylko wtedy, gdy wartość się zmieniła i interwał upłynął. Użyj filtrów tabeli do wyszukiwania, filtrowania kategorii lub pokazywania aktywnych pól.",
+    "telemetry_fields_table_help_short": "Włączone wiersze trafiają do konfiguracji Fleet Telemetry. Pusta minimalna zmiana używa pokazanej wartości domyślnej.",
+    "telemetry_fields_expert_title": "Fallback ekspercki",
+    "telemetry_fields_json_expert_help": "Pole legacy/eksperckie. Potrzebne tylko, gdy nie zapisano jeszcze tabeli pól lub dla przyszłych pól Tesli, których nie ma w tabeli.",
+    "telemetry_table_field_id": "Pole Tesla",
+    "telemetry_table_default_minimum_delta": "Domyślna minimalna zmiana",
+    "telemetry_table_minimum_delta_unit": "Jednostka"
 }

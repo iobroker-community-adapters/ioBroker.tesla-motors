@@ -120,5 +120,12 @@
     "telemetry_server_ca_help": "Plak de CA of volledige certificaatketen in PEM-formaat die in de Tesla-voertuigconfiguratie wordt opgenomen.",
     "telemetry_mqtt_title": "MQTT-bridge",
     "telemetry_fields_json_label": "Fleet Telemetry-velden (JSON)",
-    "telemetry_fields_json_help": "Laat leeg om de standaardpreset van de adapter te gebruiken. Je kunt ook een JSON-object invoeren zoals {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} of een wrapper {\"fields\":{...}}."
+    "telemetry_fields_json_help": "Laat leeg om de standaardpreset van de adapter te gebruiken. Je kunt ook een JSON-object invoeren zoals {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} of een wrapper {\"fields\":{...}}.",
+    "telemetry_fields_table_help": "Schakel de velden in die Tesla via Fleet Telemetry moet sturen. <b>Interval</b> is de minimale tijd tussen twee verzonden wijzigingen. <b>Minimale wijziging</b> mag leeg blijven; dan gebruikt de adapter de getoonde standaardwaarde, bijvoorbeeld <code>1 %</code> voor laadstatus of <code>100 m</code> voor locatie. Tesla verzendt alleen data wanneer de waarde is gewijzigd en het interval is verlopen. Gebruik de tabelfilters om te zoeken, op categorie te filteren of actieve velden te tonen.",
+    "telemetry_fields_table_help_short": "Ingeschakelde rijen worden opgenomen in de Fleet Telemetry-configuratie. Een lege minimale wijziging gebruikt de getoonde standaardwaarde.",
+    "telemetry_fields_expert_title": "Expert-fallback",
+    "telemetry_fields_json_expert_help": "Legacy-/expertveld. Alleen nodig als er nog geen veldentabel is opgeslagen of voor toekomstige Tesla-velden die nog niet in de tabel staan.",
+    "telemetry_table_field_id": "Tesla-veld",
+    "telemetry_table_default_minimum_delta": "Standaard minimale wijziging",
+    "telemetry_table_minimum_delta_unit": "Eenheid"
 }

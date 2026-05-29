@@ -120,5 +120,12 @@
     "telemetry_server_ca_help": "粘贴将写入 Tesla 车辆配置的 PEM 格式 CA 或完整证书链。",
     "telemetry_mqtt_title": "MQTT 桥接",
     "telemetry_fields_json_label": "Fleet Telemetry 字段（JSON）",
-    "telemetry_fields_json_help": "留空将使用适配器默认预设。也可以输入 JSON 对象，例如 {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}}，或使用 {\"fields\":{...}} 包装。"
+    "telemetry_fields_json_help": "留空将使用适配器默认预设。也可以输入 JSON 对象，例如 {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}}，或使用 {\"fields\":{...}} 包装。",
+    "telemetry_fields_table_help": "启用 Tesla 应通过 Fleet Telemetry 发送的字段。<b>间隔</b>是两次发送变化之间的最短时间。<b>最小变化</b>可以留空；此时适配器会使用显示的默认值，例如电量为 <code>1 %</code>，位置为 <code>100 m</code>。Tesla 仍只会在值发生变化且间隔已到时发送数据。可使用表格筛选来搜索、按类别筛选或显示已启用字段。",
+    "telemetry_fields_table_help_short": "已启用的行会包含在 Fleet Telemetry 配置中。最小变化留空时使用显示的默认值。",
+    "telemetry_fields_expert_title": "专家回退",
+    "telemetry_fields_json_expert_help": "旧版/专家字段。仅在尚未保存字段表，或需要表中尚未包含的未来 Tesla 字段时使用。",
+    "telemetry_table_field_id": "Tesla 字段",
+    "telemetry_table_default_minimum_delta": "默认最小变化",
+    "telemetry_table_minimum_delta_unit": "单位"
 }

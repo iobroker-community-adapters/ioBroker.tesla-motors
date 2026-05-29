@@ -120,5 +120,12 @@
     "telemetry_server_ca_help": "Füge die CA bzw. vollständige Zertifikatskette im PEM-Format ein, die in die Tesla-Fahrzeugkonfiguration übernommen wird.",
     "telemetry_mqtt_title": "MQTT-Bridge",
     "telemetry_fields_json_label": "Fleet-Telemetry-Felder (JSON)",
-    "telemetry_fields_json_help": "Leer lassen, um das Adapter-Standardpreset zu verwenden. Alternativ ein JSON-Objekt wie {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} oder einen Wrapper mit {\"fields\":{...}} eintragen."
+    "telemetry_fields_json_help": "Leer lassen, um das Adapter-Standardpreset zu verwenden. Alternativ ein JSON-Objekt wie {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} oder einen Wrapper mit {\"fields\":{...}} eintragen.",
+    "telemetry_fields_table_help": "Aktiviere die Felder, die Tesla per Fleet Telemetry senden soll. <b>Intervall</b> ist die Mindestzeit zwischen zwei gesendeten Änderungen. <b>Mindeständerung</b> kann leer bleiben; dann verwendet der Adapter den angezeigten Standardwert, z. B. <code>1 %</code> bei Ladezustand oder <code>100 m</code> bei Standort. Tesla sendet weiterhin nur, wenn sich der Wert geändert hat und das Intervall abgelaufen ist. Die Tabellenfilter helfen bei Suche, Kategorie und aktivierten Feldern.",
+    "telemetry_fields_table_help_short": "Aktivierte Zeilen werden in die Fleet-Telemetry-Konfiguration übernommen. Leere Mindeständerung nutzt den angezeigten Standardwert.",
+    "telemetry_fields_expert_title": "Experten-Fallback",
+    "telemetry_fields_json_expert_help": "Legacy-/Expertenfeld. Wird nur benötigt, wenn keine Feldtabelle gespeichert ist oder zukünftige Tesla-Felder noch nicht in der Tabelle vorhanden sind.",
+    "telemetry_table_field_id": "Tesla-Feld",
+    "telemetry_table_default_minimum_delta": "Standard-Mindeständerung",
+    "telemetry_table_minimum_delta_unit": "Einheit"
 }

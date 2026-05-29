@@ -251,7 +251,8 @@
     "telemetryMqttPassword": "",
     "telemetryMqttTopicBase": "tesla-telemetry",
     "telemetryFieldsJson": "",
-    "telemetryFallbackPollEnabled": true
+    "telemetryFallbackPollEnabled": true,
+    "telemetryFields": []
   },
   "objects": [],
   "instanceObjects": [

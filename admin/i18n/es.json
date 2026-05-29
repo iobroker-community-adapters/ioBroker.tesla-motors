@@ -120,5 +120,12 @@
     "telemetry_server_ca_help": "Pega la CA o la cadena completa de certificados en formato PEM que se integrará en la configuración del vehículo Tesla.",
     "telemetry_mqtt_title": "Puente MQTT",
     "telemetry_fields_json_label": "Campos de Fleet Telemetry (JSON)",
-    "telemetry_fields_json_help": "Déjalo vacío para usar el ajuste predeterminado del adaptador. También puedes introducir un objeto JSON como {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} o un contenedor {\"fields\":{...}}."
+    "telemetry_fields_json_help": "Déjalo vacío para usar el ajuste predeterminado del adaptador. También puedes introducir un objeto JSON como {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}} o un contenedor {\"fields\":{...}}.",
+    "telemetry_fields_table_help": "Activa los campos que Tesla debe enviar mediante Fleet Telemetry. <b>Intervalo</b> es el tiempo mínimo entre dos cambios emitidos. <b>Cambio mínimo</b> puede quedar vacío; entonces el adaptador usa el valor predeterminado mostrado, por ejemplo <code>1 %</code> para el estado de carga o <code>100 m</code> para la ubicación. Tesla solo envía datos cuando el valor cambia y el intervalo ha transcurrido. Usa los filtros de la tabla para buscar, filtrar por categoría o mostrar campos activos.",
+    "telemetry_fields_table_help_short": "Las filas activadas se incluyen en la configuración de Fleet Telemetry. Un cambio mínimo vacío usa el valor predeterminado mostrado.",
+    "telemetry_fields_expert_title": "Fallback experto",
+    "telemetry_fields_json_expert_help": "Campo heredado/experto. Solo es necesario si aún no hay una tabla de campos guardada o para futuros campos de Tesla que no estén en la tabla.",
+    "telemetry_table_field_id": "Campo Tesla",
+    "telemetry_table_default_minimum_delta": "Cambio mínimo predeterminado",
+    "telemetry_table_minimum_delta_unit": "Unidad"
 }
