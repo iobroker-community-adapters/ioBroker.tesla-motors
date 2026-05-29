@@ -1,0 +1,611 @@
+{
+  "i18n": true,
+  "type": "tabs",
+  "items": {
+    "general": {
+      "type": "panel",
+      "label": "telemetry_tab_general",
+      "items": {
+        "_step1Header": {
+          "type": "header",
+          "text": "Step 1: Generate Key Pair",
+          "size": 5,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step1Instruction1": {
+          "type": "staticText",
+          "text": "step1_instruction1",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step1Instruction2": {
+          "type": "staticText",
+          "text": "step1_instruction2",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step1Instruction3": {
+          "type": "staticText",
+          "text": "step1_instruction3",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "publicKey": {
+          "type": "text",
+          "label": "Public Key (copy to FleetKey.net)",
+          "minRows": 4,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "privateKey": {
+          "type": "text",
+          "label": "Private Key",
+          "minRows": 4,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step2Header": {
+          "type": "header",
+          "text": "Step 2: Tesla Developer App",
+          "size": 5,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step2Instruction1": {
+          "type": "staticText",
+          "text": "step2_instruction1",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step2Instruction2": {
+          "type": "staticText",
+          "text": "step2_instruction2",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step2Instruction3": {
+          "type": "staticText",
+          "text": "step2_instruction3",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step2Instruction4": {
+          "type": "staticText",
+          "text": "step2_instruction4",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "clientId": {
+          "type": "text",
+          "label": "Client ID",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "clientSecret": {
+          "type": "password",
+          "label": "Client Secret",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "fleetApiRegion": {
+          "type": "select",
+          "label": "Region (Fallback)",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6,
+          "options": [
+            {
+              "label": "EU (Europe)",
+              "value": "eu"
+            },
+            {
+              "label": "NA (North America)",
+              "value": "na"
+            },
+            {
+              "label": "CN (China)",
+              "value": "cn"
+            }
+          ]
+        },
+        "fleetkeyDomain": {
+          "type": "text",
+          "label": "FleetKey Domain",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "_step3Header": {
+          "type": "header",
+          "text": "Step 3: Authentication",
+          "size": 5,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Instruction1": {
+          "type": "staticText",
+          "text": "step3_instruction1",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Instruction2": {
+          "type": "staticText",
+          "text": "step3_instruction2",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Instruction3": {
+          "type": "staticText",
+          "text": "step3_instruction3",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Instruction4": {
+          "type": "staticText",
+          "text": "step3_instruction4",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Warning": {
+          "type": "staticText",
+          "text": "step3_warning",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "codeUrl": {
+          "type": "text",
+          "label": "https://auth.tesla.com/void/callback?code=......",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Header": {
+          "type": "header",
+          "text": "Step 4: Install Virtual Key",
+          "size": 5,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Description": {
+          "type": "staticText",
+          "text": "step4_description",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Instruction1": {
+          "type": "staticText",
+          "text": "step4_instruction1",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Instruction2": {
+          "type": "staticText",
+          "text": "step4_instruction2",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Instruction3": {
+          "type": "staticText",
+          "text": "step4_instruction3",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_updateHeader": {
+          "type": "header",
+          "text": "Update Settings",
+          "size": 5,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "intervalNormal": {
+          "type": "number",
+          "label": "Update interval in seconds (0 = disabled, minimum 10)",
+          "min": 0,
+          "validator": "data.intervalNormal === 0 || data.intervalNormal >= 10",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "locationInterval": {
+          "type": "number",
+          "label": "Location update interval in seconds (0 = disabled)",
+          "min": 0,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "intervalDrive": {
+          "type": "number",
+          "label": "Update interval while driving in seconds (0 = disabled)",
+          "min": 0,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "_optionsHeader": {
+          "type": "header",
+          "text": "Options",
+          "size": 5,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "wakeup": {
+          "type": "checkbox",
+          "label": "Wake up vehicle for each update (prevents sleep to save battery)",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "reset": {
+          "type": "checkbox",
+          "label": "Reset Login/Token Information",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "excludeDeviceList": {
+          "type": "text",
+          "label": "Exclude device IDs (comma separated)",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "excludeElementList": {
+          "type": "text",
+          "label": "Exclude objects for update (comma separated)",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_excludeElementListExamples": {
+          "type": "staticText",
+          "text": "excludeElementList_examples",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        }
+      }
+    },
+    "telemetry": {
+      "type": "panel",
+      "label": "telemetry_tab_fields",
+      "items": {
+        "_telemetryHeader": {
+          "type": "header",
+          "text": "telemetry_bridge_title",
+          "size": 5,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryDescription": {
+          "type": "staticText",
+          "text": "telemetry_bridge_description",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "telemetryEnabled": {
+          "type": "checkbox",
+          "label": "telemetry_enabled",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryProxyUrl": {
+          "type": "text",
+          "label": "telemetry_proxy_url",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 8,
+          "lg": 8,
+          "xl": 8
+        },
+        "telemetryProxyAllowInsecure": {
+          "type": "checkbox",
+          "label": "telemetry_proxy_allow_insecure",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "xl": 4
+        },
+        "telemetryServerHost": {
+          "type": "text",
+          "label": "telemetry_server_host",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryServerPort": {
+          "type": "number",
+          "label": "telemetry_server_port",
+          "min": 1,
+          "max": 65535,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 3,
+          "lg": 3,
+          "xl": 3
+        },
+        "telemetryFallbackPollEnabled": {
+          "type": "checkbox",
+          "label": "telemetry_fallback_poll",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 3,
+          "lg": 3,
+          "xl": 3
+        },
+        "_telemetryFallbackHint": {
+          "type": "staticText",
+          "text": "telemetry_fallback_poll_hint",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "telemetryServerCaPem": {
+          "type": "text",
+          "label": "telemetry_server_ca",
+          "minRows": 6,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "telemetryMqttBroker": {
+          "type": "text",
+          "label": "telemetry_mqtt_broker",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryMqttTopicBase": {
+          "type": "text",
+          "label": "telemetry_mqtt_topic_base",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryMqttUsername": {
+          "type": "text",
+          "label": "telemetry_mqtt_username",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryMqttPassword": {
+          "type": "password",
+          "label": "telemetry_mqtt_password",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "_telemetryFieldsHeader": {
+          "type": "header",
+          "text": "telemetry_fields_title",
+          "size": 5,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryFieldsDescription": {
+          "type": "staticText",
+          "text": "telemetry_fields_description",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryFieldsNote": {
+          "type": "staticText",
+          "text": "telemetry_fields_note",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "telemetryFieldsJson": {
+          "type": "text",
+          "label": "telemetry_config_preview",
+          "help": "telemetry_config_preview_note",
+          "minRows": 10,
+          "validateJson": true,
+          "allowEmpty": true,
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryFieldsHint": {
+          "type": "staticText",
+          "text": "telemetry_config_preview_note",
+          "newLine": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        }
+      }
+    }
+  }
+}
