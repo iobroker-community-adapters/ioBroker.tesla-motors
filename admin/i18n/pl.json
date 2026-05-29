@@ -110,5 +110,15 @@
     "telemetry_table_minimum_delta": "Minimalna zmiana",
     "telemetry_minimum_delta_default_hint": "Pozostaw puste, aby użyć wartości domyślnej {value}.",
     "Update interval in seconds (0 = disabled, minimum 10)": "Interwał aktualizacji w sekundach (0 = wyłączone, minimum 10)",
-    "telemetry_fallback_poll_hint": "Używa normalnego interwału aktualizacji do okresowego odświeżania danych Fleet API. Ustaw interwał aktualizacji na 0, aby wyłączyć zaplanowaną synchronizację API."
+    "telemetry_fallback_poll_hint": "Używa normalnego interwału aktualizacji do okresowego odświeżania danych Fleet API. Ustaw interwał aktualizacji na 0, aby wyłączyć zaplanowaną synchronizację API.",
+    "Code URL": "URL kodu",
+    "Paste the complete callback URL from your browser after Tesla authentication": "Wklej pełny adres URL callback z przeglądarki po uwierzytelnieniu w Tesla",
+    "Private Key (internal)": "Klucz prywatny (wewnętrzny)",
+    "Your FleetKey subdomain (e.g. abc123.fleetkey.net)": "Twoja subdomena FleetKey (np. abc123.fleetkey.net)",
+    "telemetry_proxy_title": "Proxy vehicle-command",
+    "telemetry_server_title": "Serwer telemetrii",
+    "telemetry_server_ca_help": "Wklej CA lub pełny łańcuch certyfikatów w formacie PEM, który ma zostać osadzony w konfiguracji pojazdu Tesla.",
+    "telemetry_mqtt_title": "Most MQTT",
+    "telemetry_fields_json_label": "Pola Fleet Telemetry (JSON)",
+    "telemetry_fields_json_help": "Pozostaw puste, aby użyć domyślnego presetu adaptera. Możesz też wprowadzić obiekt JSON, np. {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}}, albo wrapper {\"fields\":{...}}."
 }

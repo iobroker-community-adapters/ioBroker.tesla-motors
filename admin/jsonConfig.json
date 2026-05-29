@@ -1,0 +1,751 @@
+{
+  "i18n": true,
+  "type": "tabs",
+  "items": {
+    "general": {
+      "type": "panel",
+      "label": "telemetry_tab_general",
+      "items": {
+        "_settingsHeader": {
+          "type": "header",
+          "label": "tesla-motors adapter settings",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step1Header": {
+          "newLine": true,
+          "type": "header",
+          "label": "Step 1: Generate Key Pair",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step1Instruction1": {
+          "type": "staticText",
+          "text": "step1_instruction1",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step1Instruction2": {
+          "type": "staticText",
+          "text": "step1_instruction2",
+          "format": "html",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step1Instruction3": {
+          "type": "staticText",
+          "text": "step1_instruction3",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_generateKeyPair": {
+          "newLine": true,
+          "type": "sendTo",
+          "label": "Generate Key Pair",
+          "command": "generateKeyPair",
+          "useNative": true,
+          "showProcess": true,
+          "variant": "contained",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 4,
+          "xl": 3
+        },
+        "publicKey": {
+          "newLine": true,
+          "type": "text",
+          "label": "Public Key (copy to FleetKey.net)",
+          "tooltip": "Copy Public Key",
+          "readOnly": true,
+          "copyToClipboard": true,
+          "minRows": 6,
+          "maxRows": 12,
+          "hidden": "!data.publicKey",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "privateKey": {
+          "type": "password",
+          "label": "Private Key (internal)",
+          "hidden": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step2Header": {
+          "newLine": true,
+          "type": "header",
+          "label": "Step 2: Tesla Developer App",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step2Instruction1": {
+          "type": "staticText",
+          "text": "step2_instruction1",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 8,
+          "xl": 8
+        },
+        "_developerPortal": {
+          "type": "staticText",
+          "text": "https://developer.tesla.com/request",
+          "href": "https://developer.tesla.com/request",
+          "target": "_blank",
+          "button": true,
+          "variant": "text",
+          "icon": "web",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 4,
+          "xl": 4
+        },
+        "_step2Instruction2": {
+          "newLine": true,
+          "type": "staticText",
+          "text": "step2_instruction2",
+          "format": "html",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step2Instruction3": {
+          "type": "staticText",
+          "text": "step2_instruction3",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step2Instruction4": {
+          "type": "staticText",
+          "text": "step2_instruction4",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "clientId": {
+          "newLine": true,
+          "type": "text",
+          "label": "Client ID",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "clientSecret": {
+          "type": "password",
+          "label": "Client Secret",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "fleetApiRegion": {
+          "newLine": true,
+          "type": "select",
+          "label": "Region (Fallback)",
+          "options": [
+            {
+              "label": "EU",
+              "value": "eu"
+            },
+            {
+              "label": "NA",
+              "value": "na"
+            },
+            {
+              "label": "CN",
+              "value": "cn"
+            }
+          ],
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 4,
+          "xl": 4
+        },
+        "fleetkeyDomain": {
+          "type": "text",
+          "label": "FleetKey Domain",
+          "help": "Your FleetKey subdomain (e.g. abc123.fleetkey.net)",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 8,
+          "xl": 8
+        },
+        "_step3Header": {
+          "newLine": true,
+          "type": "header",
+          "label": "Step 3: Authentication",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Instruction1": {
+          "type": "staticText",
+          "text": "step3_instruction1",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Instruction2": {
+          "type": "staticText",
+          "text": "step3_instruction2",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Instruction3": {
+          "type": "staticText",
+          "text": "step3_instruction3",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Instruction4": {
+          "type": "staticText",
+          "text": "step3_instruction4",
+          "format": "html",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step3Warning": {
+          "type": "staticText",
+          "text": "step3_warning",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_generateAuthLink": {
+          "newLine": true,
+          "type": "staticLink",
+          "label": "Generate Auth Link",
+          "href": "https://auth.tesla.com/oauth2/v3/authorize?client_id=${data.clientId}&redirect_uri=https%3A%2F%2Fauth.tesla.com%2Fvoid%2Fcallback&response_type=code&scope=openid%20offline_access%20vehicle_device_data%20vehicle_location%20vehicle_cmds%20vehicle_charging_cmds%20energy_device_data%20energy_cmds&state=iobroker-tesla-motors",
+          "target": "_blank",
+          "button": true,
+          "variant": "contained",
+          "icon": "auth",
+          "disabled": "!data.clientId",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 4,
+          "xl": 3
+        },
+        "codeUrl": {
+          "newLine": true,
+          "type": "text",
+          "label": "Code URL",
+          "help": "Paste the complete callback URL from your browser after Tesla authentication",
+          "minRows": 2,
+          "maxRows": 4,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Header": {
+          "newLine": true,
+          "type": "header",
+          "label": "Step 4: Install Virtual Key",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Description": {
+          "type": "staticText",
+          "text": "step4_description",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Instruction1": {
+          "type": "staticText",
+          "text": "step4_instruction1",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Instruction2": {
+          "type": "staticText",
+          "text": "step4_instruction2",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4Instruction3": {
+          "type": "staticText",
+          "text": "step4_instruction3",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_virtualKeyUrl": {
+          "newLine": true,
+          "type": "pattern",
+          "label": "step4_url_label",
+          "pattern": "https://tesla.com/_ak/${data.fleetkeyDomain}",
+          "copyToClipboard": true,
+          "hidden": "!data.fleetkeyDomain",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_step4QrHint": {
+          "type": "staticText",
+          "text": "step4_qr_hint",
+          "hidden": "!data.fleetkeyDomain",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_virtualKeyQr": {
+          "type": "qrCode",
+          "data": "https://tesla.com/_ak/${data.fleetkeyDomain}",
+          "size": 256,
+          "hidden": "!data.fleetkeyDomain",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 6,
+          "xl": 4
+        },
+        "_updateHeader": {
+          "newLine": true,
+          "type": "header",
+          "label": "Update Settings",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "intervalNormal": {
+          "type": "number",
+          "label": "Update interval in seconds (0 = disabled, minimum 10)",
+          "min": 0,
+          "step": 1,
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "xl": 4,
+          "help": "telemetry_fallback_poll_hint"
+        },
+        "locationInterval": {
+          "type": "number",
+          "label": "Location update interval in seconds (0 = disabled)",
+          "min": 0,
+          "step": 1,
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "xl": 4
+        },
+        "intervalDrive": {
+          "type": "number",
+          "label": "Update interval while driving in seconds (0 = disabled)",
+          "min": 0,
+          "step": 1,
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 4,
+          "xl": 4
+        },
+        "_optionsHeader": {
+          "newLine": true,
+          "type": "header",
+          "label": "Options",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "wakeup": {
+          "type": "checkbox",
+          "label": "Wake up vehicle for each update (prevents sleep to save battery)",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "reset": {
+          "type": "checkbox",
+          "label": "Reset Login/Token Information",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 6,
+          "xl": 6
+        },
+        "excludeDeviceList": {
+          "newLine": true,
+          "type": "text",
+          "label": "Exclude device IDs (comma separated)",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "excludeElementList": {
+          "type": "text",
+          "label": "Exclude objects for update (comma separated)",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        }
+      }
+    },
+    "telemetry": {
+      "type": "panel",
+      "label": "telemetry_bridge_title",
+      "items": {
+        "_telemetryHeader": {
+          "type": "header",
+          "label": "telemetry_bridge_title",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryDescription": {
+          "type": "staticText",
+          "text": "telemetry_bridge_description",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "telemetryEnabled": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "telemetry_enabled",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryProxyHeader": {
+          "newLine": true,
+          "type": "header",
+          "label": "telemetry_proxy_title",
+          "size": 3,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "telemetryProxyUrl": {
+          "type": "text",
+          "label": "telemetry_proxy_url",
+          "placeholder": "https://192.168.1.10:4443",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryProxyAllowInsecure": {
+          "type": "checkbox",
+          "label": "telemetry_proxy_allow_insecure",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "_telemetryServerHeader": {
+          "newLine": true,
+          "type": "header",
+          "label": "telemetry_server_title",
+          "size": 3,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "telemetryServerHost": {
+          "type": "text",
+          "label": "telemetry_server_host",
+          "placeholder": "tesla-telemetry.example.com",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryServerPort": {
+          "type": "number",
+          "label": "telemetry_server_port",
+          "min": 1,
+          "max": 65535,
+          "step": 1,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryServerCaPem": {
+          "newLine": true,
+          "type": "text",
+          "label": "telemetry_server_ca",
+          "help": "telemetry_server_ca_help",
+          "minRows": 8,
+          "maxRows": 16,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryMqttHeader": {
+          "newLine": true,
+          "type": "header",
+          "label": "telemetry_mqtt_title",
+          "size": 3,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "telemetryMqttBroker": {
+          "type": "text",
+          "label": "telemetry_mqtt_broker",
+          "placeholder": "mqtt://192.168.1.10:1883",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryMqttTopicBase": {
+          "type": "text",
+          "label": "telemetry_mqtt_topic_base",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryMqttUsername": {
+          "newLine": true,
+          "type": "text",
+          "label": "telemetry_mqtt_username",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryMqttPassword": {
+          "type": "password",
+          "label": "telemetry_mqtt_password",
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 6,
+          "xl": 6
+        },
+        "telemetryFallbackPollEnabled": {
+          "newLine": true,
+          "type": "checkbox",
+          "label": "telemetry_fallback_poll",
+          "help": "telemetry_fallback_poll_hint",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryActionsHeader": {
+          "newLine": true,
+          "type": "header",
+          "label": "telemetry_actions_title",
+          "size": 3,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_checkFleetStatus": {
+          "type": "sendTo",
+          "label": "telemetry_action_check_status",
+          "command": "checkFleetStatus",
+          "showProcess": true,
+          "variant": "outlined",
+          "icon": "search",
+          "timeout": 60000,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 3,
+          "xl": 3
+        },
+        "_configureFleetTelemetry": {
+          "type": "sendTo",
+          "label": "telemetry_action_configure",
+          "command": "configureFleetTelemetry",
+          "showProcess": true,
+          "variant": "contained",
+          "icon": "send",
+          "timeout": 120000,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 3,
+          "xl": 3
+        },
+        "_getFleetTelemetryConfig": {
+          "type": "sendTo",
+          "label": "telemetry_action_read_config",
+          "command": "getFleetTelemetryConfig",
+          "showProcess": true,
+          "variant": "outlined",
+          "icon": "info",
+          "timeout": 60000,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 3,
+          "xl": 3
+        },
+        "_deleteFleetTelemetryConfig": {
+          "type": "sendTo",
+          "label": "telemetry_action_delete_config",
+          "command": "deleteFleetTelemetryConfig",
+          "showProcess": true,
+          "variant": "outlined",
+          "icon": "warning",
+          "timeout": 60000,
+          "xs": 12,
+          "sm": 12,
+          "md": 6,
+          "lg": 3,
+          "xl": 3
+        },
+        "_telemetryFieldsHeader": {
+          "newLine": true,
+          "type": "header",
+          "label": "telemetry_fields_title",
+          "size": 3,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryFieldsDescription": {
+          "type": "staticText",
+          "text": "telemetry_fields_description",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "_telemetryFieldsNote": {
+          "type": "staticText",
+          "text": "telemetry_fields_note",
+          "format": "html",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "telemetryFieldsJson": {
+          "newLine": true,
+          "type": "jsonEditor",
+          "label": "telemetry_fields_json_label",
+          "help": "telemetry_fields_json_help",
+          "allowEmpty": true,
+          "json5": true,
+          "doNotApplyWithError": true,
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        }
+      }
+    }
+  }
+}

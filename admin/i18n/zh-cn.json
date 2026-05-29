@@ -110,5 +110,15 @@
     "telemetry_table_minimum_delta": "最小变化",
     "telemetry_minimum_delta_default_hint": "留空以使用默认值 {value}。",
     "Update interval in seconds (0 = disabled, minimum 10)": "更新间隔（以秒为单位）（0 = 禁用，最小 10）",
-    "telemetry_fallback_poll_hint": "使用正常更新间隔定期刷新 Fleet API 数据。将更新间隔设为 0 可禁用计划的 API 同步。"
+    "telemetry_fallback_poll_hint": "使用正常更新间隔定期刷新 Fleet API 数据。将更新间隔设为 0 可禁用计划的 API 同步。",
+    "Code URL": "代码 URL",
+    "Paste the complete callback URL from your browser after Tesla authentication": "在 Tesla 身份验证后，将浏览器中的完整回调 URL 粘贴到这里",
+    "Private Key (internal)": "私钥（内部）",
+    "Your FleetKey subdomain (e.g. abc123.fleetkey.net)": "你的 FleetKey 子域名（例如 abc123.fleetkey.net）",
+    "telemetry_proxy_title": "vehicle-command 代理",
+    "telemetry_server_title": "遥测服务器",
+    "telemetry_server_ca_help": "粘贴将写入 Tesla 车辆配置的 PEM 格式 CA 或完整证书链。",
+    "telemetry_mqtt_title": "MQTT 桥接",
+    "telemetry_fields_json_label": "Fleet Telemetry 字段（JSON）",
+    "telemetry_fields_json_help": "留空将使用适配器默认预设。也可以输入 JSON 对象，例如 {\"Soc\":{\"interval_seconds\":60,\"minimum_delta\":1}}，或使用 {\"fields\":{...}} 包装。"
 }
