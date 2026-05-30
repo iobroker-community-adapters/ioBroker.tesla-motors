@@ -129,5 +129,8 @@
     "telemetry_table_default_minimum_delta": "Минимальное изменение по умолчанию",
     "telemetry_table_minimum_delta_unit": "Единица",
     "telemetry_fields_grouped_help": "Каталог полей Tesla разделён на сворачиваемые группы категорий. Разворачивайте только категорию, которую хотите редактировать, чтобы страница оставалась отзывчивой даже со всеми полями Fleet Telemetry.",
-    "telemetry_fields_category_help": "Включите поля, которые нужно отправлять в этой категории. Пустые значения минимального изменения используют показанное значение адаптера по умолчанию, если оно доступно."
+    "telemetry_fields_category_help": "Включите поля, которые нужно отправлять в этой категории. Пустые значения минимального изменения используют показанное значение адаптера по умолчанию, если оно доступно.",
+    "telemetry_proxy_url_placeholder": "https://192.168.1.10:4443",
+    "telemetry_server_host_placeholder": "tesla-telemetry.example.com",
+    "telemetry_mqtt_broker_placeholder": "mqtt://192.168.1.10:1883"
 }

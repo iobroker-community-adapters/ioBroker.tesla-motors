@@ -129,5 +129,8 @@
     "telemetry_table_default_minimum_delta": "Standard-Mindeständerung",
     "telemetry_table_minimum_delta_unit": "Einheit",
     "telemetry_fields_grouped_help": "Der Tesla-Feldkatalog ist in einklappbare Kategorien aufgeteilt. Klappe nur die Kategorie auf, die du bearbeiten möchtest; dadurch bleibt die Seite auch mit allen Fleet-Telemetry-Feldern schnell bedienbar.",
-    "telemetry_fields_category_help": "Aktiviere die Felder, die in dieser Kategorie gesendet werden sollen. Leere Mindeständerungen verwenden den angezeigten Adapter-Standardwert, sofern vorhanden."
+    "telemetry_fields_category_help": "Aktiviere die Felder, die in dieser Kategorie gesendet werden sollen. Leere Mindeständerungen verwenden den angezeigten Adapter-Standardwert, sofern vorhanden.",
+    "telemetry_proxy_url_placeholder": "https://192.168.1.10:4443",
+    "telemetry_server_host_placeholder": "tesla-telemetry.example.com",
+    "telemetry_mqtt_broker_placeholder": "mqtt://192.168.1.10:1883"
 }

@@ -129,5 +129,8 @@
     "telemetry_table_default_minimum_delta": "Standaard minimale wijziging",
     "telemetry_table_minimum_delta_unit": "Eenheid",
     "telemetry_fields_grouped_help": "De Tesla-veldencatalogus is verdeeld in inklapbare categoriegroepen. Klap alleen de categorie open die je wilt bewerken, zodat de pagina snel blijft, zelfs met alle Fleet Telemetry-velden.",
-    "telemetry_fields_category_help": "Schakel de velden in die in deze categorie moeten worden verzonden. Lege minimumwijzigingen gebruiken de getoonde standaardwaarde van de adapter als die beschikbaar is."
+    "telemetry_fields_category_help": "Schakel de velden in die in deze categorie moeten worden verzonden. Lege minimumwijzigingen gebruiken de getoonde standaardwaarde van de adapter als die beschikbaar is.",
+    "telemetry_proxy_url_placeholder": "https://192.168.1.10:4443",
+    "telemetry_server_host_placeholder": "tesla-telemetry.example.com",
+    "telemetry_mqtt_broker_placeholder": "mqtt://192.168.1.10:1883"
 }
