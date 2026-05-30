@@ -74,6 +74,12 @@ Supported commands include:
 - **Media**: `media_toggle_playback`, `media_next_track`, `media_prev_track`
 - **Other**: `flash_lights`, `honk_horn`, `trigger_homelink`, `schedule_software_update`
 
+Climate-dependent seat and steering-wheel commands, including
+`remote_auto_seat_climate_request`, require active preconditioning or Climate
+Keeper. Start climate first with `auto_conditioning_start` (or enable Climate
+Keeper) before sending these commands. If climate is off, Tesla rejects the
+command with `cabin comfort remote settings not enabled`.
+
 ### Field Description
 
 - df: driver front
