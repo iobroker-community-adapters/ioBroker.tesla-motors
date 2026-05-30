@@ -99,6 +99,16 @@ command with `cabin comfort remote settings not enabled`.
 - **Session Management**: ECDH handshake per domain, epoch + counter based, stored in ioBroker state
 - **Token Refresh**: Automatic refresh before expiry
 
+### Admin UI and migration notes
+
+The adapter settings use ioBroker's `jsonConfig` admin UI. Existing adapter
+instances keep their saved configuration, but the settings page was reorganized
+to make the Fleet API setup, Fleet Telemetry bridge and field selection easier
+to maintain.
+
+When updating from an older 2.x version, please open the adapter settings once
+and verify the Fleet API credentials, virtual key domain and optional Fleet
+Telemetry settings before starting a new Fleet Telemetry configuration.
 
 ### Optional Fleet Telemetry mode (MQTT bridge)
 
@@ -182,8 +192,9 @@ the default topic base `tesla-telemetry`, the expected topics are:
 
 The admin UI contains a dedicated **Fleet Telemetry fields** tab. The Tesla
 field catalogue is split into collapsible category groups so the admin page only
-has to render/open smaller sections at a time. There you can enable/disable individual Tesla
-telemetry fields and set the update interval in seconds per field. Optional
+has to render/open smaller sections at a time. There you can enable/disable
+individual Tesla telemetry fields and set the update interval in seconds per
+field. Optional
 `minimum_delta` values can be configured for numeric fields where Tesla supports
 them. If the field is left empty and the admin UI shows a placeholder, the
 adapter uses that default when building the vehicle configuration. For `Location`,
@@ -245,10 +256,10 @@ source. The optional periodic Fleet API sync still polls the normal `vehicle_dat
 endpoints in the configured **normal update interval** so states that are not
 covered by the selected telemetry fields continue to be refreshed. Set the
 normal update interval to `0` to disable this scheduled Fleet API sync
-entirely. The comma-separated exclude list also applies to periodic API sync polling and
-can contain `vehicle_data` endpoints such as `charge_state`, `climate_state`,
-`drive_state`, `vehicle_state`, `vehicle_config`, `location_data` and dedicated
-endpoints such as `charge_history`.
+entirely. The comma-separated exclude list also applies to periodic API sync
+polling and can contain `vehicle_data` endpoints such as `charge_state`,
+`climate_state`, `drive_state`, `vehicle_state`, `vehicle_config`,
+`location_data` and dedicated endpoints such as `charge_history`.
 
 Diagnostic states are available under `tesla-motors.0.info.*`:
 
@@ -275,10 +286,17 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 
 - (ChrMaass) Add optional Fleet Telemetry MQTT bridge with configurable fields
   and intervals.
+- (ChrMaass) Migrate the adapter admin UI to ioBroker jsonConfig while keeping
+  the Fleet API and Fleet Telemetry setup workflows.
+- (ChrMaass) Add grouped Fleet Telemetry field configuration with per-field
+  intervals and optional `minimum_delta` defaults.
 - (ChrMaass) Keep configurable periodic Fleet API sync in telemetry mode and
   allow disabling scheduled polling with update interval `0`.
 - (ChrMaass) Deduplicate unchanged Fleet Telemetry state writes to avoid SQL
   history duplicate-key errors on retained MQTT values.
+- (ChrMaass) Avoid recreating deprecated vehicle `tokens` states returned by
+  Tesla API responses.
+- (ChrMaass) Fix repository checker warnings and modernize project metadata.
 - (ChrMaass) Add a step-by-step Fleet Telemetry setup guide for self-hosted
   Docker/MQTT installations.
 - (ChrMaass) Add signed-command support for automatic front-seat climate.
