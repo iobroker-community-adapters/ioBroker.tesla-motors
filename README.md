@@ -66,7 +66,7 @@ Remote commands are available under `tesla-motors.0.<VIN>.remote`.
 Supported commands include:
 
 - **Lock/Unlock**: `door_lock`, `door_unlock`
-- **Climate**: `auto_conditioning_start`, `auto_conditioning_stop`, `set_temps`, `set_preconditioning_max`, `remote_seat_heater_request`, `remote_steering_wheel_heater_request`
+- **Climate**: `auto_conditioning_start`, `auto_conditioning_stop`, `set_temps`, `set_preconditioning_max`, `remote_seat_heater_request`, `remote_auto_seat_climate_request`, `remote_steering_wheel_heater_request`
 - **Charging**: `charge_start`, `charge_stop`, `set_charge_limit`, `set_charging_amps`, `charge_port_door_open`, `charge_port_door_close`, `set_scheduled_charging`
 - **Trunk**: `actuate_trunk` (front/rear)
 - **Windows**: `window_control` (vent/close)
@@ -272,6 +272,7 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
   history duplicate-key errors on retained MQTT values.
 - (ChrMaass) Add a step-by-step Fleet Telemetry setup guide for self-hosted
   Docker/MQTT installations.
+- (ChrMaass) Add signed-command support for automatic front-seat climate.
 
 ### 2.0.3 (2026-05-12)
 

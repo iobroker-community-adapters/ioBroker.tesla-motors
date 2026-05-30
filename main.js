@@ -595,6 +595,8 @@ class Teslamotors extends utils.Adapter {
             { command: 'remote_seat_heater_request-3', type: 'number', role: 'level' },
             { command: 'remote_seat_heater_request-4', type: 'number', role: 'level' },
             { command: 'remote_seat_heater_request-5', type: 'number', role: 'level' },
+            { command: 'remote_auto_seat_climate_request-0', name: 'Auto seat climate front left', type: 'boolean', role: 'switch' },
+            { command: 'remote_auto_seat_climate_request-1', name: 'Auto seat climate front right', type: 'boolean', role: 'switch' },
             { command: 'schedule_software_update-offset_sec', type: 'number', role: 'level' },
             { command: 'auto_conditioning_start' },
             { command: 'auto_conditioning_stop' },
@@ -1632,6 +1634,8 @@ class Teslamotors extends utils.Adapter {
         return signer.steeringWheelHeater(!!value);
       case 'remote_seat_heater_request':
         return signer.seatHeater(parseInt(action) || 0, parseInt(value) || 0);
+      case 'remote_auto_seat_climate_request':
+        return signer.autoSeatClimate(parseInt(action) || 0, !!value);
       case 'set_bioweapon_mode':
         return signer.bioweaponMode(!!value);
 
