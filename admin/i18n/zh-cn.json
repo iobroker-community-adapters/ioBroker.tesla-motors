@@ -129,5 +129,8 @@
     "telemetry_table_default_minimum_delta": "默认最小变化",
     "telemetry_table_minimum_delta_unit": "单位",
     "telemetry_fields_grouped_help": "Tesla 字段目录已拆分为可折叠的类别组。只展开要编辑的类别，因此即使包含所有 Fleet Telemetry 字段，页面也能保持响应迅速。",
-    "telemetry_fields_category_help": "启用此类别中要发送的字段。最小变化值留空时，会使用显示的适配器默认值（如果可用）。"
+    "telemetry_fields_category_help": "启用此类别中要发送的字段。最小变化值留空时，会使用显示的适配器默认值（如果可用）。",
+    "telemetry_proxy_url_placeholder": "https://192.168.1.10:4443",
+    "telemetry_server_host_placeholder": "tesla-telemetry.example.com",
+    "telemetry_mqtt_broker_placeholder": "mqtt://192.168.1.10:1883"
 }

@@ -97,6 +97,10 @@ command with `cabin comfort remote settings not enabled`.
 - **Session Management**: ECDH handshake per domain, epoch + counter based, stored in ioBroker state
 - **Token Refresh**: Automatic refresh before expiry
 
+## Sentry
+
+This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers. For more details and for information how to disable error reporting, see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)!
+
 ### Optional Fleet Telemetry mode (MQTT bridge)
 
 Starting with the Fleet API migration, the adapter can also be used together
@@ -308,7 +312,9 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 
 - improve energy history data
 
-[Older changelogs can be found there](CHANGELOG_OLD.md)## License
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
+## License
 
 MIT License
 

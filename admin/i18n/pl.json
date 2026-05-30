@@ -129,5 +129,8 @@
     "telemetry_table_default_minimum_delta": "Domyślna minimalna zmiana",
     "telemetry_table_minimum_delta_unit": "Jednostka",
     "telemetry_fields_grouped_help": "Katalog pól Tesli jest podzielony na zwijane grupy kategorii. Rozwiń tylko kategorię, którą chcesz edytować, aby strona pozostała responsywna nawet ze wszystkimi polami Fleet Telemetry.",
-    "telemetry_fields_category_help": "Włącz pola, które mają być wysyłane w tej kategorii. Puste wartości minimalnej zmiany użyją wyświetlanej wartości domyślnej adaptera, jeśli jest dostępna."
+    "telemetry_fields_category_help": "Włącz pola, które mają być wysyłane w tej kategorii. Puste wartości minimalnej zmiany użyją wyświetlanej wartości domyślnej adaptera, jeśli jest dostępna.",
+    "telemetry_proxy_url_placeholder": "https://192.168.1.10:4443",
+    "telemetry_server_host_placeholder": "tesla-telemetry.example.com",
+    "telemetry_mqtt_broker_placeholder": "mqtt://192.168.1.10:1883"
 }

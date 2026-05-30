@@ -129,5 +129,8 @@
     "telemetry_table_default_minimum_delta": "Variazione minima predefinita",
     "telemetry_table_minimum_delta_unit": "Unità",
     "telemetry_fields_grouped_help": "Il catalogo dei campi Tesla è suddiviso in categorie richiudibili. Espandi solo la categoria da modificare, così la pagina resta reattiva anche con tutti i campi Fleet Telemetry.",
-    "telemetry_fields_category_help": "Abilita i campi da inviare in questa categoria. I valori vuoti della variazione minima usano il valore predefinito mostrato dell’adapter, se disponibile."
+    "telemetry_fields_category_help": "Abilita i campi da inviare in questa categoria. I valori vuoti della variazione minima usano il valore predefinito mostrato dell’adapter, se disponibile.",
+    "telemetry_proxy_url_placeholder": "https://192.168.1.10:4443",
+    "telemetry_server_host_placeholder": "tesla-telemetry.example.com",
+    "telemetry_mqtt_broker_placeholder": "mqtt://192.168.1.10:1883"
 }

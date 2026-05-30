@@ -342,7 +342,7 @@ class Teslamotors extends utils.Adapter {
       if (normalUpdateInterval > 0) {
         this.log.info('Device list received, ' + this.idArray.length + ' devices found. Starting first update (forceUpdate=true)');
         await this.updateDevices(true);
-        this.updateInterval = setInterval(async () => {
+        this.updateInterval = this.setInterval(async () => {
           await this.updateDevices();
         }, normalUpdateInterval * 1000);
         this.log.info('Update interval set to ' + normalUpdateInterval + 's');
@@ -355,7 +355,7 @@ class Teslamotors extends utils.Adapter {
         this.log.info('Location interval skipped because regular update polling is disabled (intervalNormal=0)');
       } else if (this.config.locationInterval > 10 && this.config.locationInterval < normalUpdateInterval) {
         this.updateDevices(false, true);
-        this.locationInterval = setInterval(async () => {
+        this.locationInterval = this.setInterval(async () => {
           await this.updateDevices(false, true);
         }, this.config.locationInterval * 1000);
         this.log.info('Location interval set to ' + this.config.locationInterval + 's (faster than normal interval)');
@@ -365,7 +365,7 @@ class Teslamotors extends utils.Adapter {
         this.log.info('Location interval is less than 10s. Skip location update');
       }
       const intervalTime = this.session.expires_in ? (this.session.expires_in - 200) * 1000 : 3000 * 1000;
-      this.refreshTokenInterval = setInterval(() => {
+      this.refreshTokenInterval = this.setInterval(() => {
         this.refreshToken();
       }, intervalTime);
     }
@@ -1156,13 +1156,13 @@ class Teslamotors extends utils.Adapter {
       if (data.drive_state) {
         if (data.drive_state.shift_state && this.config.intervalDrive > 0) {
           if (!this.updateIntervalDrive[vin]) {
-            this.updateIntervalDrive[vin] = setInterval(async () => {
+            this.updateIntervalDrive[vin] = this.setInterval(async () => {
               this.updateDrive(vin);
             }, this.config.intervalDrive * 1000);
           }
         } else {
           if (this.updateIntervalDrive[vin]) {
-            clearInterval(this.updateIntervalDrive[vin]);
+            this.clearInterval(this.updateIntervalDrive[vin]);
             this.updateIntervalDrive[vin] = null;
           }
         }
@@ -1432,12 +1432,12 @@ class Teslamotors extends utils.Adapter {
           this.session = {};
           error.response && this.log.error(JSON.stringify(error.response.data));
           this.log.error('Start relogin in 1min');
-          this.reLoginTimeout = setTimeout(() => {
+          this.reLoginTimeout = this.setTimeout(() => {
             this.login();
           }, 1000 * 60 * 1);
         } else if (firstStart) {
           this.log.error('No connection to tesla server restart adapter in 1min');
-          this.reLoginTimeout = setTimeout(() => {
+          this.reLoginTimeout = this.setTimeout(() => {
             this.restart();
           }, 1000 * 60 * 1);
         }
@@ -1450,7 +1450,7 @@ class Teslamotors extends utils.Adapter {
   scheduleTokenRefresh() {
     if (this.refreshTokenTimeout) return;
     this.log.info('Received 401 error. Refresh Token in 30 seconds');
-    this.refreshTokenTimeout = setTimeout(() => {
+    this.refreshTokenTimeout = this.setTimeout(() => {
       this.refreshTokenTimeout = null;
       this.log.info('Start refresh token');
       this.refreshToken();
@@ -1708,7 +1708,7 @@ class Teslamotors extends utils.Adapter {
   }
 
   sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => this.setTimeout(resolve, ms));
   }
 
   getDate() {
@@ -1769,14 +1769,14 @@ class Teslamotors extends utils.Adapter {
     try {
       this.setState('info.connection', false, true);
       Object.keys(this.updateIntervalDrive).forEach((element) => {
-        clearInterval(this.updateIntervalDrive[element]);
+        this.clearInterval(this.updateIntervalDrive[element]);
       });
-      this.updateInterval && clearInterval(this.updateInterval);
-      this.refreshTimeout && clearTimeout(this.refreshTimeout);
-      this.reLoginTimeout && clearTimeout(this.reLoginTimeout);
-      this.refreshTokenTimeout && clearTimeout(this.refreshTokenTimeout);
-      this.locationInterval && clearInterval(this.locationInterval);
-      this.refreshTokenInterval && clearInterval(this.refreshTokenInterval);
+      this.updateInterval && this.clearInterval(this.updateInterval);
+      this.refreshTimeout && this.clearTimeout(this.refreshTimeout);
+      this.reLoginTimeout && this.clearTimeout(this.reLoginTimeout);
+      this.refreshTokenTimeout && this.clearTimeout(this.refreshTokenTimeout);
+      this.locationInterval && this.clearInterval(this.locationInterval);
+      this.refreshTokenInterval && this.clearInterval(this.refreshTokenInterval);
       if (this.telemetryManager) {
         await this.telemetryManager.stop();
       }
@@ -1841,8 +1841,8 @@ class Teslamotors extends utils.Adapter {
           }
         }
         await this.sendCommand(productId, command, action, state.val, nonVehicle).catch(() => {});
-        clearTimeout(this.refreshTimeout);
-        this.refreshTimeout = setTimeout(async () => {
+        this.clearTimeout(this.refreshTimeout);
+        this.refreshTimeout = this.setTimeout(async () => {
           await this.updateDevices(true);
         }, 5 * 1000);
       } else {

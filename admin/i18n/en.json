@@ -129,5 +129,8 @@
     "telemetry_table_default_minimum_delta": "Default minimum change",
     "telemetry_table_minimum_delta_unit": "Unit",
     "telemetry_fields_grouped_help": "The Tesla field catalogue is split into collapsible category groups. Expand only the category you want to edit, so the page remains responsive even with all Fleet Telemetry fields.",
-    "telemetry_fields_category_help": "Enable the fields you want to send in this category. Empty minimum-delta values use the displayed adapter default where available."
+    "telemetry_fields_category_help": "Enable the fields you want to send in this category. Empty minimum-delta values use the displayed adapter default where available.",
+    "telemetry_proxy_url_placeholder": "https://192.168.1.10:4443",
+    "telemetry_server_host_placeholder": "tesla-telemetry.example.com",
+    "telemetry_mqtt_broker_placeholder": "mqtt://192.168.1.10:1883"
 }
