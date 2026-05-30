@@ -95,8 +95,9 @@ class Teslamotors extends utils.Adapter {
    * @returns {boolean}
    */
   isTelemetryApiSyncEnabled() {
-    if (this.config.telemetryApiSyncEnabled !== undefined) {
-      return !!this.config.telemetryApiSyncEnabled;
+    const config = /** @type {Record<string, any>} */ (this.config);
+    if (config.telemetryApiSyncEnabled !== undefined) {
+      return !!config.telemetryApiSyncEnabled;
     }
     return this.config.telemetryFallbackPollEnabled !== false;
   }
@@ -265,7 +266,7 @@ class Teslamotors extends utils.Adapter {
     }
 
     const normalUpdateInterval = this.getNormalUpdateIntervalSeconds();
-    this.adapterConfig = 'system.adapter.' + this.name + '.' + this.instance;
+    const adapterConfigId = 'system.adapter.' + this.name + '.' + this.instance;
 
     // Create state for fleet session storage (avoids adapter restart on save)
     await this.setObjectNotExistsAsync('info.fleetSession', {
@@ -275,12 +276,12 @@ class Teslamotors extends utils.Adapter {
     });
 
     if (this.config.reset) {
-      const obj = await this.getForeignObjectAsync(this.adapterConfig);
+      const obj = await this.getForeignObjectAsync(adapterConfigId);
       if (obj) {
         obj.native.reset = false;
         obj.native.codeUrl = '';
         obj.native.fleetSession = {};
-        await this.setForeignObjectAsync(this.adapterConfig, obj);
+        await this.setForeignObjectAsync(adapterConfigId, obj);
         await this.setStateAsync('info.fleetSession', '', true);
         this.log.info('Login Token resetted');
         this.terminate();
@@ -291,7 +292,7 @@ class Teslamotors extends utils.Adapter {
     const sessionState = await this.getStateAsync('info.fleetSession');
     if (sessionState && sessionState.val) {
       try {
-        this.session = JSON.parse(sessionState.val);
+        this.session = JSON.parse(String(sessionState.val));
         this.log.info('Fleet session loaded');
         this.log.info('Refresh session');
         await this.refreshToken(true);
@@ -300,7 +301,7 @@ class Teslamotors extends utils.Adapter {
       }
     } else {
       // Migration: load from native config (old storage)
-      const obj = await this.getForeignObjectAsync(this.adapterConfig);
+      const obj = await this.getForeignObjectAsync(adapterConfigId);
       if (obj && obj.native.fleetSession && obj.native.fleetSession.refresh_token) {
         this.session = obj.native.fleetSession;
         this.log.info('Fleet session migrated from native config');
@@ -623,7 +624,7 @@ class Teslamotors extends utils.Adapter {
               type: 'state',
               common: {
                 name: remote.name || '',
-                type: remote.type || 'boolean',
+                type: /** @type {ioBroker.CommonType} */ (remote.type || 'boolean'),
                 role: remote.role || 'button',
                 write: true,
                 read: true,
@@ -1450,7 +1451,7 @@ class Teslamotors extends utils.Adapter {
 
     if (
       (shift_state && shift_state.val !== null && shift_state.val !== 'P') ||
-      (chargeState && !['Disconnected', 'Complete', 'NoPower', 'Stopped'].includes(chargeState.val))
+      (chargeState && !['Disconnected', 'Complete', 'NoPower', 'Stopped'].includes(String(chargeState.val)))
     ) {
       if (shift_state && chargeState) {
         this.log.debug(
@@ -1838,8 +1839,8 @@ class Teslamotors extends utils.Adapter {
         const idArray = id.split('.');
         const stateName = idArray[idArray.length - 1];
         const vin = id.split('.')[2];
-        let value = true;
-        if (resultDict[stateName] && isNaN(state.val)) {
+        let value = /** @type {ioBroker.StateValue} */ (true);
+        if (resultDict[stateName] && Number.isNaN(Number(state.val))) {
           if (
             !state.val ||
             state.val === 'INVALID' ||
