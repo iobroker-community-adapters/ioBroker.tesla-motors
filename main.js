@@ -11,6 +11,11 @@ const {
   isFleetTelemetryAdminCommand,
 } = require('./lib/fleetTelemetryConfig');
 const { removeVehicleTokens } = require('./lib/teslaResponse');
+const {
+  buildFleetVehicleCommandPayload,
+  getVehicleCommandProtocolRequiredFromProduct,
+  isVehicleCommandProtocolUnsupportedError,
+} = require('./lib/vehicleCommand');
 
 // Fleet API regional endpoints (like HA const.py:17-18)
 const FLEET_API_REGIONS = {
@@ -49,6 +54,7 @@ class Teslamotors extends utils.Adapter {
     this.vin2id = {};
     this.id2vin = {};
     this.commandSigners = {}; // Per-VIN TeslaCommandSigner instances
+    this.vehicleCommandProtocolRequired = {}; // Per-VIN command signing requirement
 
     // Region and scopes derived from JWT (like HA __init__.py:81-84)
     this.region = null;
@@ -468,6 +474,10 @@ class Teslamotors extends utils.Adapter {
 
           if (device.vehicle_id) {
             // Fleet API uses VIN directly as identifier
+            const vehicleCommandProtocolRequired = getVehicleCommandProtocolRequiredFromProduct(device);
+            if (vehicleCommandProtocolRequired !== undefined) {
+              this.vehicleCommandProtocolRequired[id] = vehicleCommandProtocolRequired;
+            }
             this.vin2id[id] = id;
             this.id2vin[id] = id;
             this.idArray.push({
@@ -475,7 +485,8 @@ class Teslamotors extends utils.Adapter {
               type: 'vehicle',
               vehicle_id: device.vehicle_id,
               vin: id,
-              signing: device.command_signing === 'required',
+              signing: vehicleCommandProtocolRequired === true,
+              vehicleCommandProtocolRequired,
             });
 
             // Initialize command signer for this vehicle
@@ -1502,9 +1513,85 @@ class Teslamotors extends utils.Adapter {
   }
 
   /**
+   * Returns true when the adapter should use the signed Vehicle Command
+   * Protocol for a vehicle command.
+   *
+   * Tesla reports the requirement via `/products.command_signing`. Pre-2021
+   * Model S/X vehicles and some fleet/business vehicles can still use the
+   * normal Fleet command endpoints and may fail when a signed command is sent.
+   *
+   * @param {string} vin
+   * @returns {boolean}
+   */
+  shouldUseSignedVehicleCommand(vin) {
+    if (Object.prototype.hasOwnProperty.call(this.vehicleCommandProtocolRequired, vin)) {
+      return this.vehicleCommandProtocolRequired[vin] !== false;
+    }
+
+    const product = this.idArray.find((entry) => entry.vin === vin || entry.id === vin);
+    if (product && product.vehicleCommandProtocolRequired !== undefined) {
+      return product.vehicleCommandProtocolRequired !== false;
+    }
+
+    // Keep the modern/safe path as default when Tesla did not report a clear
+    // value. If the vehicle rejects signed commands as unsupported, sendCommand
+    // falls back to the direct Fleet command endpoint once and remembers it.
+    return true;
+  }
+
+  /**
+   * Sends a vehicle command through the normal Fleet command endpoint without
+   * wrapping it in a Vehicle Command Protocol message.
+   *
+   * This path is required for older Model S/X vehicles which do not support the
+   * signed command protocol, and for vehicles where Tesla reports command
+   * signing as not required.
+   *
+   * @param {string} vin
+   * @param {string} command
+   * @param {string | undefined} action
+   * @param {any} value
+   * @returns {Promise<any>}
+   */
+  async sendFleetVehicleCommand(vin, command, action, value) {
+    const url = this.getFleetApiBaseUrl() + '/api/1/vehicles/' + vin + '/command/' + command;
+    const data = await buildFleetVehicleCommandPayload(command, action, value, {
+      password: /** @type {Record<string, any>} */ (this.config).password,
+      readState: (stateId) => this.getStateAsync(vin + '.' + stateId),
+    });
+
+    this.log.info(`Sending Fleet command without Vehicle Command Protocol: ${command}${action ? '-' + action : ''} to ${vin}`);
+    this.log.debug(url);
+    this.log.debug(JSON.stringify(data));
+
+    return await this.requestClient({
+      method: 'post',
+      url: url,
+      headers: this.getFleetHeaders(),
+      data: data,
+    })
+      .then((res) => {
+        removeVehicleTokens(res.data && res.data.response);
+        this.log.info(JSON.stringify(res.data));
+        return res.data.response;
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          this.scheduleTokenRefresh();
+          return;
+        }
+        this.log.error(`Fleet command ${command} failed for ${vin}`);
+        this.log.error(error);
+        error.response && this.log.error(JSON.stringify(error.response.data));
+        throw error;
+      });
+  }
+
+  /**
    * Send command via Fleet API.
    * Vehicle wake_up: No signing needed.
-   * Other vehicle commands: Signed via Vehicle Command Protocol.
+   * Modern vehicle commands: Signed via Vehicle Command Protocol.
+   * Legacy/fleet vehicle commands: normal Fleet command endpoint.
    * Energy commands: Fleet API.
    */
   async sendCommand(id, command, action, value, nonVehicle) {
@@ -1560,6 +1647,10 @@ class Teslamotors extends utils.Adapter {
         });
     }
 
+    if (!this.shouldUseSignedVehicleCommand(vin)) {
+      return await this.sendFleetVehicleCommand(vin, command, action, value).catch(() => null);
+    }
+
     // All other vehicle commands require signing
     const signer = this.commandSigners[vin];
     if (!signer) {
@@ -1573,7 +1664,13 @@ class Teslamotors extends utils.Adapter {
       this.log.info(`Command ${command} successful for ${vin}`);
       return result;
     } catch (/** @type {any} */ error) {
-      if (error.message && error.message.includes('Key not on vehicle whitelist')) {
+      if (isVehicleCommandProtocolUnsupportedError(error)) {
+        this.vehicleCommandProtocolRequired[vin] = false;
+        this.log.warn(
+          `Vehicle ${vin} does not support the Tesla Vehicle Command Protocol. Retrying ${command} via the normal Fleet command endpoint.`,
+        );
+        return await this.sendFleetVehicleCommand(vin, command, action, value).catch(() => null);
+      } else if (error.message && error.message.includes('Key not on vehicle whitelist')) {
         this.log.error(`Virtual Key not installed on vehicle ${vin}. Open https://tesla.com/_ak/${this.config.fleetkeyDomain || 'your-domain'} on your phone to install it.`);
       } else if (error.message && error.message.includes('401')) {
         this.scheduleTokenRefresh();
