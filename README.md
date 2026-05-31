@@ -18,6 +18,8 @@ All Tesla vehicles and Powerwalls from the Tesla App are displayed and updated v
 
 Vehicle commands (lock, unlock, climate, charging, etc.) are supported for all models including post-2021 vehicles that require **end-to-end command signing** (Vehicle Command Protocol).
 
+This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers. For more details and for information on how to disable the error reporting, see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)! Sentry reporting is used starting with js-controller 3.0.
+
 ### Requirements
 
 - Tesla account with vehicles or energy products
@@ -97,9 +99,6 @@ command with `cabin comfort remote settings not enabled`.
 - **Session Management**: ECDH handshake per domain, epoch + counter based, stored in ioBroker state
 - **Token Refresh**: Automatic refresh before expiry
 
-## Sentry
-
-This adapter uses Sentry libraries to automatically report exceptions and code errors to the developers. For more details and for information how to disable error reporting, see [Sentry-Plugin Documentation](https://github.com/ioBroker/plugin-sentry#plugin-sentry)!
 
 ### Optional Fleet Telemetry mode (MQTT bridge)
 
