@@ -1,0 +1,61 @@
+name: Clear wait-for-feedback on external response
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+
+jobs:
+  clear-label:
+    name: Remove wait-for-feedback label
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove label after external response
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const labelName = 'wait for feedback';
+            const maintainerAssociations = new Set(['OWNER', 'MEMBER', 'COLLABORATOR']);
+            const comment = context.payload.comment;
+            const issue = context.payload.issue;
+
+            if (!comment || !issue) {
+              core.info('No issue or comment payload found. Nothing to do.');
+              return;
+            }
+
+            if (comment.user?.type === 'Bot') {
+              core.info(`Comment author ${comment.user.login} is a bot. Keeping label unchanged.`);
+              return;
+            }
+
+            if (maintainerAssociations.has(comment.author_association)) {
+              core.info(
+                `Comment author ${comment.user.login} has association ${comment.author_association}. Keeping label unchanged.`,
+              );
+              return;
+            }
+
+            const hasWaitForFeedbackLabel = (issue.labels || []).some((label) => label.name === labelName);
+            if (!hasWaitForFeedbackLabel) {
+              core.info(`Issue/PR #${issue.number} does not have label "${labelName}". Nothing to do.`);
+              return;
+            }
+
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                name: labelName,
+              });
+              core.info(`Removed label "${labelName}" from issue/PR #${issue.number} after external response.`);
+            } catch (error) {
+              if (error.status === 404) {
+                core.info(`Label "${labelName}" was already absent from issue/PR #${issue.number}.`);
+                return;
+              }
+              throw error;
+            }
