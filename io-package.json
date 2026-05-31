@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "news": {
+      "3.0.1": {
+        "en": "Fix the Sentry README notice to match the repository checker standard wording.",
+        "de": "Sentry-Hinweis im README an die Standardformulierung des Repository-Checkers angepasst.",
+        "ru": "Исправлено уведомление Sentry в README, чтобы оно соответствовало стандартной формулировке проверки репозитория.",
+        "pt": "Corrige o aviso do Sentry no README para corresponder ao texto padrão do verificador do repositório.",
+        "nl": "Sentry-melding in de README aangepast aan de standaardtekst van de repository-checker.",
+        "fr": "Corrige l’avis Sentry dans le README afin de correspondre au libellé standard du vérificateur de dépôt.",
+        "it": "Corregge l’avviso Sentry nel README in modo che corrisponda alla formulazione standard del repository checker.",
+        "es": "Corrige el aviso de Sentry en el README para que coincida con la redacción estándar del comprobador del repositorio.",
+        "pl": "Poprawiono informację Sentry w README, aby odpowiadała standardowej treści sprawdzarki repozytorium.",
+        "uk": "Виправлено повідомлення Sentry у README, щоб воно відповідало стандартному формулюванню перевірки репозиторію.",
+        "zh-cn": "修正 README 中的 Sentry 提示，使其符合仓库检查器的标准措辞。"
+      },
       "3.0.0": {
         "en": "* Add optional Fleet Telemetry MQTT bridge with configurable fields and update intervals.\n* Migrate the adapter admin UI to ioBroker jsonConfig and add grouped Fleet Telemetry field configuration.\n* Keep configurable periodic Fleet API sync in telemetry mode and allow disabling scheduled polling with update interval `0`.\n* Deduplicate unchanged Fleet Telemetry state writes to avoid SQL history duplicate-key errors on retained MQTT values.\n* Avoid recreating deprecated vehicle `tokens` states returned by Tesla API responses.\n* Fix repository checker warnings, modernize project metadata and add a step-by-step Fleet Telemetry setup guide.\n* Add signed-command support for automatic front-seat climate.",
         "de": "* Optionale Fleet-Telemetry-MQTT-Bridge mit konfigurierbaren Feldern und Aktualisierungsintervallen hinzugefügt.\n* Adapter-Admin-Oberfläche auf ioBroker-jsonConfig migriert und gruppierte Fleet-Telemetry-Feldkonfiguration ergänzt.\n* Konfigurierbarer periodischer Fleet-API-Abgleich im Telemetrie-Modus bleibt erhalten und kann mit Update-Intervall `0` deaktiviert werden.\n* Unveränderte Fleet-Telemetry-State-Writes werden dedupliziert, um SQL-History-Duplicate-Key-Fehler bei retained MQTT-Werten zu vermeiden.\n* Veraltete von der Tesla-API gelieferte Fahrzeug-`tokens`-States werden nicht mehr neu erzeugt.\n* Repository-Checker-Hinweise bereinigt, Projektmetadaten modernisiert und eine Schritt-für-Schritt-Anleitung für Fleet Telemetry ergänzt.\n* Signed-Command-Unterstützung für automatische Vordersitz-Klimatisierung hinzugefügt.",
@@ -80,19 +93,6 @@
         "pl": "poprawa danych dotyczących historii energetycznej",
         "uk": "поліпшення даних історії енергії",
         "zh-cn": "改进能源历史数据"
-      },
-      "1.4.2": {
-        "en": "fix km states are not refreshed",
-        "de": "fix km State wurden nicht aktualisiert",
-        "ru": "исправление состояния км не обновляется",
-        "pt": "fix km estados não são atualizados",
-        "nl": "er is geen verfrissing",
-        "fr": "les états de km fixes ne sont pas rafraîchis",
-        "it": "fix km stati non sono rinfrescati",
-        "es": "estados de km fijados no se refrescan",
-        "pl": "planowanie km nie jest odświeżone",
-        "uk": "не освіжаючі кмні стани",
-        "zh-cn": "fix公里的州没有被驳斥。"
       }
     },
     "titleLang": {

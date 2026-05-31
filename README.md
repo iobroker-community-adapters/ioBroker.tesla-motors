@@ -282,6 +282,10 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 -->
 
 ## Changelog
+### 3.0.1 (2026-05-31)
+
+- (ChrMaass) Fix the Sentry README notice to match the repository checker standard wording.
+
 ### 3.0.0 (2026-05-31)
 
 - (ChrMaass) Add optional Fleet Telemetry MQTT bridge with configurable fields
@@ -320,10 +324,6 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 - (mcm1957) Adapter requires node.js >= 20, js-controller >= 6.0.11 and admin >= 6.17.14 now.
 - (TA2k) powerwall backup history has been fixed
 - (TA2k) Dependencies have been updated.
-
-### 1.4.5 (2024-04-19)
-
-- cleaned up token folder to reduce state objects
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

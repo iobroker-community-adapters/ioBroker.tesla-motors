@@ -1,4 +1,8 @@
 # Older changes
+## 1.4.5 (2024-04-19)
+
+- cleaned up token folder to reduce state objects
+
 ## 1.4.4 (2024-04-10)
 
 - improve energy history data
