@@ -16,7 +16,7 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
-            const labelName = 'wait for feedback';
+            const labelName = 'question';
             const maintainerAssociations = new Set(['OWNER', 'MEMBER', 'COLLABORATOR']);
             const comment = context.payload.comment;
             const issue = context.payload.issue;
