@@ -282,7 +282,7 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.0.0 (2026-05-31)
 
 - (ChrMaass) Add optional Fleet Telemetry MQTT bridge with configurable fields
   and intervals.
@@ -324,10 +324,6 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 ### 1.4.5 (2024-04-19)
 
 - cleaned up token folder to reduce state objects
-
-### 1.4.4 (2024-04-10)
-
-- improve energy history data
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

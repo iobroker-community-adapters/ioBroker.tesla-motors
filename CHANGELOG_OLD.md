@@ -1,4 +1,8 @@
 # Older changes
+## 1.4.4 (2024-04-10)
+
+- improve energy history data
+
 ## 1.4.3 (2024-04-10)
 
 - fix for too many state in the powerwall energy history
