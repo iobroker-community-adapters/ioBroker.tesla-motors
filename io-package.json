@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "3.0.1",
+    "version": "3.1.0",
     "news": {
+      "3.1.0": {
+        "en": "Support the normal Fleet command endpoint for vehicles that do not support or do not require the Tesla Vehicle Command Protocol.",
+        "de": "Normalen Fleet-Command-Endpunkt für Fahrzeuge unterstützen, die das Tesla Vehicle Command Protocol nicht unterstützen oder nicht benötigen.",
+        "ru": "Поддержка обычного конечного пункта Fleet-команд для автомобилей, которые не поддерживают или не требуют Tesla Vehicle Command Protocol.",
+        "pt": "Suporte ao endpoint normal de comandos Fleet para veículos que não suportam ou não exigem o Tesla Vehicle Command Protocol.",
+        "nl": "Ondersteuning voor het normale Fleet-command-eindpunt voor voertuigen die het Tesla Vehicle Command Protocol niet ondersteunen of niet nodig hebben.",
+        "fr": "Prise en charge du point de terminaison Fleet Command normal pour les véhicules qui ne prennent pas en charge ou ne nécessitent pas le Tesla Vehicle Command Protocol.",
+        "it": "Supporto dell’endpoint Fleet Command normale per i veicoli che non supportano o non richiedono il Tesla Vehicle Command Protocol.",
+        "es": "Compatibilidad con el endpoint normal de comandos Fleet para vehículos que no admiten o no requieren el Tesla Vehicle Command Protocol.",
+        "pl": "Obsługa zwykłego punktu końcowego poleceń Fleet dla pojazdów, które nie obsługują albo nie wymagają Tesla Vehicle Command Protocol.",
+        "uk": "Підтримка звичайної кінцевої точки Fleet-команд для автомобілів, які не підтримують або не потребують Tesla Vehicle Command Protocol.",
+        "zh-cn": "支持普通 Fleet 命令端点，用于不支持或不需要 Tesla Vehicle Command Protocol 的车辆。"
+      },
       "3.0.1": {
         "en": "Fix the Sentry README notice to match the repository checker standard wording.",
         "de": "Sentry-Hinweis im README an die Standardformulierung des Repository-Checkers angepasst.",
@@ -80,19 +93,6 @@
         "pl": "wyczyszczone folder token w celu ograniczenia obiektów stanu",
         "uk": "очистити папку token, щоб зменшити об'єкти стану",
         "zh-cn": "清除令牌文件夹以减少状态对象"
-      },
-      "1.4.4": {
-        "en": "improve energy history data",
-        "de": "energy history daten verbessert",
-        "ru": "улучшение данных истории энергетики",
-        "pt": "melhorar os dados do histórico de energia",
-        "nl": "gegevens over de energiegeschiedenis verbeteren",
-        "fr": "améliorer les données d'historique énergétique",
-        "it": "migliorare i dati sulla storia dell'energia",
-        "es": "mejorar los datos del historial energético",
-        "pl": "poprawa danych dotyczących historii energetycznej",
-        "uk": "поліпшення даних історії енергії",
-        "zh-cn": "改进能源历史数据"
       }
     },
     "titleLang": {

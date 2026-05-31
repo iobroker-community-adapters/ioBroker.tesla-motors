@@ -282,6 +282,10 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 -->
 
 ## Changelog
+### 3.1.0 (2026-05-31)
+
+- (ChrMaass) Support the normal Fleet command endpoint for vehicles that do not support or do not require the Tesla Vehicle Command Protocol.
+
 ### 3.0.1 (2026-05-31)
 
 - (ChrMaass) Fix the Sentry README notice to match the repository checker standard wording.
@@ -318,12 +322,6 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 - (TA2k) Add regional endpoint detection (EU/NA/CN) from JWT token
 - (TA2k) Store session in ioBroker state to avoid restart loops
 - (copilot) Adapter requires admin >= 7.7.22 now
-
-### 1.5.0 (2025-12-28)
-
-- (mcm1957) Adapter requires node.js >= 20, js-controller >= 6.0.11 and admin >= 6.17.14 now.
-- (TA2k) powerwall backup history has been fixed
-- (TA2k) Dependencies have been updated.
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

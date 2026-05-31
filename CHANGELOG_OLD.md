@@ -1,4 +1,10 @@
 # Older changes
+## 1.5.0 (2025-12-28)
+
+- (mcm1957) Adapter requires node.js >= 20, js-controller >= 6.0.11 and admin >= 6.17.14 now.
+- (TA2k) powerwall backup history has been fixed
+- (TA2k) Dependencies have been updated.
+
 ## 1.4.5 (2024-04-19)
 
 - cleaned up token folder to reduce state objects
