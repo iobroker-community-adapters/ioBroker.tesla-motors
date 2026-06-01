@@ -1,4 +1,9 @@
 # Older changes
+## 2.0.3 (2026-05-12)
+
+- instruction text improved
+- (copilot) Adapter requires node.js >= 22 now
+
 ## 2.0.2 (2026-04-17)
 
 - (TA2k) Migrate to Tesla Fleet API with OAuth2

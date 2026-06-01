@@ -1048,7 +1048,7 @@ class Teslamotors extends utils.Adapter {
         return;
       }
       if (error.response && error.response.status === 401) {
-        this.log.info(vin + ' 401 on state check, scheduling token refresh');
+        this.log.debug(vin + ' 401 on state check, scheduling token refresh');
         this.scheduleTokenRefresh();
         await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
           vin,
@@ -1060,7 +1060,7 @@ class Teslamotors extends utils.Adapter {
         return;
       }
       if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
-        this.log.info(vin + ' server error on state check: ' + error.response.status);
+        this.log.debug(vin + ' server error on state check: ' + error.response.status);
         await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
           vin,
           endpoint: 'vehicle_data',
@@ -1077,16 +1077,16 @@ class Teslamotors extends utils.Adapter {
       return;
     }
 
-    this.log.info(vin + ' vehicle state: ' + state);
+    this.log.debug(vin + ' vehicle state: ' + state);
 
     // If not online, skip expensive call (like HA coordinator.py:106-107)
     if (state !== 'online') {
       if (forceUpdate || this.config.wakeup) {
         // Wake up on first poll after start (forceUpdate) or if wakeup is configured
-        this.log.info(vin + ' is ' + state + ', waking up (forceUpdate=' + forceUpdate + ', wakeup=' + this.config.wakeup + ')');
+        this.log.debug(vin + ' is ' + state + ', waking up (forceUpdate=' + forceUpdate + ', wakeup=' + this.config.wakeup + ')');
         await this.wakeUpVehicle(vin, headers, fleetBase);
       } else {
-        this.log.info(vin + ' is ' + state + ', skip vehicle_data call (wakeup=' + this.config.wakeup + ')');
+        this.log.debug(vin + ' is ' + state + ', skip vehicle_data call (wakeup=' + this.config.wakeup + ')');
         this.lastStates[vin] = state;
         await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
           vin,
@@ -1109,7 +1109,7 @@ class Teslamotors extends utils.Adapter {
           this.sleepTimes[vin] = Date.now();
         }
         if (Date.now() - this.sleepTimes[vin] >= 900000) {
-          this.log.info(vin + ' wait for sleep was not successful after 15min, resuming updates');
+          this.log.debug(vin + ' wait for sleep was not successful after 15min, resuming updates');
           this.sleepTimes[vin] = null;
         } else {
           this.log.debug(vin + ' skip update, waiting for sleep (' + Math.round((Date.now() - this.sleepTimes[vin]) / 1000) + 's)');
@@ -1141,7 +1141,7 @@ class Teslamotors extends utils.Adapter {
     }
 
     if (endpoints.length === 0) {
-      this.log.info(vin + ' no vehicle_data endpoints enabled after exclude list, skip vehicle_data call');
+      this.log.debug(vin + ' no vehicle_data endpoints enabled after exclude list, skip vehicle_data call');
       await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
         vin,
         endpoint: 'vehicle_data',
@@ -1155,11 +1155,11 @@ class Teslamotors extends utils.Adapter {
     // Vehicle data call (quota-consuming)
     try {
       const url = fleetBase + '/api/1/vehicles/' + vin + '/vehicle_data?endpoints=' + endpoints.join('%3B');
-      this.log.info(vin + ' fetching vehicle_data: ' + endpoints.join(';'));
+      this.log.debug(vin + ' fetching vehicle_data: ' + endpoints.join(';'));
       const res = await this.requestClient({ method: 'get', url: url, headers: headers });
 
       if (!res.data || !res.data.response) {
-        this.log.info(vin + ' vehicle_data response is empty or malformed');
+        this.log.warn(vin + ' vehicle_data response is empty or malformed');
         this.log.debug(vin + ' raw response: ' + JSON.stringify(res.data));
         await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
           vin,
@@ -1174,14 +1174,14 @@ class Teslamotors extends utils.Adapter {
 
       const data = res.data.response;
       const dataKeys = Object.keys(data);
-      this.log.info(vin + ' vehicle_data received, keys: ' + dataKeys.join(', '));
+      this.log.debug(vin + ' vehicle_data received, keys: ' + dataKeys.join(', '));
 
       // Log which endpoints returned data vs null/error
       for (const ep of VEHICLE_ENDPOINTS) {
         if (data[ep] === null || data[ep] === undefined) {
           this.log.debug(vin + ' endpoint ' + ep + ' is null/missing');
         } else if (data[ep] && data[ep].error) {
-          this.log.info(vin + ' endpoint ' + ep + ' returned error: ' + data[ep].error);
+          this.log.warn(vin + ' endpoint ' + ep + ' returned error: ' + data[ep].error);
         } else if (typeof data[ep] === 'object') {
           this.log.debug(vin + ' endpoint ' + ep + ' has ' + Object.keys(data[ep]).length + ' fields');
         }
@@ -1250,7 +1250,7 @@ class Teslamotors extends utils.Adapter {
         return;
       }
       if (error.response && error.response.status === 401) {
-        this.log.info(vin + ' 401 on vehicle_data, scheduling token refresh');
+        this.log.debug(vin + ' 401 on vehicle_data, scheduling token refresh');
         this.scheduleTokenRefresh();
         await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
           vin,
@@ -1263,7 +1263,7 @@ class Teslamotors extends utils.Adapter {
         return;
       }
       if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
-        this.log.info(vin + ' server error on vehicle_data: ' + error.response.status);
+        this.log.debug(vin + ' server error on vehicle_data: ' + error.response.status);
         await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
           vin,
           endpoint: 'vehicle_data',
@@ -1304,7 +1304,7 @@ class Teslamotors extends utils.Adapter {
 
     for (const element of statusArray) {
       if (element.path && this.isUpdateElementExcluded(element.path)) {
-        this.log.info('Skip path ' + element.path);
+        this.log.debug('Skip path ' + element.path);
         continue;
       }
       const url = element.url.replace('{energy_site_id}', energy_site_id);
@@ -1618,7 +1618,7 @@ class Teslamotors extends utils.Adapter {
     })
       .then((res) => {
         removeVehicleTokens(res.data && res.data.response);
-        this.log.info(JSON.stringify(res.data));
+        this.log.debug(JSON.stringify(res.data));
         return res.data.response;
       })
       .catch((error) => {
@@ -1656,7 +1656,7 @@ class Teslamotors extends utils.Adapter {
       return await this.requestClient({ method: 'post', url: url, headers: headers, data: data })
         .then((res) => {
           removeVehicleTokens(res.data && res.data.response);
-          this.log.info(JSON.stringify(res.data));
+          this.log.debug(JSON.stringify(res.data));
           return res.data.response;
         })
         .catch((error) => {
@@ -1684,7 +1684,7 @@ class Teslamotors extends utils.Adapter {
       return await this.requestClient({ method: 'post', url: url, headers: headers })
         .then((res) => {
           removeVehicleTokens(res.data && res.data.response);
-          this.log.info(JSON.stringify(res.data));
+          this.log.debug(JSON.stringify(res.data));
           return res.data.response;
         })
         .catch((error) => {

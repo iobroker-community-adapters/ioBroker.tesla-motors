@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "3.1.1",
+    "version": "3.2.0",
     "news": {
+      "3.2.0": {
+        "en": "Reduce routine Fleet API polling log noise by moving frequent vehicle state and vehicle_data messages to debug while keeping anomalies as warnings.",
+        "de": "Routinemäßiges Fleet-API-Polling-Lograuschen reduziert, häufige Fahrzeugstatus- und vehicle_data-Meldungen auf Debug verschoben und Auffälligkeiten als Warnungen beibehalten.",
+        "ru": "Уменьшен шум логов регулярного опроса Fleet API: частые сообщения о состоянии автомобиля и vehicle_data перенесены на debug, а аномалии оставлены предупреждениями.",
+        "pt": "Reduzido o ruído de log da sondagem regular da Fleet API, movendo mensagens frequentes de estado do veículo e vehicle_data para debug e mantendo anomalias como avisos.",
+        "nl": "Ruis in de logs van reguliere Fleet API-polling verminderd door frequente voertuigstatus- en vehicle_data-berichten naar debug te verplaatsen en afwijkingen als waarschuwingen te behouden.",
+        "fr": "Réduction du bruit de journalisation de l’interrogation régulière de la Fleet API en passant les messages fréquents d’état du véhicule et vehicle_data en debug, tout en gardant les anomalies en avertissements.",
+        "it": "Ridotto il rumore dei log del polling regolare della Fleet API spostando i messaggi frequenti sullo stato del veicolo e vehicle_data a debug e mantenendo le anomalie come avvisi.",
+        "es": "Reducido el ruido de registro del sondeo regular de la Fleet API, moviendo los mensajes frecuentes de estado del vehículo y vehicle_data a debug y manteniendo las anomalías como advertencias.",
+        "pl": "Zmniejszono szum logów regularnego odpytywania Fleet API, przenosząc częste komunikaty o stanie pojazdu i vehicle_data do debug, a anomalie pozostawiając jako ostrzeżenia.",
+        "uk": "Зменшено шум журналів регулярного опитування Fleet API: часті повідомлення про стан автомобіля та vehicle_data перенесено на debug, а аномалії залишено як попередження.",
+        "zh-cn": "减少常规 Fleet API 轮询日志噪音，将频繁的车辆状态和 vehicle_data 消息移至 debug，同时保留异常为警告。"
+      },
       "3.1.1": {
         "en": "Clarify Tesla OAuth re-authorization after scope changes and log missing-scope errors with a reset hint.",
         "de": "Tesla-OAuth-Neuautorisierung nach Scope-Änderungen klarer dokumentiert und Missing-Scope-Fehler mit Reset-Hinweis geloggt.",
@@ -80,19 +93,6 @@
         "pl": "Migracja do API floty Tesla z OAuth2\nDodaj podpisanie protokołu dowodzenia pojazdu (ECDSA P- 256) dla pojazdów po 2021 r\nDodaj interfejs administratora dla konfiguracji Floty API (generowanie kluczy, referencje, klucz wirtualny)\nDodać wykrywanie regionalnego punktu końcowego (EU / NA / CN) z symbolu JWT\nSesja przechowywania w stanie jOBroker, aby uniknąć ponownie uruchomić pętle\nAdapter wymaga admin > = 7.7.22",
         "uk": "Migrate to Tesla Fleet API з OAuth2\nДодати реєстрацію командного протоколу транспортного засобу (ECDSA P-256) для транспортних засобів\nДодавання адміністратора UI для налаштування API флоту (генерування ключів, облікових записів, віртуальний ключ)\nДодавання регіонального виявлення кінцевих точок (EU/NA/CN) від JWT\nЗберігайте сеанс в ІоБрокерному стані, щоб уникнути перезавантаження петель\nАдаптер вимагає адмін >= 7.7.22 тепер",
         "zh-cn": "与 OAuth2 一起迁移到 Tesla 舰队 API\n为2021年后车辆增加车辆指挥规程签字(ECDSA P-256)\n为 Fleet API 设置添加管理员 UI( 密钥生成、 证书、 虚拟密钥)\n添加来自JWT标志的区域终点探测(EU/NA/CN)\n将会话存储在 ioBroker 状态以避免重启循环\n适任者需要管理员 \\ 7.7.22 现在"
-      },
-      "1.5.0": {
-        "en": "Adapter requires node.js >= 20, js-controller >= 6.0.11 and admin >= 6.17.14 now.\npowerwall backup history has been fixed\nDependencies have been updated.",
-        "de": "Adapter erfordert jetzt node.js >= 20, js-controller >= 6.0.11 und admin >= 6.17.14.\npowerwall backup-history Fehler wurde behoben\nAbhängigkeiten wurden aktualisiert.",
-        "ru": "Адаптер требует node.js >= 20, js-контроллер >= 6.0.11 и админ >= 6.17.14 сейчас.\nистория резервного копирования powerwall была исправлена\nЗависимости были обновлены.",
-        "pt": "O adaptador necessita de nodo.js >= 20, js-controlador >= 6,0.11 e administrador >= 6,17,14 agora.\nhistórico de backup do powerwall foi corrigido\nAs dependências foram atualizadas.",
-        "nl": "Voor adapters zijn node.js (m.u.v. js-controller > 6,0.11 en admin > 6,17.14 nu) vereist.\npowerwall back-upgeschiedenis is hersteld\nAfhankelijkheden zijn bijgewerkt.",
-        "fr": "Adapter nécessite node.js >= 20, js-controller >= 6.0.11 et admin >= 6.17.14 maintenant.\nl'historique de sauvegarde de powerwall a été corrigé\nLes dépendances ont été actualisées.",
-        "it": "Adattatore richiede node.js >= 20, js-controller >= 6.0.11 e admin >= 6.17.14 ora.\nstoria di backup powerwall è stato risolto\nLe dipendenze sono state aggiornate.",
-        "es": "Adaptador requiere node.js >= 20, js-controller ≤ 6.0.11 y admin= 6.17.14 ahora.\nhistorial de copia de seguridad de powerwall ha sido fijo\nSe han actualizado las dependencias.",
-        "pl": "Adapter wymaga node.js > = 20, kontroler js- i admin > = 6.17.14 teraz.\nhistoria backupu powerwall została naprawiona\nZaktualizowano zależność.",
-        "uk": "Адаптер вимагає node.js >= 20, js-controller >= 6.0.11 і admin >= 6.17.14 тепер.\nісторія резервної копії електромереж була виправлена\nОновлено залежність.",
-        "zh-cn": "适配器需要节点.js >= 20,js控制器 >= 6.0.11和管理员 >= 6.17.14 现在.\n电网备份历史已被修复\n附属关系已经更新."
       }
     },
     "titleLang": {

@@ -298,6 +298,10 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 -->
 
 ## Changelog
+### 3.2.0 (2026-06-01)
+
+- (ChrMaass) Reduce routine Fleet API polling log noise by moving frequent vehicle state and vehicle_data messages to debug while keeping anomalies as warnings.
+
 ### 3.1.1 (2026-06-01)
 
 - (ChrMaass) Clarify Tesla OAuth re-authorization after scope changes and log missing-scope errors with a reset hint.
@@ -328,11 +332,6 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 - (ChrMaass) Add a step-by-step Fleet Telemetry setup guide for self-hosted
   Docker/MQTT installations.
 - (ChrMaass) Add signed-command support for automatic front-seat climate.
-
-### 2.0.3 (2026-05-12)
-
-- instruction text improved
-- (copilot) Adapter requires node.js >= 22 now
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
