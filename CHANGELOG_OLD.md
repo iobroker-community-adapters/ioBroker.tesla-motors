@@ -1,4 +1,13 @@
 # Older changes
+## 2.0.2 (2026-04-17)
+
+- (TA2k) Migrate to Tesla Fleet API with OAuth2
+- (TA2k) Add Vehicle Command Protocol signing (ECDSA P-256) for post-2021 vehicles
+- (TA2k) Add admin UI for Fleet API setup (key generation, credentials, virtual key)
+- (TA2k) Add regional endpoint detection (EU/NA/CN) from JWT token
+- (TA2k) Store session in ioBroker state to avoid restart loops
+- (copilot) Adapter requires admin >= 7.7.22 now
+
 ## 1.5.0 (2025-12-28)
 
 - (mcm1957) Adapter requires node.js >= 20, js-controller >= 6.0.11 and admin >= 6.17.14 now.

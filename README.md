@@ -298,6 +298,10 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 -->
 
 ## Changelog
+### 3.1.1 (2026-06-01)
+
+- (ChrMaass) Clarify Tesla OAuth re-authorization after scope changes and log missing-scope errors with a reset hint.
+
 ### 3.1.0 (2026-05-31)
 
 - (ChrMaass) Support the normal Fleet command endpoint for vehicles that do not support or do not require the Tesla Vehicle Command Protocol.
@@ -329,15 +333,6 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 
 - instruction text improved
 - (copilot) Adapter requires node.js >= 22 now
-
-### 2.0.2 (2026-04-17)
-
-- (TA2k) Migrate to Tesla Fleet API with OAuth2
-- (TA2k) Add Vehicle Command Protocol signing (ECDSA P-256) for post-2021 vehicles
-- (TA2k) Add admin UI for Fleet API setup (key generation, credentials, virtual key)
-- (TA2k) Add regional endpoint detection (EU/NA/CN) from JWT token
-- (TA2k) Store session in ioBroker state to avoid restart loops
-- (copilot) Adapter requires admin >= 7.7.22 now
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
