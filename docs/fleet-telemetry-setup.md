@@ -431,7 +431,7 @@ tesla-motors.0.<VIN>.telemetry.fields.<FieldName>
 | `max_configs` | Vehicle already has too many Fleet Telemetry configs. | Remove an unused config from another app or use **Delete Fleet Config** for this app. |
 | `telemetrySynced=false` | Tesla accepted the config but the vehicle has not synced it yet. | Wake the car, wait a few minutes, then use **Read Fleet Config** again. |
 | MQTT connected but no vehicle data | Vehicle is asleep, config not synced, wrong public route or wrong CA. | Check `fleet-telemetry` logs, run Tesla's cert check script, verify public TCP passthrough. |
-| No location fields | OAuth scope `vehicle_location` is missing. | Add the scope in the Tesla Developer app / OAuth flow and reconfigure. |
+| No location fields | OAuth scope `vehicle_location` is missing. | Add the scope in the Tesla Developer app, reset login/token information in the adapter, authorize again and reconfigure Fleet Telemetry. |
 | TLS handshake errors in logs | Often random internet scanners or wrong proxy mode. | If data still arrives, scanner noise can be ignored; otherwise verify TCP passthrough and certificate chain. |
 | Adapter shows `telemetryLastError` | Last MQTT/proxy/config error. | Read the state value and adapter log for details. |
 

@@ -446,6 +446,7 @@
         "reset": {
           "type": "checkbox",
           "label": "Reset Login/Token Information",
+          "help": "reset_login_help",
           "xs": 12,
           "sm": 12,
           "md": 12,

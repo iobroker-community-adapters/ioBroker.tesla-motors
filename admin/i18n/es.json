@@ -132,5 +132,6 @@
     "telemetry_fields_category_help": "Activa los campos que deben enviarse en esta categoría. Los valores vacíos de cambio mínimo usan el valor predeterminado mostrado del adaptador cuando esté disponible.",
     "telemetry_proxy_url_placeholder": "https://192.168.1.10:4443",
     "telemetry_server_host_placeholder": "tesla-telemetry.example.com",
-    "telemetry_mqtt_broker_placeholder": "mqtt://192.168.1.10:1883"
+    "telemetry_mqtt_broker_placeholder": "mqtt://192.168.1.10:1883",
+    "reset_login_help": "Úselo después de cambiar los scopes en Tesla Developer App o si desea crear de nuevo el inicio de sesión. Guarde una vez con el reinicio activado; el adaptador borra la sesión Fleet guardada y la Code URL y se reinicia. Después genere un nuevo Auth Link, autorice Tesla de nuevo y pegue la nueva callback URL."
 }

@@ -53,6 +53,22 @@ The adapter admin UI guides you through 4 steps:
 
 **Warning:** Never share this URL with anyone! It grants access to your Tesla account.
 
+#### Re-authorize after changing Tesla scopes
+
+If you add or change scopes in the Tesla Developer App later, the existing
+refresh token will not automatically receive these permissions. Reset the stored
+Fleet session first, then run the OAuth flow again:
+
+1. Enable **Reset Login/Token Information** in the adapter settings.
+2. Save and close the settings once. The adapter deletes the stored Fleet
+   session and Code URL and restarts.
+3. Open the settings again, generate a new Auth Link and authorize Tesla with
+   the required scopes.
+4. Paste the new callback URL into **Code URL** and save again.
+
+A new callback URL without resetting the stored session is ignored while the old
+session can still be refreshed.
+
 #### Step 4: Install Virtual Key
 
 The Virtual Key is required to send commands to your vehicle (lock/unlock, climate, charging, etc.). Without it, you can only read vehicle data. You can do this step after the adapter is running.

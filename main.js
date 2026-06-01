@@ -11,6 +11,7 @@ const {
   isFleetTelemetryAdminCommand,
 } = require('./lib/fleetTelemetryConfig');
 const { removeVehicleTokens } = require('./lib/teslaResponse');
+const { getMissingScopesHint, isMissingScopesError } = require('./lib/oauthError');
 const {
   buildFleetVehicleCommandPayload,
   getVehicleCommandProtocolRequiredFromProduct,
@@ -221,7 +222,28 @@ class Teslamotors extends utils.Adapter {
       message += `: ${responseError}`;
     }
 
+    if (isMissingScopesError(error)) {
+      message += ` (${getMissingScopesHint()})`;
+    }
+
     return message;
+  }
+
+  /**
+   * Logs a user-facing hint when a Fleet API request fails because the current
+   * OAuth token was authorized before all required scopes were enabled.
+   *
+   * @param {any} error
+   * @param {string} context
+   * @returns {boolean}
+   */
+  logMissingScopesHint(error, context) {
+    if (!isMissingScopesError(error)) {
+      return false;
+    }
+
+    this.log.error(`${context}: ${getMissingScopesHint()}`);
+    return true;
   }
 
 
@@ -431,6 +453,9 @@ class Teslamotors extends utils.Adapter {
         this.log.error(error);
         if (error.response) {
           this.log.error(JSON.stringify(error.response.data));
+        }
+        if (this.logMissingScopesHint(error, 'Fleet API login failed')) {
+          return;
         }
         if (error.response && error.response.status === 403) {
           this.log.error('Please relogin in the settings and copy a new codeURL');
@@ -1012,6 +1037,16 @@ class Teslamotors extends utils.Adapter {
         });
         return;
       }
+      if (this.logMissingScopesHint(error, vin + ' state check failed')) {
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'skipped',
+          reason: 'state_check_missing_scopes',
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
+        return;
+      }
       if (error.response && error.response.status === 401) {
         this.log.info(vin + ' 401 on state check, scheduling token refresh');
         this.scheduleTokenRefresh();
@@ -1198,6 +1233,17 @@ class Teslamotors extends utils.Adapter {
           endpoint: 'vehicle_data',
           status: 'failed',
           error: 'rate_limited',
+          requestedEndpoints: endpoints,
+          telemetryApiSync: !!options.telemetryApiSync,
+        });
+        return;
+      }
+      if (this.logMissingScopesHint(error, vin + ' vehicle_data failed')) {
+        await this.setTelemetryDiagnosticState('info.telemetryLastVehicleDataSync', {
+          vin,
+          endpoint: 'vehicle_data',
+          status: 'failed',
+          error: 'missing_scopes',
           requestedEndpoints: endpoints,
           telemetryApiSync: !!options.telemetryApiSync,
         });
@@ -1576,6 +1622,9 @@ class Teslamotors extends utils.Adapter {
         return res.data.response;
       })
       .catch((error) => {
+        if (this.logMissingScopesHint(error, `Fleet command ${command} failed for ${vin}`)) {
+          return;
+        }
         if (error.response && error.response.status === 401) {
           this.scheduleTokenRefresh();
           return;
@@ -1611,6 +1660,9 @@ class Teslamotors extends utils.Adapter {
           return res.data.response;
         })
         .catch((error) => {
+          if (this.logMissingScopesHint(error, `Energy command ${command} failed for ${id}`)) {
+            return;
+          }
           if (error.response && error.response.status === 401) {
             this.scheduleTokenRefresh();
             return;
@@ -1636,6 +1688,9 @@ class Teslamotors extends utils.Adapter {
           return res.data.response;
         })
         .catch((error) => {
+          if (this.logMissingScopesHint(error, 'wake_up failed for ' + vin)) {
+            return;
+          }
           if (error.response && error.response.status === 401) {
             this.scheduleTokenRefresh();
             return;
@@ -1664,6 +1719,9 @@ class Teslamotors extends utils.Adapter {
       this.log.info(`Command ${command} successful for ${vin}`);
       return result;
     } catch (/** @type {any} */ error) {
+      if (this.logMissingScopesHint(error, `Command ${command} failed for ${vin}`)) {
+        return null;
+      }
       if (isVehicleCommandProtocolUnsupportedError(error)) {
         this.vehicleCommandProtocolRequired[vin] = false;
         this.log.warn(
