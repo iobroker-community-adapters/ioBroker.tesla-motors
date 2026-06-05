@@ -1,4 +1,23 @@
 # Older changes
+## 3.0.0 (2026-05-31)
+
+- (ChrMaass) Add optional Fleet Telemetry MQTT bridge with configurable fields
+  and intervals.
+- (ChrMaass) Migrate the adapter admin UI to ioBroker jsonConfig while keeping
+  the Fleet API and Fleet Telemetry setup workflows.
+- (ChrMaass) Add grouped Fleet Telemetry field configuration with per-field
+  intervals and optional `minimum_delta` defaults.
+- (ChrMaass) Keep configurable periodic Fleet API sync in telemetry mode and
+  allow disabling scheduled polling with update interval `0`.
+- (ChrMaass) Deduplicate unchanged Fleet Telemetry state writes to avoid SQL
+  history duplicate-key errors on retained MQTT values.
+- (ChrMaass) Avoid recreating deprecated vehicle `tokens` states returned by
+  Tesla API responses.
+- (ChrMaass) Fix repository checker warnings and modernize project metadata.
+- (ChrMaass) Add a step-by-step Fleet Telemetry setup guide for self-hosted
+  Docker/MQTT installations.
+- (ChrMaass) Add signed-command support for automatic front-seat climate.
+
 ## 2.0.3 (2026-05-12)
 
 - instruction text improved

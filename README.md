@@ -298,7 +298,7 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 -->
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.2.1 (2026-06-05)
 
 - (ChrMaass) Update the release tooling dependency to satisfy the ioBroker repository checker.
 
@@ -317,25 +317,6 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 ### 3.0.1 (2026-05-31)
 
 - (ChrMaass) Fix the Sentry README notice to match the repository checker standard wording.
-
-### 3.0.0 (2026-05-31)
-
-- (ChrMaass) Add optional Fleet Telemetry MQTT bridge with configurable fields
-  and intervals.
-- (ChrMaass) Migrate the adapter admin UI to ioBroker jsonConfig while keeping
-  the Fleet API and Fleet Telemetry setup workflows.
-- (ChrMaass) Add grouped Fleet Telemetry field configuration with per-field
-  intervals and optional `minimum_delta` defaults.
-- (ChrMaass) Keep configurable periodic Fleet API sync in telemetry mode and
-  allow disabling scheduled polling with update interval `0`.
-- (ChrMaass) Deduplicate unchanged Fleet Telemetry state writes to avoid SQL
-  history duplicate-key errors on retained MQTT values.
-- (ChrMaass) Avoid recreating deprecated vehicle `tokens` states returned by
-  Tesla API responses.
-- (ChrMaass) Fix repository checker warnings and modernize project metadata.
-- (ChrMaass) Add a step-by-step Fleet Telemetry setup guide for self-hosted
-  Docker/MQTT installations.
-- (ChrMaass) Add signed-command support for automatic front-seat climate.
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
