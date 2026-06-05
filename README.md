@@ -298,6 +298,10 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 -->
 
 ## Changelog
+### **WORK IN PROGRESS**
+
+- (ChrMaass) Update the release tooling dependency to satisfy the ioBroker repository checker.
+
 ### 3.2.0 (2026-06-01)
 
 - (ChrMaass) Reduce routine Fleet API polling log noise by moving frequent vehicle state and vehicle_data messages to debug while keeping anomalies as warnings.
