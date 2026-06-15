@@ -471,6 +471,89 @@
           "md": 6,
           "lg": 6,
           "xl": 6
+        },
+        "_costHeader": {
+          "newLine": true,
+          "type": "header",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12,
+          "text": "cost_estimate_header",
+          "size": 3
+        },
+        "_costHint": {
+          "newLine": true,
+          "type": "staticText",
+          "text": "cost_estimate_hint",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
+        },
+        "costAwakeHoursPerDay": {
+          "newLine": true,
+          "type": "number",
+          "label": "cost_awake_hours_label",
+          "help": "cost_awake_hours_help",
+          "min": 0,
+          "max": 24,
+          "step": 0.5,
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 3,
+          "xl": 3
+        },
+        "costPricePer1000Calls": {
+          "type": "number",
+          "label": "cost_price_per_1000_label",
+          "help": "cost_price_per_1000_help",
+          "min": 0,
+          "step": 0.1,
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 3,
+          "xl": 3
+        },
+        "costFreeBudgetPerMonth": {
+          "type": "number",
+          "label": "cost_free_budget_label",
+          "help": "cost_free_budget_help",
+          "min": 0,
+          "step": 0.5,
+          "xs": 12,
+          "sm": 12,
+          "md": 4,
+          "lg": 3,
+          "xl": 3
+        },
+        "_costEstimate": {
+          "newLine": true,
+          "type": "textSendTo",
+          "label": "cost_estimate_result_label",
+          "container": "html",
+          "command": "calcFleetCost",
+          "alsoDependsOn": [
+            "intervalNormal",
+            "locationInterval",
+            "intervalDrive",
+            "excludeElementList",
+            "costAwakeHoursPerDay",
+            "costPricePer1000Calls",
+            "costFreeBudgetPerMonth",
+            "telemetryEnabled",
+            "telemetryFallbackPollEnabled"
+          ],
+          "jsonData": "{\"intervalNormal\": ${data.intervalNormal}, \"locationInterval\": ${data.locationInterval}, \"intervalDrive\": ${data.intervalDrive}, \"excludeElementList\": \"${data.excludeElementList}\", \"costAwakeHoursPerDay\": ${data.costAwakeHoursPerDay}, \"costPricePer1000Calls\": ${data.costPricePer1000Calls}, \"costFreeBudgetPerMonth\": ${data.costFreeBudgetPerMonth}, \"telemetryEnabled\": ${data.telemetryEnabled}, \"telemetryFallbackPollEnabled\": ${data.telemetryFallbackPollEnabled}}",
+          "xs": 12,
+          "sm": 12,
+          "md": 12,
+          "lg": 12,
+          "xl": 12
         }
       }
     },

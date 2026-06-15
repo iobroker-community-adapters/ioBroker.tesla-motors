@@ -1915,6 +1915,137 @@ class Teslamotors extends utils.Adapter {
         this.sendTo(obj.from, obj.command, { ok: false, error: errorMessage }, obj.callback);
       }
     }
+
+    if (obj.command === 'calcFleetCost') {
+      try {
+        const text = this.buildFleetCostEstimate(obj.message || {});
+        this.sendTo(obj.from, obj.command, { text }, obj.callback);
+      } catch (/** @type {any} */ e) {
+        this.sendTo(obj.from, obj.command, { text: 'Error: ' + e.message }, obj.callback);
+      }
+      return;
+    }
+  }
+
+  /**
+   * Builds an HTML cost estimate for Fleet API vehicle_data polling per vehicle.
+   *
+   * Counts only the recurring `vehicle_data` calls produced by the regular
+   * polling loop (and the dedicated location loop when it runs faster than
+   * the normal interval). Drive-mode polling is ignored because it is short
+   * and per-trip; charge_history is once per hour. Telemetry-only mode
+   * (no fallback poll) reports zero scheduled calls.
+   *
+   * @param {Record<string, any>} msg
+   * @returns {string}
+   */
+  buildFleetCostEstimate(msg) {
+    const toNum = (v, def) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : def;
+    };
+    const intervalNormal = Math.max(0, toNum(msg.intervalNormal, 60));
+    const locationInterval = Math.max(0, toNum(msg.locationInterval, 0));
+    const awakeHours = Math.min(24, Math.max(0, toNum(msg.costAwakeHoursPerDay, 8)));
+    const pricePer1000 = Math.max(0, toNum(msg.costPricePer1000Calls, 2.0));
+    const freeBudget = Math.max(0, toNum(msg.costFreeBudgetPerMonth, 10.0));
+    const telemetryOn = !!msg.telemetryEnabled;
+    const fallbackOn = msg.telemetryFallbackPollEnabled !== false;
+
+    // Normal poll counts only when an effective interval >= 10s is set.
+    const effectiveNormal = intervalNormal > 0 ? Math.max(10, intervalNormal) : 0;
+    const effectiveLocation = locationInterval > 0 ? Math.max(10, locationInterval) : 0;
+
+    // Telemetry mode without API sync = no scheduled vehicle_data polling.
+    const apiSyncActive = !telemetryOn || fallbackOn;
+
+    let callsPerHourNormal = 0;
+    let callsPerHourLocation = 0;
+    if (apiSyncActive && effectiveNormal > 0) {
+      callsPerHourNormal = 3600 / effectiveNormal;
+    }
+    // Separate location loop only fires faster than the normal interval — see
+    // main.js scheduling. If equal/slower it is folded into the normal poll.
+    if (apiSyncActive && effectiveLocation > 0 && effectiveLocation < effectiveNormal) {
+      callsPerHourLocation = 3600 / effectiveLocation - callsPerHourNormal;
+      if (callsPerHourLocation < 0) callsPerHourLocation = 0;
+    }
+
+    const callsPerDay = (callsPerHourNormal + callsPerHourLocation) * awakeHours;
+    const callsPerMonth = callsPerDay * 30;
+    const costPerMonth = (callsPerMonth / 1000) * pricePer1000;
+    const netCostPerMonth = Math.max(0, costPerMonth - freeBudget);
+    const freeCalls = pricePer1000 > 0 ? (freeBudget / pricePer1000) * 1000 : Infinity;
+
+    const fmt = (n, d = 2) => {
+      if (!Number.isFinite(n)) return '∞';
+      return n.toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d });
+    };
+    const fmtInt = (n) => Math.round(n).toLocaleString('de-DE');
+
+    const lines = [];
+    lines.push('<div style="font-family:monospace;line-height:1.5">');
+    if (!apiSyncActive) {
+      lines.push('<b>Fleet Telemetry aktiv, kein vehicle_data-Polling.</b><br/>');
+      lines.push('Geplante Calls/Tag: <b>0</b><br/>');
+    } else if (effectiveNormal === 0) {
+      lines.push('<b>Polling deaktiviert (Update-Intervall = 0).</b><br/>');
+    } else {
+      lines.push(
+        'Polling-Intervall: <b>' +
+          effectiveNormal +
+          ' s</b>' +
+          (effectiveLocation > 0 && effectiveLocation < effectiveNormal
+            ? ' &nbsp;|&nbsp; Location-Intervall: <b>' + effectiveLocation + ' s</b>'
+            : '') +
+          '<br/>',
+      );
+      lines.push('Wachzeit pro Tag: <b>' + fmt(awakeHours, 1) + ' h</b><br/>');
+      lines.push('Calls/Tag pro Fahrzeug: <b>' + fmtInt(callsPerDay) + '</b><br/>');
+      lines.push('Calls/Monat pro Fahrzeug: <b>' + fmtInt(callsPerMonth) + '</b><br/>');
+    }
+    lines.push(
+      'Preis: <b>' +
+        fmt(pricePer1000, 2) +
+        ' &euro; / 1.000 Calls</b> &nbsp;|&nbsp; Frei-Guthaben: <b>' +
+        fmt(freeBudget, 2) +
+        ' &euro;/Monat</b> (' +
+        fmtInt(freeCalls) +
+        ' Calls)<br/>',
+    );
+    if (apiSyncActive && effectiveNormal > 0) {
+      const overFree = callsPerMonth > freeCalls;
+      const color = overFree ? '#c62828' : '#2e7d32';
+      lines.push(
+        '<span style="color:' +
+          color +
+          ';font-size:1.1em">Kosten/Monat pro Fahrzeug: <b>' +
+          fmt(costPerMonth, 2) +
+          ' &euro;</b>' +
+          (freeBudget > 0
+            ? ' (nach Frei-Guthaben: <b>' + fmt(netCostPerMonth, 2) + ' &euro;</b>)'
+            : '') +
+          '</span><br/>',
+      );
+      lines.push(
+        '<span style="color:' +
+          color +
+          '">Bei 2 Fahrzeugen: <b>' +
+          fmt(2 * costPerMonth, 2) +
+          ' &euro;</b>' +
+          (freeBudget > 0
+            ? ' (nach Frei-Guthaben: <b>' + fmt(Math.max(0, 2 * costPerMonth - freeBudget), 2) + ' &euro;</b>)'
+            : '') +
+          '</span><br/>',
+      );
+    }
+    lines.push(
+      '<small>Hinweis: Tesla zaehlt API-Calls, nicht Felder. Die Exclude-Liste reduziert nur die ' +
+        'Antwortgroesse, nicht die Anzahl Calls. drive_state-Polls waehrend Fahrt und charge_history ' +
+        '(1x/h) sind nicht eingerechnet.</small>',
+    );
+    lines.push('</div>');
+    return lines.join('');
   }
 
   /**

@@ -235,8 +235,8 @@
     "session": {},
     "fleetSession": {},
     "reset": false,
-    "intervalNormal": 60,
-    "locationInterval": 60,
+    "intervalNormal": 180,
+    "locationInterval": 180,
     "intervalDrive": null,
     "excludeDeviceList": "",
     "excludeElementList": "",
@@ -251,7 +251,10 @@
     "telemetryMqttPassword": "",
     "telemetryMqttTopicBase": "tesla-telemetry",
     "telemetryFieldsJson": "",
-    "telemetryFallbackPollEnabled": true
+    "telemetryFallbackPollEnabled": true,
+    "costAwakeHoursPerDay": 8,
+    "costPricePer1000Calls": 2.0,
+    "costFreeBudgetPerMonth": 10.0
   },
   "objects": [],
   "instanceObjects": [
