@@ -272,7 +272,7 @@
           "newLine": true,
           "type": "staticLink",
           "label": "Generate Auth Link",
-          "href": "https://auth.tesla.com/oauth2/v3/authorize?client_id=${data.clientId}&redirect_uri=https%3A%2F%2Fauth.tesla.com%2Fvoid%2Fcallback&response_type=code&scope=openid%20offline_access%20vehicle_device_data%20vehicle_location%20vehicle_cmds%20vehicle_charging_cmds%20energy_device_data%20energy_cmds&state=iobroker-tesla-motors",
+          "href": "https://auth.tesla.com/oauth2/v3/authorize?client_id=${data.clientId || ''}&redirect_uri=https%3A%2F%2Fauth.tesla.com%2Fvoid%2Fcallback&response_type=code&scope=openid%20offline_access%20vehicle_device_data%20vehicle_location%20vehicle_cmds%20vehicle_charging_cmds%20energy_device_data%20energy_cmds&state=iobroker-tesla-motors",
           "target": "_blank",
           "button": true,
           "variant": "contained",
