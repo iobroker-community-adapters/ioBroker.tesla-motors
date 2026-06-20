@@ -51,6 +51,13 @@ class Teslamotors extends utils.Adapter {
     this.updateIntervalDrive = {};
     this.idArray = [];
 
+    // Per-energy-site set of URL paths Tesla rejected with 403/missing scopes.
+    // Once a path lands here we stop calling it for the lifetime of this
+    // session to keep the log clean (e.g. accounts that have an
+    // energy_site_id but no Powerwall/wall connector permissions).
+    // Cleared on adapter restart so a re-authorized token gets a fresh try.
+    this.energyDisabledPaths = {};
+
     this.json2iob = new Json2iob(this);
     this.vin2id = {};
     this.id2vin = {};
@@ -280,10 +287,66 @@ class Teslamotors extends utils.Adapter {
     await this.setStateAsync('info.fleetSession', JSON.stringify(this.session), true);
   }
 
+  /**
+   * Runs one-shot migrations on adapter startup. Each migration writes a
+   * marker into `info.migrations` (JSON map) so it never executes twice.
+   *
+   * Current migrations:
+   *   - `dropChargeHistory_v1`: deletes every `<VIN>.charge_history.*`
+   *     channel/state from the instance. The `charge_history` endpoint
+   *     creates thousands of UI-only graph points (Tesla app chart data)
+   *     that are useless for automations. The endpoint itself is still
+   *     available; users who want the aggregate values back can clear the
+   *     `excludeElementList` and they will be re-created on the next call,
+   *     but without the dropped `charging_history_graph` subtree.
+   */
+  async runOneShotMigrations() {
+    await this.setObjectNotExistsAsync('info.migrations', {
+      type: 'state',
+      common: { name: 'Completed one-shot migrations (JSON map)', type: 'string', role: 'json', read: true, write: false, def: '{}' },
+      native: {},
+    });
+    let done = {};
+    try {
+      const cur = await this.getStateAsync('info.migrations');
+      if (cur && typeof cur.val === 'string' && cur.val) {
+        const parsed = JSON.parse(cur.val);
+        if (parsed && typeof parsed === 'object') done = parsed;
+      }
+    } catch (/** @type {any} */ e) {
+      this.log.warn('info.migrations state unreadable, treating as empty: ' + e.message);
+    }
+
+    if (!done.dropChargeHistory_v1) {
+      try {
+        // Match `<instance>.<vin>.charge_history` and everything below it.
+        // getAdapterObjectsAsync gives all objects for this instance, scoped
+        // by namespace, so we don't touch foreign objects.
+        const objects = await this.getAdapterObjectsAsync();
+        const targets = Object.keys(objects).filter((id) => /\.charge_history(\..+)?$/.test(id));
+        let removed = 0;
+        for (const id of targets) {
+          try {
+            await this.delObjectAsync(id, { recursive: true });
+            removed++;
+          } catch (/** @type {any} */ e) {
+            this.log.debug('Could not delete ' + id + ': ' + e.message);
+          }
+        }
+        this.log.info('Migration dropChargeHistory_v1: removed ' + removed + ' charge_history objects');
+        done.dropChargeHistory_v1 = { ts: new Date().toISOString(), removed };
+        await this.setStateAsync('info.migrations', JSON.stringify(done), true);
+      } catch (/** @type {any} */ e) {
+        this.log.warn('Migration dropChargeHistory_v1 failed (will retry next start): ' + e.message);
+      }
+    }
+  }
+
   async onReady() {
     this.setState('info.connection', false, true);
     await this.telemetryConfigurationManager.createInfoStates();
     await this.telemetryConfigurationManager.resetInfoStates();
+    await this.runOneShotMigrations();
 
     // Load protobuf definitions for command signing
     try {
@@ -977,10 +1040,11 @@ class Teslamotors extends utils.Adapter {
       if (res.data && res.data.response) {
         removeVehicleTokens(res.data.response);
         const data = res.data.response;
-        if (data.charging_history_graph) {
-          delete data.charging_history_graph.y_labels;
-          delete data.charging_history_graph.x_labels;
-        }
+        // charging_history_graph is the Tesla app's chart data (thousands of
+        // line points, only useful for visual rendering). Drop it entirely —
+        // the aggregate values (total_charged, energy_cost_breakdown,
+        // gas_savings) carry the information that's useful for automations.
+        delete data.charging_history_graph;
         if (data.gas_savings) delete data.gas_savings.card;
         if (data.energy_cost_breakdown) delete data.energy_cost_breakdown.card;
         if (data.charging_tips) delete data.charging_tips;
@@ -1301,10 +1365,17 @@ class Teslamotors extends utils.Adapter {
     const id = product.id;
     const energy_site_id = product.energy_site_id;
     const headers = this.getFleetHeaders();
+    const disabledPaths = this.energyDisabledPaths[energy_site_id] || (this.energyDisabledPaths[energy_site_id] = new Set());
 
     for (const element of statusArray) {
       if (element.path && this.isUpdateElementExcluded(element.path)) {
         this.log.debug('Skip path ' + element.path);
+        continue;
+      }
+      if (disabledPaths.has(element.path)) {
+        // Tesla previously rejected this endpoint for this site (typically
+        // 403 missing scopes on accounts without Powerwall/wallbox). Stay
+        // quiet until the next adapter restart.
         continue;
       }
       const url = element.url.replace('{energy_site_id}', energy_site_id);
@@ -1381,6 +1452,20 @@ class Teslamotors extends utils.Adapter {
           if (error.response && (error.response.status >= 500 || error.response.status === 408)) {
             this.log.debug(url);
             this.log.debug(error);
+            return;
+          }
+          // 403 means this account/token cannot read this energy endpoint.
+          // Disable it for the rest of the session to stop log spam — typical
+          // for vehicle-only accounts that still get an energy_site_id back
+          // from /products. Token refresh after re-authorization (adapter
+          // restart) will give it another chance.
+          if (error.response && error.response.status === 403) {
+            disabledPaths.add(element.path);
+            const hint = isMissingScopesError(error) ? ' (' + getMissingScopesHint() + ')' : '';
+            this.log.warn(
+              'Energy endpoint disabled for site ' + energy_site_id + ' after 403: ' +
+                url + hint + '. Re-enable by restarting the adapter after re-authorization.',
+            );
             return;
           }
           this.log.error('Energy device update failed');

@@ -382,6 +382,19 @@
         "def": ""
       },
       "native": {}
+    },
+    {
+      "_id": "info.migrations",
+      "type": "state",
+      "common": {
+        "role": "json",
+        "name": "Completed one-shot migrations (JSON map)",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": "{}"
+      },
+      "native": {}
     }
   ]
 }
