@@ -25,7 +25,7 @@
     "elliptic": "^6.6.1",
     "json-bigint": "^1.0.0",
     "mqtt": "^5.15.1",
-    "protobufjs": "^8.2.0",
+    "protobufjs": "^8.5.0",
     "qs": "^6.15.2"
   },
   "devDependencies": {
