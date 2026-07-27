@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "tesla-motors",
-    "version": "3.2.1",
+    "version": "3.2.2",
     "news": {
+      "3.2.2": {
+        "en": "Fix the Virtual Key QR code so it encodes the resolved URL instead of the literal placeholder.",
+        "de": "Virtual-Key-QR-Code korrigiert, sodass er die aufgelöste URL statt des wörtlichen Platzhalters kodiert.",
+        "ru": "Исправлен QR-код Virtual Key: теперь он кодирует итоговый URL, а не буквальный заполнитель.",
+        "pt": "Corrigido o QR code da Virtual Key para codificar o URL resolvido em vez do marcador literal.",
+        "nl": "Virtual Key QR-code gecorrigeerd zodat deze de opgeloste URL codeert in plaats van de letterlijke placeholder.",
+        "fr": "Correction du QR code Virtual Key afin qu'il encode l'URL résolue au lieu de l'espace réservé littéral.",
+        "it": "Corretto il QR code Virtual Key affinché codifichi l'URL risolto invece del segnaposto letterale.",
+        "es": "Corregido el código QR de Virtual Key para que codifique la URL resuelta en lugar del marcador de posición literal.",
+        "pl": "Naprawiono kod QR Virtual Key, aby kodował rozwiązany adres URL zamiast dosłownego symbolu zastępczego.",
+        "uk": "Виправлено QR-код Virtual Key, щоб він кодував остаточну URL-адресу замість буквального заповнювача.",
+        "zh-cn": "修复 Virtual Key 二维码，使其编码解析后的网址而非字面占位符。"
+      },
       "3.2.1": {
         "en": "Update the release tooling dependency to satisfy the ioBroker repository checker.",
         "de": "Release-Tooling-Abhängigkeit aktualisiert, damit der ioBroker Repository Checker wieder erfüllt ist.",
