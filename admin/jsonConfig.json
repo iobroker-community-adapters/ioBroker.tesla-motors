@@ -368,8 +368,10 @@
           "xl": 12
         },
         "_virtualKeyQr": {
-          "type": "qrCode",
-          "data": "https://tesla.com/_ak/${data.fleetkeyDomain}",
+          "type": "qrCodeSendTo",
+          "command": "getVirtualKeyQr",
+          "jsonData": "{\"fleetkeyDomain\": \"${data.fleetkeyDomain}\"}",
+          "alsoDependsOn": ["fleetkeyDomain"],
           "size": 256,
           "hidden": "!data.fleetkeyDomain",
           "xs": 12,

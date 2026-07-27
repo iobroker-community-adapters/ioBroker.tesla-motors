@@ -51,7 +51,7 @@
     "step4_instruction1": "Abra la siguiente URL en su teléfono en la aplicación Tesla o escanee el código QR con la cámara de su teléfono",
     "step4_instruction2": "La aplicación Tesla le pedirá que confirme agregar una \"clave de terceros\"",
     "step4_instruction3": "Vaya a su vehículo y acerque su tarjeta de acceso a la consola central para confirmar la instalación.",
-    "step4_qr_hint": "Escanee este código QR con su teléfono para abrir la URL directamente en la aplicación Tesla",
+    "step4_qr_hint": "Escanee este código QR con su teléfono para abrir la URL directamente en la aplicación Tesla. Si el código QR no funciona, copie la Virtual Key URL mostrada arriba y ábrala directamente en su teléfono.",
     "step4_url_label": "URL de clave virtual:",
     "telemetry_action_check_status": "Comprobar estado Fleet",
     "telemetry_action_configure": "Configurar Fleet Telemetry",

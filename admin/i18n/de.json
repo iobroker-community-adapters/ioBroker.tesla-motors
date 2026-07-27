@@ -51,7 +51,7 @@
     "step4_instruction1": "Öffne die URL unten auf deinem Handy in der Tesla App, oder scanne den QR-Code mit der Handy-Kamera",
     "step4_instruction2": "Die Tesla App fragt dich ob du einen \"Drittanbieter-Schlüssel\" hinzufügen möchtest",
     "step4_instruction3": "Gehe zu deinem Fahrzeug und halte deine Schlüsselkarte an die Mittelkonsole um die Installation zu bestätigen",
-    "step4_qr_hint": "Scanne diesen QR-Code mit deinem Handy um die URL direkt in der Tesla App zu öffnen",
+    "step4_qr_hint": "Scanne diesen QR-Code mit deinem Handy um die URL direkt in der Tesla App zu öffnen. Falls der QR-Code nicht funktioniert, kopiere die oben angezeigte Virtual Key URL und öffne sie direkt auf deinem Handy.",
     "step4_url_label": "Virtual Key URL:",
     "telemetry_action_check_status": "Fleet-Status prüfen",
     "telemetry_action_configure": "Fleet Telemetry konfigurieren",

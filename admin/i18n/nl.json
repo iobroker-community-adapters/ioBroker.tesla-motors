@@ -51,7 +51,7 @@
     "step4_instruction1": "Open de onderstaande URL op uw telefoon in de Tesla-app of scan de QR-code met de camera van uw telefoon",
     "step4_instruction2": "De Tesla-app vraagt ​​u om het toevoegen van een \"sleutel van derden\" te bevestigen",
     "step4_instruction3": "Ga naar uw auto en houd uw sleutelkaart tegen de middenconsole om de installatie te bevestigen",
-    "step4_qr_hint": "Scan deze QR-code met uw telefoon om de URL rechtstreeks in de Tesla-app te openen",
+    "step4_qr_hint": "Scan deze QR-code met uw telefoon om de URL rechtstreeks in de Tesla-app te openen. Als de QR-code niet werkt, kopieer dan de hierboven weergegeven Virtual Key URL en open deze rechtstreeks op uw telefoon.",
     "step4_url_label": "Virtuele sleutel-URL:",
     "telemetry_action_check_status": "Fleet-status controleren",
     "telemetry_action_configure": "Fleet Telemetry configureren",

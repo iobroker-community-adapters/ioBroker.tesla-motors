@@ -51,7 +51,7 @@
     "step4_instruction1": "在手机上的 Tesla App 中打开以下网址，或使用手机摄像头扫描二维码",
     "step4_instruction2": "Tesla 应用程序会要求您确认添加“第三方密钥”",
     "step4_instruction3": "前往您的车辆并将钥匙卡放在中控台上以确认安装",
-    "step4_qr_hint": "用手机扫描此二维码可直接在 Tesla App 中打开网址",
+    "step4_qr_hint": "用手机扫描此二维码可直接在 Tesla App 中打开网址。如果二维码无法使用，请复制上方显示的 Virtual Key URL 并直接在手机上打开。",
     "step4_url_label": "虚拟密钥网址：",
     "telemetry_action_check_status": "检查 Fleet 状态",
     "telemetry_action_configure": "配置 Fleet Telemetry",

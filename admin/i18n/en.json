@@ -51,7 +51,7 @@
     "step4_instruction1": "Open the URL below on your phone in the Tesla App, or scan the QR code with your phone camera",
     "step4_instruction2": "The Tesla App will ask you to confirm adding a \"third-party key\"",
     "step4_instruction3": "Go to your vehicle and hold your key card to the center console to confirm the installation",
-    "step4_qr_hint": "Scan this QR code with your phone to open the URL directly in the Tesla App",
+    "step4_qr_hint": "Scan this QR code with your phone to open the URL directly in the Tesla App. If the QR code does not work, copy the Virtual Key URL shown above and open it directly on your phone.",
     "step4_url_label": "Virtual Key URL:",
     "telemetry_action_check_status": "Check Fleet Status",
     "telemetry_action_configure": "Configure Fleet Telemetry",

@@ -1990,6 +1990,13 @@ class Teslamotors extends utils.Adapter {
       return;
     }
 
+    if (obj.command === 'getVirtualKeyQr') {
+      const domain = (obj.message && obj.message.fleetkeyDomain) || this.config.fleetkeyDomain || '';
+      const url = domain ? `https://tesla.com/_ak/${domain}` : '';
+      this.sendTo(obj.from, obj.command, url, obj.callback);
+      return;
+    }
+
     if (isFleetTelemetryAdminCommand(obj.command)) {
       try {
         const result = await this.telemetryConfigurationManager.handleAdminCommand(obj.command, obj.message || {});
