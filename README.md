@@ -302,7 +302,7 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 
 ### 3.2.2 (2026-07-27)
 
-- fix QR Code generation
+- (TA2k) fix QR Code generation
 
 ### 3.2.1 (2026-06-05)
 
