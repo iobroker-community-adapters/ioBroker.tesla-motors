@@ -97,6 +97,12 @@ Keeper. Start climate first with `auto_conditioning_start` (or enable Climate
 Keeper) before sending these commands. If climate is off, Tesla rejects the
 command with `cabin comfort remote settings not enabled`.
 
+### Messages for scripts and AI agents
+
+`sendTo('tesla-motors.0', 'help', {})` answers a description of the adapter (messages and remote commands) for AI
+agents (e.g. pi-agent) and script authors: `{ help, commands }`, where `commands` lists every message with
+`write: true` if it changes something.
+
 ### Field Description
 
 - df: driver front
@@ -298,6 +304,7 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 
 ## Changelog
 ### **WORK IN PROGRESS**
+- (@GermanBluefox) Added the message "help": a description of all messages for AI agents (e.g. pi-agent), and common.supportedMessages.help
 - (copilot) Adapter requires node.js >= 22.19.0 now
 
 ### 3.2.2 (2026-07-27)

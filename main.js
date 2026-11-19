@@ -12,6 +12,7 @@ const {
 } = require('./lib/fleetTelemetryConfig');
 const { removeVehicleTokens } = require('./lib/teslaResponse');
 const { getMissingScopesHint, isMissingScopesError } = require('./lib/oauthError');
+const { HELP, COMMANDS } = require('./lib/help');
 const {
   buildFleetVehicleCommandPayload,
   getVehicleCommandProtocolRequiredFromProduct,
@@ -1961,6 +1962,11 @@ class Teslamotors extends utils.Adapter {
    */
   async onMessage(obj) {
     if (!obj || !obj.command) {
+      return;
+    }
+
+    if (obj.command === 'help') {
+      if (obj.callback) this.sendTo(obj.from, obj.command, { help: HELP, commands: COMMANDS }, obj.callback);
       return;
     }
 
