@@ -117,6 +117,10 @@
     "type": "vehicle",
     "compact": true,
     "messagebox": true,
+    "supportedMessages": {
+      "custom": true,
+      "help": true
+    },
     "connectionType": "cloud",
     "dataSource": "poll",
     "plugins": {
