@@ -103,6 +103,13 @@ command with `cabin comfort remote settings not enabled`.
 agents (e.g. pi-agent) and script authors: `{ help, commands }`, where `commands` lists every message with
 `write: true` if it changes something.
 
+The adapter also answers the standard commands of the shared catalog for vehicles (marked with `standard` in the
+`help` answer): `getVehicles`, `getStatus {vehicle?}`, `lock {vehicle?, locked}`, `climate {vehicle?, on, temp?}`,
+`charge {vehicle?, on}`, `setChargeLimit {vehicle?, percent}`, `setChargeCurrent {vehicle?, amps}`,
+`signal {vehicle?, kind?: 'horn' | 'lights' | 'both'}` and `refresh {vehicle?, wake?}`. `vehicle` is the VIN or the
+name of the car (default the only car). The write commands wake the car, send the remote command and answer
+`{ok: true}`, `{ok: true, pending: true}` (still waking after 14 s) or `{error, reason}`.
+
 ### Field Description
 
 - df: driver front
@@ -305,6 +312,7 @@ Diagnostic states are available under `tesla-motors.0.info.*`:
 ## Changelog
 ### **WORK IN PROGRESS**
 - (@GermanBluefox) Added the message "help": a description of all messages for AI agents (e.g. pi-agent), and common.supportedMessages.help
+- (@GermanBluefox) Added the standard commands of the shared catalog: vehicle.getVehicles, vehicle.getStatus, vehicle.lock, vehicle.climate, vehicle.charge, vehicle.setChargeLimit, vehicle.setChargeCurrent, vehicle.signal, vehicle.refresh
 - (copilot) Adapter requires node.js >= 22.19.0 now
 
 ### 3.2.2 (2026-07-27)

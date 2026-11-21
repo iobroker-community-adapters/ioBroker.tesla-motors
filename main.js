@@ -13,6 +13,7 @@ const {
 const { removeVehicleTokens } = require('./lib/teslaResponse');
 const { getMissingScopesHint, isMissingScopesError } = require('./lib/oauthError');
 const { HELP, COMMANDS } = require('./lib/help');
+const { STANDARD_COMMANDS, handleStandardCommand } = require('./lib/standard');
 const {
   buildFleetVehicleCommandPayload,
   getVehicleCommandProtocolRequiredFromProduct,
@@ -1826,6 +1827,37 @@ class Teslamotors extends utils.Adapter {
   }
 
   /**
+   * Sends one remote command to a vehicle the way a write of its remote.* state does (onStateChange): wakes the car
+   * first, then sendCommand, and reads the values again 5 s later. For the standard commands (lib/standard.js).
+   *
+   * @param {string} vin
+   * @param {string} command
+   * @param {string | undefined} action
+   * @param {any} value
+   * @returns {Promise<any>} the result of sendCommand (null or undefined = failed, see the log)
+   */
+  async runRemoteCommand(vin, command, action, value) {
+    const stateRes = await this.requestClient({
+      method: 'get',
+      url: this.getFleetApiBaseUrl() + '/api/1/vehicles/' + vin,
+      headers: this.getFleetHeaders(),
+    }).catch(() => null);
+    if (stateRes && stateRes.data && stateRes.data.response && stateRes.data.response.state !== 'online') {
+      this.log.info('Wake up ' + vin);
+      const state = await this.wakeUpVehicle(vin, this.getFleetHeaders(), this.getFleetApiBaseUrl());
+      if (state !== 'online') {
+        throw Object.assign(new Error(`The car does not wake up (${state})`), { code: 'NOT_CONNECTED' });
+      }
+    }
+    const result = await this.sendCommand(vin, command, action, value, false).catch(() => null);
+    this.clearTimeout(this.refreshTimeout);
+    this.refreshTimeout = this.setTimeout(async () => {
+      await this.updateDevices(true);
+    }, 5 * 1000);
+    return result;
+  }
+
+  /**
    * Map ioBroker remote command to TeslaCommandSigner method call.
    */
   async executeSignedCommand(signer, command, action, value) {
@@ -1967,6 +1999,13 @@ class Teslamotors extends utils.Adapter {
 
     if (obj.command === 'help') {
       if (obj.callback) this.sendTo(obj.from, obj.command, { help: HELP, commands: COMMANDS }, obj.callback);
+      return;
+    }
+
+    // the standard commands of the shared catalog (vehicle.*), lib/standard.js; they also run without a callback
+    if (Object.prototype.hasOwnProperty.call(STANDARD_COMMANDS, obj.command)) {
+      const answer = await handleStandardCommand(this, obj.command, obj.message);
+      if (obj.callback) this.sendTo(obj.from, obj.command, answer, obj.callback);
       return;
     }
 
